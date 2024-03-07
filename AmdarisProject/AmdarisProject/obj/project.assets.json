@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\justinian.zaharia\\Desktop\\amdaris-project\\AmdarisProject\\AmdarisProject\\AmdarisProject.csproj",
+      "projectUniqueName": "C:\\Users\\justinian.zaharia\\Desktop\\New folder\\amdaris-project\\AmdarisProject\\AmdarisProject\\AmdarisProject.csproj",
       "projectName": "AmdarisProject",
-      "projectPath": "C:\\Users\\justinian.zaharia\\Desktop\\amdaris-project\\AmdarisProject\\AmdarisProject\\AmdarisProject.csproj",
+      "projectPath": "C:\\Users\\justinian.zaharia\\Desktop\\New folder\\amdaris-project\\AmdarisProject\\AmdarisProject\\AmdarisProject.csproj",
       "packagesPath": "C:\\Users\\justinian.zaharia\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\justinian.zaharia\\Desktop\\amdaris-project\\AmdarisProject\\AmdarisProject\\obj\\",
+      "outputPath": "C:\\Users\\justinian.zaharia\\Desktop\\New folder\\amdaris-project\\AmdarisProject\\AmdarisProject\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\justinian.zaharia\\AppData\\Roaming\\NuGet\\NuGet.Config",
