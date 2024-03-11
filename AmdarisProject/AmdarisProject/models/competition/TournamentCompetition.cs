@@ -1,5 +1,5 @@
 ﻿using AmdarisProject.models.competitor;
-using AmdarisProject.utils;
+using AmdarisProject.utils.enums;
 
 namespace AmdarisProject.models.competition
 {

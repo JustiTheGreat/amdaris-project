@@ -1,7 +1,7 @@
 ﻿using AmdarisProject.models;
 using AmdarisProject.models.competition;
 using AmdarisProject.models.competitor;
-using AmdarisProject.utils;
+using AmdarisProject.utils.enums;
 
 Player player1 = new("p1");
 Player player2 = new("p2");
@@ -32,7 +32,7 @@ competition.Register(player2);
 competition.Register(player3);
 competition.Register(player4);
 competition.StopRegistrations();
-competition.Register(player5);
+//competition.Register(player5);
 
 Match match1 = new Match(competition.Location, DateTime.Now, competition.GameType, player1, player2);
 Match match2 = new Match(competition.Location, DateTime.Now, competition.GameType, player1, player3);
@@ -43,6 +43,10 @@ Match match6 = new Match(competition.Location, DateTime.Now, competition.GameTyp
 
 match1.Start();
 player1.AddPoints(match1, 1);
-player2.AddPoints(match2, 1);
+player2.AddPoints(match1, 1);
 player1.AddPoints(match1, 1);
 player1.AddPoints(match1, 1);
+
+Console.WriteLine(match1.GetPointsCompetitorOne());
+Console.WriteLine(match1.GetPointsCompetitorTwo());
+Console.WriteLine(match1.GetWinner().Name);

@@ -1,5 +1,6 @@
 ﻿using AmdarisProject.models.competitor;
 using AmdarisProject.utils;
+using AmdarisProject.utils.enums;
 using AmdarisProject.utils.Exceptions;
 
 namespace AmdarisProject.models.competition
@@ -32,42 +33,50 @@ namespace AmdarisProject.models.competition
 
         public void Register(Competitor competitor)
         {
+            if (Status != CompetitionStatus.ORGANIZING)
+                throw new IllegalStatusException(MessageFormatter.Format(nameof(Competition), nameof(Register), Status.ToString()));
+
             Competitors = Competitors.Append(competitor);
             Console.WriteLine($"Competitor {competitor.Name} have stopped!");
         }
 
         public void StopRegistrations()
         {
-            if (!Status.Equals(CompetitionStatus.ORGANIZING))
-                throw new IllegalStatusException($"{nameof(StopRegistrations)}: {Status}");
+            if (Status != CompetitionStatus.ORGANIZING)
+                throw new IllegalStatusException(MessageFormatter.Format(nameof(Competition), nameof(StopRegistrations), Status.ToString()));
+
             Status = CompetitionStatus.NOT_STARTED;
             Console.WriteLine($"Registrations for competition {Name} have stopped!");
         }
 
         public void Start()
         {
-            if (!Status.Equals(CompetitionStatus.NOT_STARTED))
-                throw new IllegalStatusException($"{nameof(Start)}: {Status}");
+            if (Status != CompetitionStatus.NOT_STARTED)
+                throw new IllegalStatusException(MessageFormatter.Format(nameof(Competition), nameof(Start), Status.ToString()));
+
             Status = CompetitionStatus.STARTED;
             Console.WriteLine($"Competition {Name} started!");
         }
 
         public int GetPoints(Competitor competitor)
         {
-            return Matches.Where(match => match.CompetitorOne.Equals(competitor) && match.CompetitorOne.Equals(competitor)
-            || match.CompetitorTwo.Equals(competitor) && match.CompetitorTwo.Equals(competitor))
+            if (Status == CompetitionStatus.ORGANIZING || Status == CompetitionStatus.NOT_STARTED || Status == CompetitionStatus.CANCELED)
+                throw new IllegalStatusException(MessageFormatter.Format(nameof(Competition), nameof(Start), Status.ToString()));
+
+            return Matches.Where(match => match.CompetitorOne.Equals(competitor) || match.CompetitorTwo.Equals(competitor))
                 .Select(match => match.CompetitorOne.Equals(competitor) ? match.GetPointsCompetitorOne() : match.GetPointsCompetitorTwo())
                 .Aggregate((points1, points2) => points1 + points2);
         }
 
         public int GetPoints(Match match, Competitor competitor)
         {
-            if (Status.Equals(CompetitionStatus.ORGANIZING) || Status.Equals(MatchStatus.NOT_STARTED)
-                || Status.Equals(MatchStatus.CANCELED))
-                throw new IllegalStatusException($"{nameof(GetPoints)}: {Status}");
-            if (match.Status.Equals(MatchStatus.NOT_STARTED) || match.Status.Equals(MatchStatus.CANCELED)
-                || match.Status.Equals(MatchStatus.SPECIAL_WIN_COMPETITOR_ONE) || match.Status.Equals(MatchStatus.SPECIAL_WIN_COMPETITOR_TWO))
-                throw new IllegalStatusException($"{nameof(GetPoints)}: {match.Status}");
+            if (Status == CompetitionStatus.ORGANIZING || Status == CompetitionStatus.NOT_STARTED || Status == CompetitionStatus.CANCELED)
+                throw new IllegalStatusException(MessageFormatter.Format(nameof(Competition), nameof(GetPoints), Status.ToString()));
+
+            if (match.Status == MatchStatus.NOT_STARTED || match.Status == MatchStatus.CANCELED
+                || match.Status == MatchStatus.SPECIAL_WIN_COMPETITOR_ONE || match.Status == MatchStatus.SPECIAL_WIN_COMPETITOR_TWO)
+                throw new IllegalStatusException(MessageFormatter.Format(nameof(Competition), nameof(GetPoints), match.Status.ToString()));
+
             return competitor.GetPoints(match);
         }
 

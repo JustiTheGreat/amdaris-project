@@ -1,4 +1,4 @@
-﻿namespace AmdarisProject.utils
+﻿namespace AmdarisProject.utils.enums
 {
     public enum GameType
     {
