@@ -1,5 +1,6 @@
 ﻿using AmdarisProject.models.competitor;
 using AmdarisProject.utils;
+using AmdarisProject.utils.Exceptions;
 
 namespace AmdarisProject.models
 {
@@ -12,31 +13,77 @@ namespace AmdarisProject.models
         public Competitor CompetitorOne { get; set; }
         public Competitor CompetitorTwo { get; set; }
         public GameType GameType { get; set; }
-        public Status Status { get; set; }
+        public MatchStatus Status { get; set; }
 
         public Match(string location, DateTime startTime, GameType gameType, Competitor competitorOne, Competitor competitorTwo)
         {
             if (competitorOne.Equals(competitorTwo))
-                throw new AmdarisProjectException("Tried to create a match with the same competitors for both sides!");
+                throw new SameCompetitorException($"{competitorOne.Name}");
             Id = ++instances;
             Location = location;
             StartTime = startTime;
             CompetitorOne = competitorOne;
             CompetitorTwo = competitorTwo;
             GameType = gameType;
-            Status = Status.NOT_STARTED;
+            Status = MatchStatus.NOT_STARTED;
         }
 
         public void Start()
         {
-            Status = Status.STARTED;
+            if (Status != MatchStatus.NOT_STARTED)
+                throw new IllegalStatusException($"{Start}: {Status}");
+            Status = MatchStatus.STARTED;
         }
 
-        public int GetPoints(Competitor competitor)
+        public void End()
         {
-            if (Status.Equals(Status.NOT_STARTED))
-                throw new AmdarisProjectException("Tried to get the points for a match that hasn't started yet!");
-            return competitor.GetPoints(this);
+            if (Status != MatchStatus.STARTED)
+                throw new IllegalStatusException($"{End}: {Status}");
+            Status = MatchStatus.FINISHED;
+        }
+
+        public void Cancel()
+        {
+            if (Status != MatchStatus.NOT_STARTED || Status != MatchStatus.STARTED)
+                throw new IllegalStatusException($"{Cancel}: {Status}");
+            Status = MatchStatus.CANCELED;
+        }
+
+        public void SpecialWinCompetitorOne()
+        {
+            if (Status != MatchStatus.STARTED)
+                throw new IllegalStatusException($"{SpecialWinCompetitorOne}: {Status}");
+            Status = MatchStatus.SPECIAL_WIN_COMPETITOR_ONE;
+        }
+
+        public void SpecialWinCompetitorTwo()
+        {
+            if (Status != MatchStatus.STARTED)
+                throw new IllegalStatusException($"{SpecialWinCompetitorTwo}: {Status}");
+            Status = MatchStatus.SPECIAL_WIN_COMPETITOR_TWO;
+        }
+
+        public int GetPointsCompetitorOne()
+        {
+            if (Status.Equals(MatchStatus.NOT_STARTED) || Status.Equals(MatchStatus.CANCELED)
+                || Status.Equals(MatchStatus.SPECIAL_WIN_COMPETITOR_ONE) || Status.Equals(MatchStatus.SPECIAL_WIN_COMPETITOR_TWO))
+                throw new IllegalStatusException($"{GetPointsCompetitorOne}: {Status}");
+            return CompetitorOne.GetPoints(this);
+        }
+
+        public int GetPointsCompetitorTwo()
+        {
+            if (Status.Equals(MatchStatus.NOT_STARTED) || Status.Equals(MatchStatus.CANCELED)
+                || Status.Equals(MatchStatus.SPECIAL_WIN_COMPETITOR_ONE) || Status.Equals(MatchStatus.SPECIAL_WIN_COMPETITOR_TWO))
+                throw new IllegalStatusException($"{GetPointsCompetitorTwo}: {Status}");
+            return CompetitorTwo.GetPoints(this);
+        }
+
+        public Competitor GetWinner()
+        {
+            if (CompetitorOne.GetPoints(this) == CompetitorTwo.GetPoints(this))
+                throw new DrawGameResultException($"{Id}");
+            return CompetitorOne.GetPoints(this) > CompetitorTwo.GetPoints(this) ? CompetitorOne : CompetitorTwo;
         }
     }
 }

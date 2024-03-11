@@ -14,7 +14,7 @@ namespace AmdarisProject.models.competition
         }
 
         private TournamentCompetition(int id, string name, string location, DateTime startTime, GameType gameType, CompetitorType competitorType,
-            Status status, IEnumerable<Competitor> competitors, IEnumerable<Match> matches, IEnumerable<Stage> stages)
+            CompetitionStatus status, IEnumerable<Competitor> competitors, IEnumerable<Match> matches, IEnumerable<Stage> stages)
             : base(id, name, location, startTime, gameType, competitorType, status, competitors, matches)
         {
             Stages = stages;

@@ -32,6 +32,7 @@ competition.Register(player2);
 competition.Register(player3);
 competition.Register(player4);
 competition.StopRegistrations();
+competition.Register(player5);
 
 Match match1 = new Match(competition.Location, DateTime.Now, competition.GameType, player1, player2);
 Match match2 = new Match(competition.Location, DateTime.Now, competition.GameType, player1, player3);

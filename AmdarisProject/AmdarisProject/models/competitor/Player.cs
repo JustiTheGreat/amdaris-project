@@ -2,7 +2,7 @@
 {
     public class Player : Competitor
     {
-        public Dictionary<Match, int> Points = new();
+        public Dictionary<Match, int> Points = [];
 
         public Player(string name) : base(name)
         {
@@ -15,7 +15,7 @@
 
         public void AddPoints(Match match, int points)
         {
-            Points[match] += points;
+            Points.Add(match, Points.GetValueOrDefault(match, 0) + points);
             Console.WriteLine($"Player {Name} scored {points} points");
         }
     }
