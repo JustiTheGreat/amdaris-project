@@ -2,15 +2,21 @@
 using AmdarisProject.models.competition;
 using AmdarisProject.models.competitor;
 using AmdarisProject.utils.enums;
+using AmdarisProject.utils.Exceptions;
+using Match = AmdarisProject.models.Match;
 
-Player player1 = new("p1");
-Player player2 = new("p2");
-Player player3 = new("p3");
-Player player4 = new("p4");
-Player player5 = new("p5");
-Player player6 = new("p6");
-Player player7 = new("p7");
-Player player8 = new("p8");
+Game pingPong = new Game(3, GameType.PING_PONG, CompetitorType.PLAYER);
+Game chess = new Game(1, GameType.CHESS, CompetitorType.PLAYER);
+Game fifa = new Game(10, GameType.FIFA, CompetitorType.PLAYER);
+
+Player player1 = new("Player1");
+Player player2 = new("Player2");
+Player player3 = new("Player3");
+Player player4 = new("Player4");
+Player player5 = new("Player5");
+Player player6 = new("Player6");
+Player player7 = new("Player7");
+Player player8 = new("Player8");
 
 TwoPlayerTeam team1 = new("Team1");
 TwoPlayerTeam team2 = new("Team2");
@@ -26,27 +32,53 @@ team3.SetPlayerTwo(player6);
 team4.SetPlayerOne(player7);
 team4.SetPlayerTwo(player8);
 
-Competition competition = new OneVSAllCompetition("c1", "l1", DateTime.Now, GameType.PING_PONG, CompetitorType.PLAYER);
+Competition competition = new OneVSAllCompetition("c1", "l1", DateTime.Now, pingPong);
 competition.Register(player1);
 competition.Register(player2);
 competition.Register(player3);
 competition.Register(player4);
 competition.StopRegistrations();
-//competition.Register(player5);
 
-Match match1 = new Match(competition.Location, DateTime.Now, competition.GameType, player1, player2);
-Match match2 = new Match(competition.Location, DateTime.Now, competition.GameType, player1, player3);
-Match match3 = new Match(competition.Location, DateTime.Now, competition.GameType, player1, player4);
-Match match4 = new Match(competition.Location, DateTime.Now, competition.GameType, player2, player3);
-Match match5 = new Match(competition.Location, DateTime.Now, competition.GameType, player2, player4);
-Match match6 = new Match(competition.Location, DateTime.Now, competition.GameType, player3, player4);
+competition.Start();
 
-match1.Start();
-player1.AddPoints(match1, 1);
-player2.AddPoints(match1, 1);
-player1.AddPoints(match1, 1);
-player1.AddPoints(match1, 1);
+foreach (Match match in competition.Matches)
+{
+    SimulateMatch(match);
+}
 
-Console.WriteLine(match1.GetPointsCompetitorOne());
-Console.WriteLine(match1.GetPointsCompetitorTwo());
-Console.WriteLine(match1.GetWinner().Name);
+void SimulateMatch(Match match)
+{
+    match.Start();
+    while (match.GetPointsCompetitorOne() != match.Game.WinAt && match.GetPointsCompetitorTwo() != match.Game.WinAt)
+    {
+        int pointGoesToCompetitor = new Random().Next(2);
+        Competitor competitor = pointGoesToCompetitor == 0 ? match.CompetitorOne : match.CompetitorTwo;
+        SimulateAddPointsToCompetitor(competitor, match);
+    }
+
+    Console.WriteLine($"{match.CompetitorOne.Name} - {match.CompetitorTwo.Name}");
+    Console.WriteLine($"{match.GetPointsCompetitorOne()} - {match.GetPointsCompetitorTwo()}");
+    try
+    {
+        Competitor? winner = match.GetWinner();
+        if (winner is null)
+            Console.WriteLine($"Winner: CANCELED");
+        else
+            Console.WriteLine($"Winner: {winner.Name}");
+    }
+    catch (DrawGameResultException)
+    {
+        Console.WriteLine($"Winner: DRAW");
+    }
+}
+
+void SimulateAddPointsToCompetitor(Competitor competitor, Match match)
+{
+    Player? player = competitor as Player;
+    if (player is null)
+    {
+        int pointGoesToPlayer = new Random().Next(2);
+        player = pointGoesToPlayer == 0 ? (competitor as TwoPlayerTeam)!.PlayerOne : (competitor as TwoPlayerTeam)!.PlayerTwo;
+    }
+    player!.AddPoints(match, 1);
+}

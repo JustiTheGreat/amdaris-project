@@ -1,9 +1,6 @@
 ﻿namespace AmdarisProject.utils.Exceptions
 {
-    internal class DrawGameResultException : AmdarisProjectException
+    public class DrawGameResultException(string message) : AmdarisProjectException(message)
     {
-        public DrawGameResultException(String message) : base(message)
-        {
-        }
     }
 }

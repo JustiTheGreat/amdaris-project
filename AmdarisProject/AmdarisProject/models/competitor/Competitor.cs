@@ -13,5 +13,7 @@
         }
 
         public abstract int GetPoints(Match match);
+
+        public abstract void InitializePointsForMatch(Match match);
     }
 }

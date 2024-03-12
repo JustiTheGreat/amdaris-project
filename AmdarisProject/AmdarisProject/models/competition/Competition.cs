@@ -5,27 +5,25 @@ using AmdarisProject.utils.Exceptions;
 
 namespace AmdarisProject.models.competition
 {
-    public class Competition : ICloneable
+    public abstract class Competition
     {
         private static int instances = 0;
         public int Id { get; set; }
         public string Name { get; set; }
         public string Location { get; set; }
         public DateTime StartTime { get; set; }
-        public GameType GameType { get; set; }
-        public CompetitorType CompetitorType { get; set; }
+        public Game Game { get; set; }
         public CompetitionStatus Status { get; set; }
         public IEnumerable<Competitor> Competitors { get; set; }
         public IEnumerable<Match> Matches { get; set; }
 
-        protected Competition(string name, string location, DateTime startTime, GameType gameType, CompetitorType competitorType)
+        protected Competition(string name, string location, DateTime startTime, Game game)
         {
             Id = ++instances;
             Name = name;
             Location = location;
             StartTime = startTime;
-            GameType = gameType;
-            CompetitorType = competitorType;
+            Game = game;
             Status = CompetitionStatus.ORGANIZING;
             Competitors = [];
             Matches = [];
@@ -54,9 +52,19 @@ namespace AmdarisProject.models.competition
             if (Status != CompetitionStatus.NOT_STARTED)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Competition), nameof(Start), Status.ToString()));
 
+            CheckCompetitorNumber();
+
+            CreateMatches();
+
             Status = CompetitionStatus.STARTED;
             Console.WriteLine($"Competition {Name} started!");
         }
+
+        protected abstract void CheckCompetitorNumber();
+
+        protected abstract void CreateMatches();
+
+        protected abstract Competitor GetWinner();
 
         public int GetPoints(Competitor competitor)
         {
@@ -78,35 +86,6 @@ namespace AmdarisProject.models.competition
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Competition), nameof(GetPoints), match.Status.ToString()));
 
             return competitor.GetPoints(match);
-        }
-
-        protected Competition(int id, string name, string location, DateTime startTime, GameType gameType, CompetitorType competitorType,
-            CompetitionStatus status, IEnumerable<Competitor> competitors, IEnumerable<Match> matches)
-        {
-            Id = id;
-            Name = name;
-            Location = location;
-            StartTime = startTime;
-            GameType = gameType;
-            Status = status;
-            CompetitorType = competitorType;
-            Competitors = competitors;
-            Matches = matches;
-        }
-
-        public virtual object Clone()
-        {
-            return new Competition(
-                Id,
-                Name,
-                Location,
-                StartTime,
-                GameType,
-                CompetitorType,
-                Status,
-                Competitors,
-                Matches
-                );
         }
     }
 }

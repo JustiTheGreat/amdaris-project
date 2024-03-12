@@ -2,7 +2,7 @@
 
 namespace AmdarisProject.utils.exceptions
 {
-    public class GameNotPlayedByPlayerException(string message) : AmdarisProjectException(message)
+    public class CompetitorNumberException(string message) : AmdarisProjectException(message)
     {
     }
 }

@@ -1,9 +1,6 @@
 ﻿namespace AmdarisProject.utils.Exceptions
 {
-    public class NullPlayerException : AmdarisProjectException
+    public class NullPlayerException(string message) : AmdarisProjectException(message)
     {
-        public NullPlayerException(String message) : base(message)
-        {
-        }
     }
 }

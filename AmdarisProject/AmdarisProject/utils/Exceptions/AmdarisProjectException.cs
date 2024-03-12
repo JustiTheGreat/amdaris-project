@@ -2,6 +2,6 @@
 {
     public class AmdarisProjectException : Exception
     {
-        protected AmdarisProjectException(String message) : base(message) { }
+        protected AmdarisProjectException(string message) : base(message) { }
     }
 }

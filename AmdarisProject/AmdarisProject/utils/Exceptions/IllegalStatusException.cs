@@ -1,9 +1,6 @@
 ﻿namespace AmdarisProject.utils.Exceptions
 {
-    public class IllegalStatusException : AmdarisProjectException
+    public class IllegalStatusException(string message) : AmdarisProjectException(message)
     {
-        public IllegalStatusException(String message) : base(message)
-        {
-        }
     }
 }

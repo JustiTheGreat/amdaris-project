@@ -1,39 +1,36 @@
 ﻿using AmdarisProject.models.competitor;
-using AmdarisProject.utils.enums;
+using AmdarisProject.utils;
+using AmdarisProject.utils.exceptions;
 
 namespace AmdarisProject.models.competition
 {
-    public class TournamentCompetition : Competition
+    public class TournamentCompetition(string name, string location, DateTime startTime, Game game) : Competition(name, location, startTime, game)
     {
-        public IEnumerable<Stage> Stages { get; set; }
+        public IEnumerable<Stage> Stages { get; set; } = [];
 
-        public TournamentCompetition(string name, string location, DateTime startTime, GameType gameType, CompetitorType competitorType)
-            : base(name, location, startTime, gameType, competitorType)
+        protected override void CheckCompetitorNumber()
         {
-            Stages = [];
+            int competitorNumber = Competitors.Count();
+
+            if (competitorNumber < 2)
+                throw new CompetitorNumberException(MessageFormatter.Format(nameof(TournamentCompetition), nameof(CheckCompetitorNumber), Competitors.Count().ToString()));
+
+            while (competitorNumber != 1)
+            {
+                if (competitorNumber % 2 == 1)
+                    throw new CompetitorNumberException(MessageFormatter.Format(nameof(TournamentCompetition), nameof(CheckCompetitorNumber), Competitors.Count().ToString()));
+                competitorNumber /= 2;
+            }
         }
 
-        private TournamentCompetition(int id, string name, string location, DateTime startTime, GameType gameType, CompetitorType competitorType,
-            CompetitionStatus status, IEnumerable<Competitor> competitors, IEnumerable<Match> matches, IEnumerable<Stage> stages)
-            : base(id, name, location, startTime, gameType, competitorType, status, competitors, matches)
+        protected override void CreateMatches()
         {
-            Stages = stages;
+            throw new NotImplementedException();
         }
 
-        public override object Clone()
+        protected override Competitor GetWinner()
         {
-            return new TournamentCompetition(
-               Id,
-               Name,
-               Location,
-               StartTime,
-               GameType,
-               CompetitorType,
-               Status,
-               Competitors,
-               Matches,
-               Stages
-               );
+            throw new NotImplementedException();
         }
     }
 }

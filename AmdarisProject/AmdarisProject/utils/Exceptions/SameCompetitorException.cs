@@ -1,9 +1,6 @@
 ﻿namespace AmdarisProject.utils.Exceptions
 {
-    public class SameCompetitorException : AmdarisProjectException
+    public class SameCompetitorException(string message) : AmdarisProjectException(message)
     {
-        public SameCompetitorException(String message) : base(message)
-        {
-        }
     }
 }
