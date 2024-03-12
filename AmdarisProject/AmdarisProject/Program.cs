@@ -50,3 +50,12 @@ player1.AddPoints(match1, 1);
 Console.WriteLine(match1.GetPointsCompetitorOne());
 Console.WriteLine(match1.GetPointsCompetitorTwo());
 Console.WriteLine(match1.GetWinner().Name);
+
+Competition competition2 = new TournamentCompetition("c2", "l2", DateTime.Now, GameType.CHESS, CompetitorType.PLAYER);
+
+if (competition2 is TournamentCompetition)
+{
+    (competition2 as TournamentCompetition).PrintStages(competitor: player1, fromIndex: 5);
+    (competition2 as TournamentCompetition).PrintStages(competitor: player1);
+    (competition2 as TournamentCompetition).PrintStages(fromIndex: 2);
+}

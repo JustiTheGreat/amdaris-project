@@ -35,5 +35,17 @@ namespace AmdarisProject.models.competition
                Stages
                );
         }
+
+        public void PrintStages(int fromIndex = 0, Competitor? competitor = null)
+        {
+            if (fromIndex < 0 || fromIndex >= Stages.Count())
+                Console.WriteLine("Stage number is not ok");
+            for (int i = fromIndex; i < Stages.Count(); i++)
+            {
+                if (competitor is not null && Stages.ElementAt(i).ContainsCompetitor(competitor))
+                    Console.WriteLine(Stages.ElementAt(i));
+                else Console.WriteLine(Stages.ElementAt(i));
+            }
+        }
     }
 }

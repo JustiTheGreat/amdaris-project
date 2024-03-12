@@ -1,4 +1,6 @@
-﻿namespace AmdarisProject.models
+﻿using AmdarisProject.models.competitor;
+
+namespace AmdarisProject.models
 {
     public class Stage
     {
@@ -12,6 +14,12 @@
             Id = ++instances;
             StageLevel = stageLevel;
             Matches = matches;
+        }
+
+        public bool ContainsCompetitor(Competitor competitor)
+        {
+            Random random = new Random();
+            return random.NextDouble() >= 0.5;
         }
     }
 }
