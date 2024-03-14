@@ -1,4 +1,5 @@
-﻿using AmdarisProject.models.competitor;
+﻿using AmdarisProject.models.competition;
+using AmdarisProject.models.competitor;
 using AmdarisProject.utils;
 using AmdarisProject.utils.enums;
 using AmdarisProject.utils.exceptions;
@@ -6,18 +7,17 @@ using AmdarisProject.utils.Exceptions;
 
 namespace AmdarisProject.models
 {
-    public class Match
+    public class Match : Model
     {
-        private static int instances = 0;
-        public int Id { get; set; }
         public string Location { get; set; }
         public DateTime StartTime { get; set; }
         public Competitor CompetitorOne { get; set; }
         public Competitor CompetitorTwo { get; set; }
         public Game Game { get; set; }
         public MatchStatus Status { get; set; }
+        public Competition Competition { get; set; }
 
-        public Match(string location, DateTime startTime, Game game, Competitor competitorOne, Competitor competitorTwo)
+        public Match(string location, DateTime startTime, Game game, Competitor competitorOne, Competitor competitorTwo, Competition competition)
         {
             if (game.CompetitorType is CompetitorType.PLAYER && (competitorOne is not Player || competitorTwo is not Player)
                 || game.CompetitorType is CompetitorType.TWO_PLAYER_TEAM && (competitorOne is not TwoPlayerTeam || competitorTwo is not TwoPlayerTeam))
@@ -26,19 +26,21 @@ namespace AmdarisProject.models
             if (competitorOne.Equals(competitorTwo))
                 throw new SameCompetitorException(MessageFormatter.Format(nameof(Match), nameof(Match), competitorOne.Name));
 
-            Id = ++instances;
+            if (!competition.ContainsCompetitor(competitorOne) || !competition.ContainsCompetitor(competitorTwo))
+                throw new CompetitorException(MessageFormatter.Format(nameof(Match), nameof(Match), "Competior not in competition!"));
+
             Location = location;
             StartTime = startTime;
+            Game = game;
             CompetitorOne = competitorOne;
             CompetitorTwo = competitorTwo;
-            Game = game;
+            Competition = competition;
             Status = MatchStatus.NOT_STARTED;
         }
 
         public bool ContainsCompetitor(Competitor competitor)
         {
-            if (Game.CompetitorType is CompetitorType.PLAYER && competitor is not Player
-                || Game.CompetitorType is CompetitorType.TWO_PLAYER_TEAM && competitor is not TwoPlayerTeam)
+            if (Game.CompetitorType is CompetitorType.PLAYER && competitor is not Player)
                 throw new CompetitorException(MessageFormatter.Format(nameof(Match), nameof(ContainsCompetitor), "Competitor not matching the competition type!"));
 
             if (competitor is Player)
@@ -59,13 +61,14 @@ namespace AmdarisProject.models
 
         public void Start()
         {
-            if (Status is not MatchStatus.NOT_STARTED)
+            if (Competition.Status is not CompetitionStatus.STARTED || Status is not MatchStatus.NOT_STARTED)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Match), nameof(Start), Status.ToString()));
 
             CompetitorOne.InitializePointsForMatch(this);
             CompetitorTwo.InitializePointsForMatch(this);
 
             Status = MatchStatus.STARTED;
+            Console.WriteLine($"Competition {Competition.Name}: Match between {CompetitorOne.Name} and {CompetitorTwo.Name} has statrted!");
         }
 
         public void End()
@@ -77,6 +80,7 @@ namespace AmdarisProject.models
                 throw new PointsException(MessageFormatter.Format(nameof(Match), nameof(End), "Not enough points to end the match!"));
 
             Status = MatchStatus.FINISHED;
+            Console.WriteLine($"Competition {Competition.Name}: Match between {CompetitorOne.Name} and {CompetitorTwo.Name} has ended with score {CompetitorOne.GetPoints(this)}-{CompetitorTwo.GetPoints(this)}!");
         }
 
         public void Cancel()

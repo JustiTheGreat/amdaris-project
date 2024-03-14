@@ -45,7 +45,8 @@ namespace AmdarisProject.models.competitor
 
         public override int GetPoints(Match match)
         {
-            if (match.Status is MatchStatus.NOT_STARTED or MatchStatus.CANCELED)
+            if (match.Status is not MatchStatus.STARTED && match.Status is not MatchStatus.FINISHED
+                && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_ONE && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_TWO)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(TwoPlayerTeam), nameof(GetPoints), match.Status.ToString()));
 
             if (!match.ContainsCompetitor(this))
@@ -75,6 +76,15 @@ namespace AmdarisProject.models.competitor
 
             if (match.Game.CompetitorType == CompetitorType.TWO_PLAYER_TEAM && GetPoints(match) == match.Game.WinAt)
                 match.End();
+        }
+
+        public override double GetRating(GameType gameType)
+        {
+            if (PlayerOne is null || PlayerTwo is null)
+                throw new NullPlayerException(MessageFormatter.Format(nameof(TwoPlayerTeam), nameof(GetRating), Name));
+
+            double rating = (PlayerOne.GetRating(gameType) + PlayerTwo.GetRating(gameType)) / 2;
+            return rating;
         }
     }
 }

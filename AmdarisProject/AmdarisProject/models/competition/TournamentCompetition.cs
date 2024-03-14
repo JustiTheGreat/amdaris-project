@@ -28,7 +28,7 @@ namespace AmdarisProject.models.competition
             throw new NotImplementedException();
         }
 
-        protected override Competitor GetWinner()
+        public override Competitor GetWinner()
         {
             throw new NotImplementedException();
         }

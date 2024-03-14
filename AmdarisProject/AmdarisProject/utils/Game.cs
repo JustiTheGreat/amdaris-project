@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.utils.enums;
 
-namespace AmdarisProject.models
+namespace AmdarisProject.utils
 {
     public class Game(int winAt, GameType type, CompetitorType competitorType)
     {

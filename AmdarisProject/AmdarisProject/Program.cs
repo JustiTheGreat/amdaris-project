@@ -5,9 +5,9 @@ using AmdarisProject.utils.enums;
 using AmdarisProject.utils.Exceptions;
 using Match = AmdarisProject.models.Match;
 
-Game pingPong = new Game(3, GameType.PING_PONG, CompetitorType.PLAYER);
-Game chess = new Game(1, GameType.CHESS, CompetitorType.PLAYER);
-Game fifa = new Game(10, GameType.FIFA, CompetitorType.PLAYER);
+Game pingPong = new(3, GameType.PING_PONG, CompetitorType.PLAYER);
+Game chess = new(1, GameType.CHESS, CompetitorType.PLAYER);
+Game fifa = new(10, GameType.FIFA, CompetitorType.PLAYER);
 
 Player player1 = new("Player1");
 Player player2 = new("Player2");
@@ -38,13 +38,13 @@ competition.Register(player2);
 competition.Register(player3);
 competition.Register(player4);
 competition.StopRegistrations();
-
 competition.Start();
 
 foreach (Match match in competition.Matches)
-{
     SimulateMatch(match);
-}
+
+competition.End();
+Console.WriteLine($"The winner of competition {competition.Name} is competitor {competition.GetWinner().Name}");
 
 void SimulateMatch(Match match)
 {
@@ -56,8 +56,6 @@ void SimulateMatch(Match match)
         SimulateAddPointsToCompetitor(competitor, match);
     }
 
-    Console.WriteLine($"{match.CompetitorOne.Name} - {match.CompetitorTwo.Name}");
-    Console.WriteLine($"{match.GetPointsCompetitorOne()} - {match.GetPointsCompetitorTwo()}");
     try
     {
         Competitor? winner = match.GetWinner();
@@ -65,6 +63,7 @@ void SimulateMatch(Match match)
             Console.WriteLine($"Winner: CANCELED");
         else
             Console.WriteLine($"Winner: {winner.Name}");
+        Console.WriteLine();
     }
     catch (DrawGameResultException)
     {

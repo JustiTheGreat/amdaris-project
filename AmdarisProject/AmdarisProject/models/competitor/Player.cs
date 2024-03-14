@@ -19,7 +19,8 @@ namespace AmdarisProject.models.competitor
 
         public override int GetPoints(Match match)
         {
-            if (match.Status is MatchStatus.NOT_STARTED or MatchStatus.CANCELED)
+            if (match.Status is not MatchStatus.STARTED && match.Status is not MatchStatus.FINISHED
+                && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_ONE && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_TWO)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Player), nameof(GetPoints), match.Status.ToString()));
 
             if (!match.ContainsCompetitor(this))
@@ -52,12 +53,31 @@ namespace AmdarisProject.models.competitor
             }
             catch (KeyNotFoundException)
             {
-                throw new PointsException(MessageFormatter.Format(nameof(Player), nameof(AddPoints), $"Player {Name} already doesn't have points for match!"));
+                throw new PointsException(MessageFormatter.Format(nameof(Player), nameof(AddPoints), $"Player {Name} doesn't have points for match!"));
             }
             Console.WriteLine($"Player {Name} scored {points} points");
 
             if (match.Game.CompetitorType == CompetitorType.PLAYER && Points[match] == match.Game.WinAt)
                 match.End();
+        }
+
+        public override double GetRating(GameType gameType)
+        {
+            IEnumerable<Match> matchesOfGameType = Points.Where(point => point.Key.Game.Type == gameType).Select(point => point.Key);
+            if (!matchesOfGameType.Any()) return 0;
+            int matchesOfGameTypeWon = matchesOfGameType.Where(match =>
+            {
+                try
+                {
+                    return match.GetWinner()?.Equals(this) ?? false;
+                }
+                catch (DrawGameResultException)
+                {
+                    return false;
+                }
+            }).Count();
+            double rating = matchesOfGameTypeWon / matchesOfGameType.Count();
+            return rating;
         }
     }
 }

@@ -1,19 +1,15 @@
-﻿namespace AmdarisProject.models.competitor
-{
-    public abstract class Competitor
-    {
-        private static int instances = 0;
-        public int Id { get; set; }
-        public string Name { get; set; }
+﻿using AmdarisProject.utils.enums;
 
-        protected Competitor(string name)
-        {
-            Id = ++instances;
-            Name = name;
-        }
+namespace AmdarisProject.models.competitor
+{
+    public abstract class Competitor(string name) : Model
+    {
+        public string Name { get; set; } = name;
 
         public abstract int GetPoints(Match match);
 
         public abstract void InitializePointsForMatch(Match match);
+
+        public abstract double GetRating(GameType gameType);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AmdarisProject.models.competitor;
 using AmdarisProject.utils;
+using AmdarisProject.utils.enums;
 using AmdarisProject.utils.exceptions;
 using AmdarisProject.utils.Exceptions;
 
@@ -15,36 +16,18 @@ namespace AmdarisProject.models.competition
 
         protected override void CreateMatches()
         {
-            foreach (Competitor competitor1 in Competitors)
-            {
-                foreach (Competitor competitor2 in Competitors)
-                {
-                    if (!competitor1.Equals(competitor2))
-                    {
-                        Matches = Matches.Append(new Match(Location, DateTime.Now, Game, competitor1, competitor2));
-                    }
-                }
-            }
+            for (int i = 0; i < Competitors.Count(); i++)
+                for (int j = i + 1; j < Competitors.Count(); j++)
+                    Matches = Matches.Append(new Match(Location, DateTime.Now, Game, Competitors.ElementAt(i), Competitors.ElementAt(j), this));
         }
 
-        protected override Competitor GetWinner()
+        public override Competitor GetWinner()
         {
-            IEnumerable<Competitor?> winners = Matches.Select(match =>
-            {
-                try
-                {
-                    return match.GetWinner();
-                }
-                catch (AmdarisProjectException)
-                {
-                    return null;
-                }
-            }).ToList();
-            Competitor winner = Competitors.ToDictionary(
-                competitor => competitor,
-                competitor => winners.Where(winner => winner is not null && winner.Equals(competitor)).Count())
-                .OrderByDescending(entry => entry.Value).First().Key;
-            return winner;
+            if (Status is not CompetitionStatus.FINISHED)
+                throw new IllegalStatusException(MessageFormatter.Format(nameof(OneVSAllCompetition), nameof(GetWinner), Status.ToString()));
+
+            //TODO find better criteria
+            return GetRanking().ElementAtOrDefault(0)!;
         }
     }
 }

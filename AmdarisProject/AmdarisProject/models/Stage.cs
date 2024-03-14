@@ -1,17 +1,8 @@
 ﻿namespace AmdarisProject.models
 {
-    public class Stage
+    public class Stage(int stageLevel, IEnumerable<Match> matches) : Model
     {
-        private static int instances = 0;
-        public int Id { get; set; }
-        public int StageLevel { get; set; }
-        public IEnumerable<Match> Matches { get; set; }
-
-        public Stage(int stageLevel, IEnumerable<Match> matches)
-        {
-            Id = ++instances;
-            StageLevel = stageLevel;
-            Matches = matches;
-        }
+        public int StageLevel { get; set; } = stageLevel;
+        public IEnumerable<Match> Matches { get; set; } = matches;
     }
 }
