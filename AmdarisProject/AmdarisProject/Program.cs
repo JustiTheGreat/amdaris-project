@@ -1,6 +1,7 @@
-﻿using AmdarisProject.models;
-using AmdarisProject.models.competition;
+﻿using AmdarisProject.models.competition;
 using AmdarisProject.models.competitor;
+using AmdarisProject.repositories;
+using AmdarisProject.utils;
 using AmdarisProject.utils.enums;
 using AmdarisProject.utils.Exceptions;
 using Match = AmdarisProject.models.Match;
@@ -17,6 +18,30 @@ Player player5 = new("Player5");
 Player player6 = new("Player6");
 Player player7 = new("Player7");
 Player player8 = new("Player8");
+
+GenericRepository<Player> playerRepository = new();
+playerRepository.Add(player1);
+playerRepository.Add(player2);
+playerRepository.Add(player3);
+playerRepository.Add(player4);
+printPlayers(playerRepository);
+playerRepository.Add(player5);
+playerRepository.Add(player6);
+playerRepository.Add(player7);
+playerRepository.Add(player8);
+printPlayers(playerRepository);
+playerRepository.Delete(player2.Id);
+playerRepository.Delete(player6.Id);
+playerRepository.Delete(player4.Id);
+playerRepository.Delete(player8.Id);
+printPlayers(playerRepository);
+Console.WriteLine(playerRepository.GetById(player3.Id).Name);
+void printPlayers(GenericRepository<Player> playersRepository)
+{
+    foreach (Player player in playersRepository.GetAll())
+        Console.Write($"{player.Name}, ");
+    Console.WriteLine();
+}
 
 TwoPlayerTeam team1 = new("Team1");
 TwoPlayerTeam team2 = new("Team2");
