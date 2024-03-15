@@ -1,9 +1,10 @@
 ﻿using AmdarisProject.models;
 using AmdarisProject.models.competition;
 using AmdarisProject.models.competitor;
+using AmdarisProject.utils;
 using AmdarisProject.utils.enums;
 using AmdarisProject.utils.Exceptions;
-using Match = AmdarisProject.models.Match;
+using System.Numerics;
 
 Game pingPong = new(3, GameType.PING_PONG, CompetitorType.PLAYER);
 Game chess = new(1, GameType.CHESS, CompetitorType.PLAYER);
@@ -36,15 +37,25 @@ Competition competition = new OneVSAllCompetition("c1", "l1", DateTime.Now, ping
 competition.Register(player1);
 competition.Register(player2);
 competition.Register(player3);
-competition.Register(player4);
+//competition.Register(player4);
 competition.StopRegistrations();
 competition.Start();
 
-foreach (Match match in competition.Matches)
-    SimulateMatch(match);
+
+while (competition.GetUnfinishedMatches().Any())
+{
+    foreach (Match match in competition.GetUnfinishedMatches())
+        SimulateMatch(match);
+}
 
 competition.End();
 Console.WriteLine($"The winner of competition {competition.Name} is competitor {competition.GetWinner().Name}");
+Console.WriteLine($"Matches played: {competition.Matches.Count()}");
+
+foreach (Competitor competitor in competition.Competitors)
+{
+    Console.WriteLine(competitor.GetRating(competition.Game.Type));
+}
 
 void SimulateMatch(Match match)
 {
@@ -55,6 +66,7 @@ void SimulateMatch(Match match)
         Competitor competitor = pointGoesToCompetitor == 0 ? match.CompetitorOne : match.CompetitorTwo;
         SimulateAddPointsToCompetitor(competitor, match);
     }
+    match.End();
 
     try
     {
@@ -65,7 +77,7 @@ void SimulateMatch(Match match)
             Console.WriteLine($"Winner: {winner.Name}");
         Console.WriteLine();
     }
-    catch (DrawGameResultException)
+    catch (DrawMatchResultException)
     {
         Console.WriteLine($"Winner: DRAW");
     }

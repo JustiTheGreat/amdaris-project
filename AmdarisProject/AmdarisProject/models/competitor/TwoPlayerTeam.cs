@@ -74,8 +74,8 @@ namespace AmdarisProject.models.competitor
 
             scoringPlayer.AddPoints(match, points);
 
-            if (match.Game.CompetitorType == CompetitorType.TWO_PLAYER_TEAM && GetPoints(match) == match.Game.WinAt)
-                match.End();
+            //if (match.Game.CompetitorType == CompetitorType.TWO_PLAYER_TEAM && GetPoints(match) == match.Game.WinAt)
+            //    match.End();
         }
 
         public override double GetRating(GameType gameType)

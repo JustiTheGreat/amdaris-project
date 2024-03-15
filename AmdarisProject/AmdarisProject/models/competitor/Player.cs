@@ -19,8 +19,10 @@ namespace AmdarisProject.models.competitor
 
         public override int GetPoints(Match match)
         {
-            if (match.Status is not MatchStatus.STARTED && match.Status is not MatchStatus.FINISHED
-                && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_ONE && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_TWO)
+            if (match.Status is not MatchStatus.STARTED 
+                && match.Status is not MatchStatus.FINISHED
+                && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_ONE 
+                && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_TWO)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Player), nameof(GetPoints), match.Status.ToString()));
 
             if (!match.ContainsCompetitor(this))
@@ -44,7 +46,8 @@ namespace AmdarisProject.models.competitor
             if (!match.ContainsCompetitor(this))
                 throw new CompetitorException(MessageFormatter.Format(nameof(Player), nameof(AddPoints), $"Player {Name} not in match!"));
 
-            if (match.GetPointsCompetitorOne() == match.Game.WinAt || match.GetPointsCompetitorOne() == match.Game.WinAt)
+            if (match.GetPointsCompetitorOne() == match.Game.WinAt 
+                || match.GetPointsCompetitorOne() == match.Game.WinAt)
                 throw new PointsException(MessageFormatter.Format(nameof(Player), nameof(AddPoints), $"{Name} already has {Points[match]} points!"));
 
             try
@@ -57,26 +60,31 @@ namespace AmdarisProject.models.competitor
             }
             Console.WriteLine($"Player {Name} scored {points} points");
 
-            if (match.Game.CompetitorType == CompetitorType.PLAYER && Points[match] == match.Game.WinAt)
-                match.End();
+            //if (match.Game.CompetitorType == CompetitorType.PLAYER && Points[match] == match.Game.WinAt)
+            //    match.End();
         }
 
         public override double GetRating(GameType gameType)
         {
-            IEnumerable<Match> matchesOfGameType = Points.Where(point => point.Key.Game.Type == gameType).Select(point => point.Key);
-            if (!matchesOfGameType.Any()) return 0;
-            int matchesOfGameTypeWon = matchesOfGameType.Where(match =>
+            IEnumerable<Match> matchesOfGameTypePlayed = Points
+                .Where(point => point.Key.Game.Type == gameType)
+                .Select(point => point.Key);
+
+            if (!matchesOfGameTypePlayed.Any()) return 0;
+
+            int matchesOfGameTypeWon = matchesOfGameTypePlayed.Where(match =>
             {
                 try
                 {
-                    return match.GetWinner()?.Equals(this) ?? false;
+                    return match.GetWinner() != null ? match.GetWinner().Equals(this) : false;
                 }
-                catch (DrawGameResultException)
+                catch (DrawMatchResultException)
                 {
                     return false;
                 }
             }).Count();
-            double rating = matchesOfGameTypeWon / matchesOfGameType.Count();
+
+            double rating = (double)matchesOfGameTypeWon / matchesOfGameTypePlayed.Count();
             return rating;
         }
     }

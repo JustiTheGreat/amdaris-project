@@ -23,7 +23,7 @@ namespace AmdarisProject.models.competition
             }
         }
 
-        protected override void CreateMatches()
+        protected override void CreateMatches(IEnumerable<Competitor> competitors)
         {
             throw new NotImplementedException();
         }

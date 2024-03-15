@@ -81,6 +81,10 @@ namespace AmdarisProject.models
 
             Status = MatchStatus.FINISHED;
             Console.WriteLine($"Competition {Competition.Name}: Match between {CompetitorOne.Name} and {CompetitorTwo.Name} has ended with score {CompetitorOne.GetPoints(this)}-{CompetitorTwo.GetPoints(this)}!");
+
+            bool allMatchesWerePlayed = !Competition.GetUnfinishedMatches().Any();
+            if (allMatchesWerePlayed)
+                Competition.CreateBonusMatches();
         }
 
         public void Cancel()
@@ -125,7 +129,7 @@ namespace AmdarisProject.models
 
         public Competitor? GetWinner()
         {
-            if (Status is MatchStatus.NOT_STARTED or MatchStatus.STARTED or MatchStatus.CANCELED)
+            if (Status is MatchStatus.NOT_STARTED or MatchStatus.STARTED or MatchStatus.CANCELED or MatchStatus.DRAW)
                 return null;
 
             if (Status is MatchStatus.SPECIAL_WIN_COMPETITOR_ONE)
@@ -135,7 +139,7 @@ namespace AmdarisProject.models
                 return CompetitorTwo;
 
             if (CompetitorOne.GetPoints(this) == CompetitorTwo.GetPoints(this))
-                throw new DrawGameResultException(MessageFormatter.Format(nameof(Match), nameof(GetPointsCompetitorTwo), Id.ToString()));
+                throw new DrawMatchResultException(MessageFormatter.Format(nameof(Match), nameof(GetPointsCompetitorTwo), Id.ToString()));
 
             return CompetitorOne.GetPoints(this) > CompetitorTwo.GetPoints(this) ? CompetitorOne : CompetitorTwo;
         }
