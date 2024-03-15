@@ -22,7 +22,7 @@ namespace AmdarisProject.models.competition
                 throw new CompetitorException(MessageFormatter.Format(nameof(Match), nameof(ContainsCompetitor), "Competitor not matching the competition type!"));
 
             return Competitors.Contains(competitor)
-                || Game.CompetitorType is CompetitorType.TWO_PLAYER_TEAM 
+                || Game.CompetitorType is CompetitorType.TWO_PLAYER_TEAM
                     && Competitors.Any(twoPlayerTeam => ((TwoPlayerTeam)twoPlayerTeam).ContainsPlayer((Player)competitor));
         }
 

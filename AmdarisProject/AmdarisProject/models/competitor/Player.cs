@@ -19,9 +19,9 @@ namespace AmdarisProject.models.competitor
 
         public override int GetPoints(Match match)
         {
-            if (match.Status is not MatchStatus.STARTED 
+            if (match.Status is not MatchStatus.STARTED
                 && match.Status is not MatchStatus.FINISHED
-                && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_ONE 
+                && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_ONE
                 && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_TWO)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Player), nameof(GetPoints), match.Status.ToString()));
 
@@ -34,7 +34,7 @@ namespace AmdarisProject.models.competitor
             }
             catch (KeyNotFoundException)
             {
-                throw new GameNotPlayedByPlayerException("");
+                throw new CompetitorException(MessageFormatter.Format(nameof(Player), nameof(GetPoints), $"Player {Name} not in match!"));
             }
         }
 
@@ -46,7 +46,7 @@ namespace AmdarisProject.models.competitor
             if (!match.ContainsCompetitor(this))
                 throw new CompetitorException(MessageFormatter.Format(nameof(Player), nameof(AddPoints), $"Player {Name} not in match!"));
 
-            if (match.GetPointsCompetitorOne() == match.Game.WinAt 
+            if (match.GetPointsCompetitorOne() == match.Game.WinAt
                 || match.GetPointsCompetitorOne() == match.Game.WinAt)
                 throw new PointsException(MessageFormatter.Format(nameof(Player), nameof(AddPoints), $"{Name} already has {Points[match]} points!"));
 

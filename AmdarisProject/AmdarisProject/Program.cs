@@ -3,8 +3,8 @@ using AmdarisProject.models.competition;
 using AmdarisProject.models.competitor;
 using AmdarisProject.utils;
 using AmdarisProject.utils.enums;
+using AmdarisProject.utils.exceptions;
 using AmdarisProject.utils.Exceptions;
-using System.Numerics;
 
 Game pingPong = new(3, GameType.PING_PONG, CompetitorType.PLAYER);
 Game chess = new(1, GameType.CHESS, CompetitorType.PLAYER);
@@ -37,9 +37,11 @@ Competition competition = new OneVSAllCompetition("c1", "l1", DateTime.Now, ping
 competition.Register(player1);
 competition.Register(player2);
 competition.Register(player3);
-//competition.Register(player4);
+competition.Register(player4);
 competition.StopRegistrations();
+Console.WriteLine();
 competition.Start();
+Console.WriteLine();
 
 
 while (competition.GetUnfinishedMatches().Any())
@@ -49,13 +51,35 @@ while (competition.GetUnfinishedMatches().Any())
 }
 
 competition.End();
+Console.WriteLine();
 Console.WriteLine($"The winner of competition {competition.Name} is competitor {competition.GetWinner().Name}");
 Console.WriteLine($"Matches played: {competition.Matches.Count()}");
 
+Console.WriteLine("Player ratings:");
 foreach (Competitor competitor in competition.Competitors)
 {
-    Console.WriteLine(competitor.GetRating(competition.Game.Type));
+    Console.WriteLine($"{competitor.Name}: {competitor.GetRating(competition.Game.Type)}");
 }
+
+#if DEBUG
+try
+{
+    Console.WriteLine();
+    player5.GetPoints(competition.Matches.ElementAt(0));
+}
+catch (IllegalStatusException)
+{
+    throw;
+}
+catch (CompetitorException)
+{
+    Console.WriteLine("Player didn't play in match");
+}
+finally
+{
+    Console.WriteLine("tried to get points for a player that didn't play in a match");
+}
+#endif
 
 void SimulateMatch(Match match)
 {
