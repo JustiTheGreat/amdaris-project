@@ -19,15 +19,19 @@ namespace AmdarisProject.models.competition
         public bool ContainsCompetitor(Competitor competitor)
         {
             if (Game.CompetitorType is CompetitorType.PLAYER && competitor is not Player)
-                throw new CompetitorException(MessageFormatter.Format(nameof(Match), nameof(ContainsCompetitor), "Competitor not matching the competition type!"));
+                throw new CompetitorException(MessageFormatter.Format(nameof(Competition), nameof(ContainsCompetitor),
+                    "Competitor not matching the competition type!"));
 
-            return Competitors.Contains(competitor)
-                || Game.CompetitorType is CompetitorType.TWO_PLAYER_TEAM 
-                    && Competitors.Any(twoPlayerTeam => ((TwoPlayerTeam)twoPlayerTeam).ContainsPlayer((Player)competitor));
+            return competitor is not null
+                && (Competitors.Contains(competitor)
+                    || Competitors.Any(c => (c as TwoPlayerTeam)?.ContainsPlayer(competitor as Player) ?? false));
         }
 
         public void Register(Competitor competitor)
         {
+            if (competitor is null)
+                throw new ArgumentNullException(MessageFormatter.Format(nameof(Competition), nameof(Register), nameof(competitor)));
+
             if (Status is not CompetitionStatus.ORGANIZING)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Competition), nameof(Register), Status.ToString()));
 
@@ -59,7 +63,9 @@ namespace AmdarisProject.models.competition
 
         public void Cancel()
         {
-            if (Status is not CompetitionStatus.ORGANIZING && Status is not CompetitionStatus.NOT_STARTED && Status is not CompetitionStatus.STARTED)
+            if (Status is not CompetitionStatus.ORGANIZING
+                && Status is not CompetitionStatus.NOT_STARTED
+                && Status is not CompetitionStatus.STARTED)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Competition), nameof(Cancel), Status.ToString()));
 
             Status = CompetitionStatus.CANCELED;
@@ -70,6 +76,7 @@ namespace AmdarisProject.models.competition
         {
             bool allMatchesEnded = Matches.Where(match => match.Status is MatchStatus.FINISHED or MatchStatus.CANCELED
                 or MatchStatus.SPECIAL_WIN_COMPETITOR_ONE or MatchStatus.SPECIAL_WIN_COMPETITOR_TWO).Count() == Matches.Count();
+
             if (!allMatchesEnded || Status is not CompetitionStatus.STARTED)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Competition), nameof(Start), Status.ToString()));
 
@@ -85,6 +92,9 @@ namespace AmdarisProject.models.competition
 
         public int GetPoints(Competitor competitor)
         {
+            if (competitor is null)
+                throw new ArgumentNullException(MessageFormatter.Format(nameof(Competition), nameof(GetPoints), nameof(competitor)));
+
             if (Status is not CompetitionStatus.STARTED
                 && Status is not CompetitionStatus.FINISHED)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Competition), nameof(Start), Status.ToString()));
@@ -96,6 +106,12 @@ namespace AmdarisProject.models.competition
 
         public int GetPoints(Match match, Competitor competitor)
         {
+            if (match is null)
+                throw new ArgumentNullException(MessageFormatter.Format(nameof(Competition), nameof(GetPoints), nameof(match)));
+
+            if (competitor is null)
+                throw new ArgumentNullException(MessageFormatter.Format(nameof(Competition), nameof(GetPoints), nameof(competitor)));
+
             if (Status is not CompetitionStatus.STARTED
                 && Status is not CompetitionStatus.FINISHED)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Competition), nameof(GetPoints), Status.ToString()));
@@ -110,20 +126,7 @@ namespace AmdarisProject.models.competition
         }
 
         public int GetWins(Competitor competitor)
-        {
-            return Matches
-                .Where(match =>
-                {
-                    try
-                    {
-                        return match.GetWinner()?.Equals(competitor) ?? false;
-                    }
-                    catch (AmdarisProjectException)
-                    {
-                        return false;
-                    }
-                }).Count();
-        }
+            => Matches.Where(match => match.GetWinner()?.Equals(competitor) ?? false).Count();
 
         public IEnumerable<KeyValuePair<Competitor, int>> GetRanking()
         {
@@ -141,9 +144,8 @@ namespace AmdarisProject.models.competition
         }
 
         public IEnumerable<Match> GetUnfinishedMatches()
-        {
-            return Matches.Where(match => match.Status is MatchStatus.NOT_STARTED or MatchStatus.STARTED);
-        }
+            => Matches.Where(match => match.Status is MatchStatus.NOT_STARTED or MatchStatus.STARTED).ToList();
+
 
         public void CreateBonusMatches()
         {
@@ -154,10 +156,7 @@ namespace AmdarisProject.models.competition
                 .Select(entry => entry.Key).ToList();
 
             if (winners.Count() > 1)
-            {
                 CreateMatches(winners);
-                //throw new ContinueCompetitionException(MessageFormatter.Format(nameof(Match), nameof(CreateBonusMatches), "CONTINUE"));
-            }
         }
     }
 }

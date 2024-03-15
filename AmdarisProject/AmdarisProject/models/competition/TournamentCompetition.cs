@@ -13,12 +13,14 @@ namespace AmdarisProject.models.competition
             int competitorNumber = Competitors.Count();
 
             if (competitorNumber < 2)
-                throw new CompetitorNumberException(MessageFormatter.Format(nameof(TournamentCompetition), nameof(CheckCompetitorNumber), Competitors.Count().ToString()));
+                throw new CompetitorNumberException(MessageFormatter.Format(nameof(TournamentCompetition), nameof(CheckCompetitorNumber),
+                    Competitors.Count().ToString()));
 
             while (competitorNumber != 1)
             {
                 if (competitorNumber % 2 == 1)
-                    throw new CompetitorNumberException(MessageFormatter.Format(nameof(TournamentCompetition), nameof(CheckCompetitorNumber), Competitors.Count().ToString()));
+                    throw new CompetitorNumberException(MessageFormatter.Format(nameof(TournamentCompetition), nameof(CheckCompetitorNumber),
+                        Competitors.Count().ToString()));
                 competitorNumber /= 2;
             }
         }

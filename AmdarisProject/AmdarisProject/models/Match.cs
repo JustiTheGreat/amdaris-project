@@ -19,15 +19,20 @@ namespace AmdarisProject.models
 
         public Match(string location, DateTime startTime, Game game, Competitor competitorOne, Competitor competitorTwo, Competition competition)
         {
-            if (game.CompetitorType is CompetitorType.PLAYER && (competitorOne is not Player || competitorTwo is not Player)
-                || game.CompetitorType is CompetitorType.TWO_PLAYER_TEAM && (competitorOne is not TwoPlayerTeam || competitorTwo is not TwoPlayerTeam))
-                throw new CompetitorException(MessageFormatter.Format(nameof(Match), nameof(Match), "Competiors not matching the competition type!"));
+            if (game.CompetitorType is CompetitorType.PLAYER
+                    && (competitorOne is not Player || competitorTwo is not Player)
+                || game.CompetitorType is CompetitorType.TWO_PLAYER_TEAM
+                    && (competitorOne is not TwoPlayerTeam || competitorTwo is not TwoPlayerTeam))
+                throw new CompetitorException(MessageFormatter.Format(nameof(Match), nameof(Match),
+                    "Competiors not matching the competition type!"));
 
             if (competitorOne.Equals(competitorTwo))
-                throw new SameCompetitorException(MessageFormatter.Format(nameof(Match), nameof(Match), competitorOne.Name));
+                throw new CompetitorException(MessageFormatter.Format(nameof(Match), nameof(Match),
+                    $"Match with id={Id} has the same competitor ({competitorOne.Name}) on both sides!"));
 
-            if (!competition.ContainsCompetitor(competitorOne) || !competition.ContainsCompetitor(competitorTwo))
-                throw new CompetitorException(MessageFormatter.Format(nameof(Match), nameof(Match), "Competior not in competition!"));
+            if (!competition.ContainsCompetitor(competitorOne)
+                || !competition.ContainsCompetitor(competitorTwo))
+                throw new CompetitorException(MessageFormatter.Format(nameof(Match), nameof(Match), "Competitor not in competition!"));
 
             Location = location;
             StartTime = startTime;
@@ -41,34 +46,26 @@ namespace AmdarisProject.models
         public bool ContainsCompetitor(Competitor competitor)
         {
             if (Game.CompetitorType is CompetitorType.PLAYER && competitor is not Player)
-                throw new CompetitorException(MessageFormatter.Format(nameof(Match), nameof(ContainsCompetitor), "Competitor not matching the competition type!"));
+                throw new CompetitorException(MessageFormatter.Format(nameof(Match), nameof(ContainsCompetitor),
+                    "Competitor not matching the competition type!"));
 
-            if (competitor is Player)
-            {
-                return CompetitorOne is not null
-                            && (CompetitorOne is Player && competitor.Equals(CompetitorOne)
-                                || CompetitorOne is TwoPlayerTeam && (CompetitorOne as TwoPlayerTeam).ContainsPlayer(competitor as Player))
-                        || CompetitorTwo is not null
-                            && (CompetitorTwo is Player && competitor.Equals(CompetitorTwo)
-                                || CompetitorTwo is TwoPlayerTeam && (CompetitorTwo as TwoPlayerTeam).ContainsPlayer(competitor as Player));
-            }
-            else
-            {
-                return CompetitorOne is not null && competitor.Equals(CompetitorOne)
-                    || CompetitorTwo is not null && competitor.Equals(CompetitorTwo);
-            }
+            return competitor.Equals(CompetitorOne)
+                || competitor.Equals(CompetitorTwo)
+                || ((CompetitorOne as TwoPlayerTeam)?.ContainsPlayer(competitor as Player) ?? false)
+                || ((CompetitorTwo as TwoPlayerTeam)?.ContainsPlayer(competitor as Player) ?? false);
         }
 
         public void Start()
         {
-            if (Competition.Status is not CompetitionStatus.STARTED || Status is not MatchStatus.NOT_STARTED)
+            if (Competition.Status is not CompetitionStatus.STARTED
+                || Status is not MatchStatus.NOT_STARTED)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Match), nameof(Start), Status.ToString()));
 
             CompetitorOne.InitializePointsForMatch(this);
             CompetitorTwo.InitializePointsForMatch(this);
 
             Status = MatchStatus.STARTED;
-            Console.WriteLine($"Competition {Competition.Name}: Match between {CompetitorOne.Name} and {CompetitorTwo.Name} has statrted!");
+            Console.WriteLine($"Competition {Competition.Name}: Match between {CompetitorOne.Name} and {CompetitorTwo.Name} has started!");
         }
 
         public void End()
@@ -129,8 +126,8 @@ namespace AmdarisProject.models
 
         public Competitor? GetWinner()
         {
-            if (Status is MatchStatus.NOT_STARTED or MatchStatus.STARTED or MatchStatus.CANCELED or MatchStatus.DRAW)
-                return null;
+            if (Status is MatchStatus.NOT_STARTED or MatchStatus.STARTED or MatchStatus.CANCELED)
+                throw new IllegalStatusException(MessageFormatter.Format(nameof(Match), nameof(GetWinner), Status.ToString()));
 
             if (Status is MatchStatus.SPECIAL_WIN_COMPETITOR_ONE)
                 return CompetitorOne;
@@ -138,10 +135,9 @@ namespace AmdarisProject.models
             if (Status is MatchStatus.SPECIAL_WIN_COMPETITOR_TWO)
                 return CompetitorTwo;
 
-            if (CompetitorOne.GetPoints(this) == CompetitorTwo.GetPoints(this))
-                throw new DrawMatchResultException(MessageFormatter.Format(nameof(Match), nameof(GetPointsCompetitorTwo), Id.ToString()));
-
-            return CompetitorOne.GetPoints(this) > CompetitorTwo.GetPoints(this) ? CompetitorOne : CompetitorTwo;
+            return CompetitorOne.GetPoints(this) == CompetitorTwo.GetPoints(this) ? null
+                : CompetitorOne.GetPoints(this) > CompetitorTwo.GetPoints(this) ? CompetitorOne
+                : CompetitorTwo;
         }
     }
 }

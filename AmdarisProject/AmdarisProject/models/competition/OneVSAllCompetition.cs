@@ -12,7 +12,8 @@ namespace AmdarisProject.models.competition
         protected override void CheckCompetitorNumber()
         {
             if (Competitors.Count() < 2)
-                throw new CompetitorNumberException(MessageFormatter.Format(nameof(OneVSAllCompetition), nameof(CheckCompetitorNumber), Competitors.Count().ToString()));
+                throw new CompetitorNumberException(MessageFormatter.Format(nameof(OneVSAllCompetition), nameof(CheckCompetitorNumber),
+                    Competitors.Count().ToString()));
         }
 
         protected override void CreateMatches(IEnumerable<Competitor> competitors)

@@ -11,6 +11,9 @@ namespace AmdarisProject.models.competitor
 
         public override void InitializePointsForMatch(Match match)
         {
+            if (match is null)
+                throw new ArgumentNullException(MessageFormatter.Format(nameof(Player), nameof(InitializePointsForMatch), nameof(match)));
+
             if (match.Status is not MatchStatus.NOT_STARTED)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Player), nameof(InitializePointsForMatch), match.Status.ToString()));
 
@@ -19,14 +22,18 @@ namespace AmdarisProject.models.competitor
 
         public override int GetPoints(Match match)
         {
-            if (match.Status is not MatchStatus.STARTED 
+            if (match is null)
+                throw new ArgumentNullException(MessageFormatter.Format(nameof(Player), nameof(GetPoints), nameof(match)));
+
+            if (match.Status is not MatchStatus.STARTED
                 && match.Status is not MatchStatus.FINISHED
-                && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_ONE 
+                && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_ONE
                 && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_TWO)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Player), nameof(GetPoints), match.Status.ToString()));
 
             if (!match.ContainsCompetitor(this))
-                throw new CompetitorException(MessageFormatter.Format(nameof(Player), nameof(GetPoints), $"Player {Name} not in match!"));
+                throw new CompetitorException(MessageFormatter.Format(nameof(Player), nameof(GetPoints),
+                    $"Player {Name} not in match!"));
 
             try
             {
@@ -34,19 +41,26 @@ namespace AmdarisProject.models.competitor
             }
             catch (KeyNotFoundException)
             {
-                throw new GameNotPlayedByPlayerException("");
+                throw new CompetitorException(MessageFormatter.Format(nameof(Player), nameof(GetPoints),
+                    $"Match not played by player {Name}!"));
             }
         }
 
         public void AddPoints(Match match, int points)
         {
+            if (match is null)
+                throw new ArgumentNullException(MessageFormatter.Format(nameof(Player), nameof(AddPoints), nameof(match)));
+
+            if (points <= 0)
+                throw new ArgumentNullException(MessageFormatter.Format(nameof(Player), nameof(AddPoints), "Bad points value!"));
+
             if (match.Status is not MatchStatus.STARTED)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Player), nameof(AddPoints), match.Status.ToString()));
 
             if (!match.ContainsCompetitor(this))
                 throw new CompetitorException(MessageFormatter.Format(nameof(Player), nameof(AddPoints), $"Player {Name} not in match!"));
 
-            if (match.GetPointsCompetitorOne() == match.Game.WinAt 
+            if (match.GetPointsCompetitorOne() == match.Game.WinAt
                 || match.GetPointsCompetitorOne() == match.Game.WinAt)
                 throw new PointsException(MessageFormatter.Format(nameof(Player), nameof(AddPoints), $"{Name} already has {Points[match]} points!"));
 
@@ -56,12 +70,10 @@ namespace AmdarisProject.models.competitor
             }
             catch (KeyNotFoundException)
             {
-                throw new PointsException(MessageFormatter.Format(nameof(Player), nameof(AddPoints), $"Player {Name} doesn't have points for match!"));
+                throw new PointsException(MessageFormatter.Format(nameof(Player), nameof(AddPoints),
+                    $"Player {Name} doesn't have points for match!"));
             }
             Console.WriteLine($"Player {Name} scored {points} points");
-
-            //if (match.Game.CompetitorType == CompetitorType.PLAYER && Points[match] == match.Game.WinAt)
-            //    match.End();
         }
 
         public override double GetRating(GameType gameType)
@@ -72,17 +84,7 @@ namespace AmdarisProject.models.competitor
 
             if (!matchesOfGameTypePlayed.Any()) return 0;
 
-            int matchesOfGameTypeWon = matchesOfGameTypePlayed.Where(match =>
-            {
-                try
-                {
-                    return match.GetWinner() != null ? match.GetWinner().Equals(this) : false;
-                }
-                catch (DrawMatchResultException)
-                {
-                    return false;
-                }
-            }).Count();
+            int matchesOfGameTypeWon = matchesOfGameTypePlayed.Where(match => match.GetWinner()?.Equals(this) ?? false).Count();
 
             double rating = (double)matchesOfGameTypeWon / matchesOfGameTypePlayed.Count();
             return rating;
