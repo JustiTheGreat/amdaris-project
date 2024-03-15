@@ -36,7 +36,10 @@ competition.Register(player1);
 competition.Register(player2);
 competition.Register(player3);
 competition.StopRegistrations();
+
+Console.WriteLine();
 competition.Start();
+Console.WriteLine();
 
 while (competition.GetUnfinishedMatches().Any())
 {
@@ -48,18 +51,17 @@ competition.End();
 Console.WriteLine($"The winner of competition {competition.Name} is competitor {competition.GetWinner().Name}");
 Console.WriteLine($"Matches played: {competition.Matches.Count()}");
 
+Console.WriteLine("Player ratings:");
 foreach (Competitor competitor in competition.Competitors)
-{
-    Console.WriteLine(competitor.GetRating(competition.Game.Type));
-}
+    Console.WriteLine($"{competitor.Name}: {competitor.GetRating(competition.Game.Type)}");
 
 void SimulateMatch(Match match)
 {
     match.Start();
-    while (match.GetPointsCompetitorOne() != match.Game.WinAt && match.GetPointsCompetitorTwo() != match.Game.WinAt)
+    while (match.GetPointsCompetitorOne() != match.Game.WinAt
+        && match.GetPointsCompetitorTwo() != match.Game.WinAt)
     {
-        int pointGoesToCompetitor = new Random().Next(2);
-        Competitor competitor = pointGoesToCompetitor == 0 ? match.CompetitorOne : match.CompetitorTwo;
+        Competitor competitor = new Random().Next(2) == 0 ? match.CompetitorOne : match.CompetitorTwo;
         SimulateAddPointsToCompetitor(competitor, match);
     }
     match.End();
@@ -70,11 +72,7 @@ void SimulateMatch(Match match)
 
 void SimulateAddPointsToCompetitor(Competitor competitor, Match match)
 {
-    Player? player = competitor as Player;
-    if (player is null)
-    {
-        int pointGoesToPlayer = new Random().Next(2);
-        player = pointGoesToPlayer == 0 ? (competitor as TwoPlayerTeam)!.PlayerOne : (competitor as TwoPlayerTeam)!.PlayerTwo;
-    }
-    player!.AddPoints(match, 1);
+    Player player = competitor as Player
+        ?? (new Random().Next(2) == 0 ? (competitor as TwoPlayerTeam)?.PlayerOne! : (competitor as TwoPlayerTeam)?.PlayerTwo!);
+    player.AddPoints(match, 1);
 }

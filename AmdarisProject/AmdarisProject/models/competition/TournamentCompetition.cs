@@ -27,6 +27,7 @@ namespace AmdarisProject.models.competition
 
         protected override void CreateMatches(IEnumerable<Competitor> competitors)
         {
+            Dictionary<Competitor, double> ratings = competitors.ToDictionary(competitor => competitor, competitor => competitor.GetRating(Game.Type));
             throw new NotImplementedException();
         }
 
