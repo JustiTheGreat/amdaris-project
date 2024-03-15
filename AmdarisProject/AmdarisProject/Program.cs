@@ -1,8 +1,14 @@
-﻿using AmdarisProject.models;
+﻿using AmdarisProject;
+using AmdarisProject.models;
 using AmdarisProject.models.competition;
 using AmdarisProject.models.competitor;
 using AmdarisProject.utils;
 using AmdarisProject.utils.enums;
+
+Print print = delegate (string? s)
+{
+    Console.WriteLine(s);
+};
 
 Game pingPong = new(3, GameType.PING_PONG, CompetitorType.PLAYER);
 Game chess = new(1, GameType.CHESS, CompetitorType.PLAYER);
@@ -45,13 +51,10 @@ while (competition.GetUnfinishedMatches().Any())
 }
 
 competition.End();
-Console.WriteLine($"The winner of competition {competition.Name} is competitor {competition.GetWinner().Name}");
-Console.WriteLine($"Matches played: {competition.Matches.Count()}");
+print($"The winner of competition {competition.Name} is competitor {competition.GetWinner().Name}");
+print($"Matches played: {competition.Matches.Count()}");
 
-foreach (Competitor competitor in competition.Competitors)
-{
-    Console.WriteLine(competitor.GetRating(competition.Game.Type));
-}
+competition.Competitors.Select(competitor=> competitor.GetRating(competition.Game.Type)).PrintEachElementOnANewLine();
 
 void SimulateMatch(Match match)
 {
@@ -64,8 +67,8 @@ void SimulateMatch(Match match)
     }
     match.End();
 
-    Console.WriteLine($"Winner: {match.GetWinner()?.Name ?? "DRAW"}");
-    Console.WriteLine();
+    print($"Winner: {match.GetWinner()?.Name ?? "DRAW"}");
+    print("");
 }
 
 void SimulateAddPointsToCompetitor(Competitor competitor, Match match)
@@ -77,4 +80,9 @@ void SimulateAddPointsToCompetitor(Competitor competitor, Match match)
         player = pointGoesToPlayer == 0 ? (competitor as TwoPlayerTeam)!.PlayerOne : (competitor as TwoPlayerTeam)!.PlayerTwo;
     }
     player!.AddPoints(match, 1);
+}
+
+namespace AmdarisProject
+{
+    public delegate void Print(string? s);
 }
