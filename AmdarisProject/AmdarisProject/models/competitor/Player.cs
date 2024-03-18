@@ -82,10 +82,14 @@ namespace AmdarisProject.models.competitor
                 .Where(point => point.Key.Game.Type == gameType)
                 .Select(point => point.Key).ToList();
 
-            if (!matchesOfGameTypePlayed.Any()) 
+            if (!matchesOfGameTypePlayed.Any())
                 return 0;
 
-            int matchesOfGameTypeWon = matchesOfGameTypePlayed.Where(match => match.GetWinner()?.Equals(this) ?? false).Count();
+            int matchesOfGameTypeWon = matchesOfGameTypePlayed
+                .Where(match => match.Game.CompetitorType is CompetitorType.PLAYER ?
+                    (match.GetWinner()?.Equals(this) ?? false)
+                    : (((match.GetWinner()) as TwoPlayerTeam)?.ContainsPlayer(this) ?? false))
+                .Count();
 
             return (double)matchesOfGameTypeWon / matchesOfGameTypePlayed.Count();
         }
