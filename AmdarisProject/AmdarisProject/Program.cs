@@ -5,6 +5,7 @@ using AmdarisProject.utils;
 using AmdarisProject.utils.enums;
 
 Game pingPong = new(3, GameType.PING_PONG, CompetitorType.PLAYER);
+Game pingPongTeam = new(3, GameType.PING_PONG, CompetitorType.TWO_PLAYER_TEAM);
 Game chess = new(1, GameType.CHESS, CompetitorType.PLAYER);
 Game fifa = new(10, GameType.FIFA, CompetitorType.PLAYER);
 
@@ -31,29 +32,46 @@ team3.SetPlayerTwo(player6);
 team4.SetPlayerOne(player7);
 team4.SetPlayerTwo(player8);
 
-Competition competition = new OneVSAllCompetition("c1", "l1", DateTime.Now, pingPong);
-competition.Register(player1);
-competition.Register(player2);
-competition.Register(player3);
-competition.StopRegistrations();
+Competition competition1 = new OneVSAllCompetition("c1", "l1", DateTime.Now, pingPong);
+competition1.Register(player1);
+competition1.Register(player2);
+competition1.Register(player3);
 
-Console.WriteLine();
-competition.Start();
-Console.WriteLine();
+Competition competition2 = new TournamentCompetition("c2", "l1", DateTime.Now, pingPong);
+competition2.Register(player1);
+competition2.Register(player2);
+competition2.Register(player3);
+competition2.Register(player4);
 
-while (competition.GetUnfinishedMatches().Any())
+Competition competition3 = new TournamentCompetition("c3", "l1", DateTime.Now, pingPongTeam);
+competition3.Register(team1);
+competition3.Register(team2);
+competition3.Register(team3);
+competition3.Register(team4);
+
+simulateCompetition(competition3);
+
+void simulateCompetition(Competition competition)
 {
-    foreach (Match match in competition.GetUnfinishedMatches())
-        SimulateMatch(match);
+    Console.WriteLine();
+    competition.StopRegistrations();
+    competition.Start();
+    Console.WriteLine();
+
+    while (competition.GetUnfinishedMatches().Any())
+    {
+        foreach (Match match in competition.GetUnfinishedMatches())
+            SimulateMatch(match);
+    }
+
+    competition.End();
+    Console.WriteLine($"The winner of competition {competition.Name} is competitor {competition.GetWinner().Name}");
+    Console.WriteLine($"Matches played: {competition.Matches.Count()}");
+
+    Console.WriteLine("Player ratings:");
+    foreach (Competitor competitor in competition.Competitors)
+        Console.WriteLine($"{competitor.Name}: {competitor.GetRating(competition.Game.Type)}");
 }
-
-competition.End();
-Console.WriteLine($"The winner of competition {competition.Name} is competitor {competition.GetWinner().Name}");
-Console.WriteLine($"Matches played: {competition.Matches.Count()}");
-
-Console.WriteLine("Player ratings:");
-foreach (Competitor competitor in competition.Competitors)
-    Console.WriteLine($"{competitor.Name}: {competitor.GetRating(competition.Game.Type)}");
 
 void SimulateMatch(Match match)
 {

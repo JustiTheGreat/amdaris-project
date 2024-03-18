@@ -80,14 +80,14 @@ namespace AmdarisProject.models.competitor
         {
             IEnumerable<Match> matchesOfGameTypePlayed = Points
                 .Where(point => point.Key.Game.Type == gameType)
-                .Select(point => point.Key);
+                .Select(point => point.Key).ToList();
 
-            if (!matchesOfGameTypePlayed.Any()) return 0;
+            if (!matchesOfGameTypePlayed.Any()) 
+                return 0;
 
             int matchesOfGameTypeWon = matchesOfGameTypePlayed.Where(match => match.GetWinner()?.Equals(this) ?? false).Count();
 
-            double rating = (double)matchesOfGameTypeWon / matchesOfGameTypePlayed.Count();
-            return rating;
+            return (double)matchesOfGameTypeWon / matchesOfGameTypePlayed.Count();
         }
     }
 }

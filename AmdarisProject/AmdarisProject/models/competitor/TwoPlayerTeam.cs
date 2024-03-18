@@ -107,7 +107,7 @@ namespace AmdarisProject.models.competitor
             if (PlayerOne is null || PlayerTwo is null)
                 throw new NullReferenceException(MessageFormatter.Format(nameof(TwoPlayerTeam), nameof(GetRating), Name));
 
-            return (PlayerOne.GetRating(gameType) + PlayerTwo.GetRating(gameType)) / 2;
+            return (double)(PlayerOne.GetRating(gameType) + PlayerTwo.GetRating(gameType)) / 2;
         }
     }
 }
