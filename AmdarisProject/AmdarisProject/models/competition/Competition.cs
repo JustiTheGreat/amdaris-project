@@ -18,13 +18,26 @@ namespace AmdarisProject.models.competition
 
         public bool ContainsCompetitor(Competitor competitor)
         {
-            if (Game.CompetitorType is CompetitorType.PLAYER && competitor is not Player)
-                throw new CompetitorException(MessageFormatter.Format(nameof(Competition), nameof(ContainsCompetitor),
-                    "Competitor not matching the competition type!"));
+            bool success = true;
+            try
+            {
+                if (Game.CompetitorType is CompetitorType.PLAYER && competitor is not Player)
+                    throw new CompetitorException(MessageFormatter.Format(nameof(Competition), nameof(ContainsCompetitor),
+                        "Competitor not matching the competition type!"));
 
-            return competitor is not null
-                && (Competitors.Contains(competitor)
-                    || Competitors.Any(c => (c as TwoPlayerTeam)?.ContainsPlayer(competitor as Player) ?? false));
+                return competitor is not null
+                    && (Competitors.Contains(competitor)
+                        || Competitors.Any(c => (c as TwoPlayerTeam)?.ContainsPlayer(competitor as Player) ?? false));
+            }
+            catch (Exception)
+            {
+                success = false;
+                throw;
+            }
+            finally
+            {
+                Logger.Log(nameof(ContainsCompetitor), success);
+            }
         }
 
         public void Register(Competitor competitor)
@@ -125,7 +138,7 @@ namespace AmdarisProject.models.competition
             return competitor.GetPoints(match);
         }
 
-        public int GetWins(Competitor competitor)
+        private int GetWins(Competitor competitor)
             => Matches.Where(match => match.GetWinner()?.Equals(competitor) ?? false).Count();
 
         public IEnumerable<KeyValuePair<Competitor, int>> GetRanking()

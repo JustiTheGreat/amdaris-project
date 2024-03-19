@@ -3,6 +3,7 @@ using AmdarisProject.models.competition;
 using AmdarisProject.models.competitor;
 using AmdarisProject.utils;
 using AmdarisProject.utils.enums;
+using System.Reflection;
 
 Game pingPong = new(3, GameType.PING_PONG, CompetitorType.PLAYER);
 Game pingPongTeam = new(3, GameType.PING_PONG, CompetitorType.TWO_PLAYER_TEAM);
@@ -93,4 +94,30 @@ void SimulateAddPointsToCompetitor(Competitor competitor, Match match)
     Player player = competitor as Player
         ?? (new Random().Next(2) == 0 ? (competitor as TwoPlayerTeam)?.PlayerOne! : (competitor as TwoPlayerTeam)?.PlayerTwo!);
     player.AddPoints(match, 1);
+}
+
+string methodName = "ContainsCompetitor";
+Console.WriteLine($"\nToday, the method {methodName} was called {CountMethdoInvocations(methodName)} times!");
+
+int CountMethdoInvocations(string methodName)
+{
+    try
+    {
+        int methodInvocationCount = 0;
+        using FileStream fileStream = File.Open(Logger.FileName, FileMode.Open);
+        using StreamReader streamReader = new(fileStream);
+
+        while (streamReader.Peek() is not -1)
+        {
+            string line = streamReader.ReadLineAsync().Result!;
+            if(line.StartsWith(methodName))
+                methodInvocationCount++;
+        }
+        return methodInvocationCount;
+    }
+    catch (FileNotFoundException)
+    {
+        Console.WriteLine($"File {Logger.FileName} not found!");
+        return -1;
+    }
 }
