@@ -6,7 +6,7 @@ using AmdarisProject.utils.Exceptions;
 
 namespace AmdarisProject.models.competition
 {
-    public class OneVSAllCompetition(string name, string location, DateTime startTime, Game game)
+    public class OneVSAllCompetition(string name, string location, DateTime startTime, GameRules game)
         : Competition(name, location, startTime, game)
     {
         protected override void CheckCompetitorNumber()
@@ -19,8 +19,13 @@ namespace AmdarisProject.models.competition
         protected override void CreateMatches(IEnumerable<Competitor> competitors)
         {
             for (int i = 0; i < competitors.Count(); i++)
+            {
                 for (int j = i + 1; j < competitors.Count(); j++)
-                    Matches = Matches.Append(new Match(Location, DateTime.Now, Game, competitors.ElementAt(i), competitors.ElementAt(j), this));
+                {
+                    Match match = CreateMatch(competitors.ElementAt(i), competitors.ElementAt(j));
+                    Matches.Add(match);
+                }
+            }
         }
 
         public override Competitor GetWinner()

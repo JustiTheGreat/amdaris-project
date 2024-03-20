@@ -1,7 +1,6 @@
 ﻿namespace AmdarisProject.utils.Exceptions
 {
-    public class AmdarisProjectException : Exception
+    public class AmdarisProjectException(string message) : Exception(message)
     {
-        protected AmdarisProjectException(string message) : base(message) { }
     }
 }

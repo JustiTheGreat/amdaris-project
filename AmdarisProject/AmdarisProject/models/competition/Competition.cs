@@ -6,25 +6,25 @@ using AmdarisProject.utils.Exceptions;
 
 namespace AmdarisProject.models.competition
 {
-    public abstract class Competition(string name, string location, DateTime startTime, Game game) : Model
+    public abstract class Competition(string name, string location, DateTime startTime, GameRules game) : Model
     {
         public string Name { get; set; } = name;
         public string Location { get; set; } = location;
         public DateTime StartTime { get; set; } = startTime;
-        public Game Game { get; set; } = game;
+        public GameRules GameRules { get; set; } = game;
         public CompetitionStatus Status { get; set; } = CompetitionStatus.ORGANIZING;
         public IEnumerable<Competitor> Competitors { get; set; } = [];
-        public IEnumerable<Match> Matches { get; set; } = [];
+        public List<Match> Matches { get; set; } = [];
 
         public bool ContainsCompetitor(Competitor competitor)
         {
-            if (Game.CompetitorType is CompetitorType.PLAYER && competitor is not Player)
+            if (GameRules.CompetitorType is CompetitorType.PLAYER && competitor is not Player)
                 throw new CompetitorException(MessageFormatter.Format(nameof(Competition), nameof(ContainsCompetitor),
                     "Competitor not matching the competition type!"));
 
             return competitor is not null
                 && (Competitors.Contains(competitor)
-                    || Competitors.Any(c => (c as TwoPlayerTeam)?.ContainsPlayer(competitor as Player) ?? false));
+                    || Competitors.Any(c => (c as Team)?.ContainsPlayer(competitor as Player) ?? false));
         }
 
         public void Register(Competitor competitor)
@@ -75,7 +75,7 @@ namespace AmdarisProject.models.competition
         public void End()
         {
             bool allMatchesEnded = Matches.Where(match => match.Status is MatchStatus.FINISHED or MatchStatus.CANCELED
-                or MatchStatus.SPECIAL_WIN_COMPETITOR_ONE or MatchStatus.SPECIAL_WIN_COMPETITOR_TWO).Count() == Matches.Count();
+                or MatchStatus.SPECIAL_WIN_COMPETITOR_ONE or MatchStatus.SPECIAL_WIN_COMPETITOR_TWO).Count() == Matches.Count;
 
             if (!allMatchesEnded || Status is not CompetitionStatus.STARTED)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Competition), nameof(Start), Status.ToString()));
@@ -157,6 +157,30 @@ namespace AmdarisProject.models.competition
 
             if (winners.Count() > 1)
                 CreateMatches(winners);
+        }
+
+        protected Match CreateMatch(Competitor competitorOne, Competitor competitorTwo)
+        {
+            DateTime? matchStartTime = null;
+
+            if (GameRules.DurationInSeconds is not null)
+            {
+                if (Matches.Count == 0)
+                {
+                    matchStartTime = DateTime.Now;
+                }
+                else
+                {
+                    DateTime lastStartTime = Matches.MaxBy(match => match.StartTime)?.StartTime
+                        ?? throw new AmdarisProjectException(MessageFormatter.Format(nameof(Competition),
+                            nameof(CreateMatch), "Null start time for a match!"));
+
+                    matchStartTime = lastStartTime.AddSeconds((double)(GameRules.DurationInSeconds! + GameRules.BreakInSeconds));
+                }
+            }
+
+            Match match = new(Location, matchStartTime, competitorOne, competitorTwo, this);
+            return match;
         }
     }
 }

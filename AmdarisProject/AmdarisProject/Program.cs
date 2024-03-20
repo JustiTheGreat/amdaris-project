@@ -4,10 +4,12 @@ using AmdarisProject.models.competitor;
 using AmdarisProject.utils;
 using AmdarisProject.utils.enums;
 
-Game pingPong = new(3, GameType.PING_PONG, CompetitorType.PLAYER);
-Game pingPongTeam = new(3, GameType.PING_PONG, CompetitorType.TWO_PLAYER_TEAM);
-Game chess = new(1, GameType.CHESS, CompetitorType.PLAYER);
-Game fifa = new(10, GameType.FIFA, CompetitorType.PLAYER);
+int myTeamSize = 2;
+
+GameRules pingPong = new(3, null, GameType.PING_PONG);
+GameRules pingPongTeam = new(3, null, GameType.PING_PONG, myTeamSize);
+GameRules chess = new(1, null, GameType.CHESS);
+GameRules fifa = new(10, null, GameType.FIFA);
 
 Player player1 = new("Player1");
 Player player2 = new("Player2");
@@ -18,38 +20,45 @@ Player player6 = new("Player6");
 Player player7 = new("Player7");
 Player player8 = new("Player8");
 
-TwoPlayerTeam team1 = new("Team1");
-TwoPlayerTeam team2 = new("Team2");
-TwoPlayerTeam team3 = new("Team3");
-TwoPlayerTeam team4 = new("Team4");
+Team team1 = new("Team1", myTeamSize);
+Team team2 = new("Team2", myTeamSize);
+Team team3 = new("Team3", myTeamSize);
+Team team4 = new("Team4", myTeamSize);
 
-team1.SetPlayerOne(player1);
-team1.SetPlayerTwo(player2);
-team2.SetPlayerOne(player3);
-team2.SetPlayerTwo(player4);
-team3.SetPlayerOne(player5);
-team3.SetPlayerTwo(player6);
-team4.SetPlayerOne(player7);
-team4.SetPlayerTwo(player8);
+team1.AddPlayer(player1);
+team1.AddPlayer(player2);
+team2.AddPlayer(player3);
+team2.AddPlayer(player4);
+team3.AddPlayer(player5);
+team3.AddPlayer(player6);
+team4.AddPlayer(player7);
+team4.AddPlayer(player8);
 
-Competition competition1 = new OneVSAllCompetition("c1", "l1", DateTime.Now, pingPong);
+string location = "Amdaris";
+
+Competition competition1 = new OneVSAllCompetition("c1", location, DateTime.Now, pingPong);
 competition1.Register(player1);
 competition1.Register(player2);
 competition1.Register(player3);
 
-Competition competition2 = new TournamentCompetition("c2", "l1", DateTime.Now, pingPong);
+Competition competition2 = new OneVSAllCompetition("c2", location, DateTime.Now, pingPongTeam);
 competition2.Register(player1);
 competition2.Register(player2);
 competition2.Register(player3);
-competition2.Register(player4);
 
-Competition competition3 = new TournamentCompetition("c3", "l1", DateTime.Now, pingPongTeam);
-competition3.Register(team1);
-competition3.Register(team2);
-competition3.Register(team3);
-competition3.Register(team4);
+Competition competition3 = new TournamentCompetition("c3", location, DateTime.Now, pingPong);
+competition3.Register(player1);
+competition3.Register(player2);
+competition3.Register(player3);
+competition3.Register(player4);
 
-simulateCompetition(competition3);
+Competition competition4 = new TournamentCompetition("c4", location, DateTime.Now, pingPongTeam);
+competition4.Register(team1);
+competition4.Register(team2);
+competition4.Register(team3);
+competition4.Register(team4);
+
+simulateCompetition(competition4);
 
 void simulateCompetition(Competition competition)
 {
@@ -70,7 +79,7 @@ void simulateCompetition(Competition competition)
 
     Console.WriteLine("Player ratings:");
     foreach (Competitor competitor in competition.Competitors)
-        Console.WriteLine($"{competitor.Name}: {competitor.GetRating(competition.Game.Type)}");
+        Console.WriteLine($"{competitor.Name}: {competitor.GetRating(competition.GameRules.Type)}");
 }
 
 void SimulateMatch(Match match)
@@ -91,6 +100,6 @@ void SimulateMatch(Match match)
 void SimulateAddPointsToCompetitor(Competitor competitor, Match match)
 {
     Player player = competitor as Player
-        ?? (new Random().Next(2) == 0 ? (competitor as TwoPlayerTeam)?.PlayerOne! : (competitor as TwoPlayerTeam)?.PlayerTwo!);
+        ?? (competitor as Team)?.Players.ElementAt(new Random().Next(myTeamSize))!;
     player.AddPoints(match, 1);
 }

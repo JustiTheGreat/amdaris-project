@@ -10,19 +10,18 @@ namespace AmdarisProject.models
     public class Match : Model
     {
         public string Location { get; set; }
-        public DateTime StartTime { get; set; }
+        public DateTime? StartTime { get; set; }
         public Competitor CompetitorOne { get; set; }
         public Competitor CompetitorTwo { get; set; }
-        public Game Game { get; set; }
         public MatchStatus Status { get; set; }
         public Competition Competition { get; set; }
 
-        public Match(string location, DateTime startTime, Game game, Competitor competitorOne, Competitor competitorTwo, Competition competition)
+        public Match(string location, DateTime? startTime, Competitor competitorOne, Competitor competitorTwo, Competition competition)
         {
-            if (game.CompetitorType is CompetitorType.PLAYER
+            if (competition.GameRules.CompetitorType is CompetitorType.PLAYER
                     && (competitorOne is not Player || competitorTwo is not Player)
-                || game.CompetitorType is CompetitorType.TWO_PLAYER_TEAM
-                    && (competitorOne is not TwoPlayerTeam || competitorTwo is not TwoPlayerTeam))
+                || competition.GameRules.CompetitorType is CompetitorType.TEAM
+                    && (competitorOne is not Team || competitorTwo is not Team))
                 throw new CompetitorException(MessageFormatter.Format(nameof(Match), nameof(Match),
                     "Competiors not matching the competition type!"));
 
@@ -32,11 +31,10 @@ namespace AmdarisProject.models
 
             if (!competition.ContainsCompetitor(competitorOne)
                 || !competition.ContainsCompetitor(competitorTwo))
-                throw new CompetitorException(MessageFormatter.Format(nameof(Match), nameof(Match), "Competitor not in competition!"));
+                throw new CompetitorException(MessageFormatter.Format(nameof(Match), nameof(Match), "Competitor registered to competition!"));
 
             Location = location;
             StartTime = startTime;
-            Game = game;
             CompetitorOne = competitorOne;
             CompetitorTwo = competitorTwo;
             Competition = competition;
@@ -44,22 +42,36 @@ namespace AmdarisProject.models
         }
 
         public bool ContainsCompetitor(Competitor competitor)
-        {
-            if (Game.CompetitorType is CompetitorType.PLAYER && competitor is not Player)
-                throw new CompetitorException(MessageFormatter.Format(nameof(Match), nameof(ContainsCompetitor),
-                    "Competitor not matching the competition type!"));
-
-            return competitor.Equals(CompetitorOne)
+            => competitor.Equals(CompetitorOne)
                 || competitor.Equals(CompetitorTwo)
-                || ((CompetitorOne as TwoPlayerTeam)?.ContainsPlayer(competitor as Player) ?? false)
-                || ((CompetitorTwo as TwoPlayerTeam)?.ContainsPlayer(competitor as Player) ?? false);
-        }
+                || competitor is Player player
+                    && (((CompetitorOne as Team)?.ContainsPlayer(player) ?? false)
+                        || ((CompetitorTwo as Team)?.ContainsPlayer(player) ?? false));
 
         public void Start()
         {
-            if (Competition.Status is not CompetitionStatus.STARTED
-                || Status is not MatchStatus.NOT_STARTED)
+            if (Competition.Status is not CompetitionStatus.STARTED)
+                throw new IllegalStatusException(MessageFormatter.Format(nameof(Match), nameof(Start), Competition.Status.ToString()));
+
+            if (Status is not MatchStatus.NOT_STARTED)
                 throw new IllegalStatusException(MessageFormatter.Format(nameof(Match), nameof(Start), Status.ToString()));
+
+            DateTime now = DateTime.Now;
+            bool lateStart = now > StartTime;
+            StartTime = now;
+
+            //extract to method
+            if (lateStart)
+            {
+                int i = 0;
+                Competition.Matches
+                    .Where(match => match.Status is MatchStatus.NOT_STARTED)
+                    .OrderBy(match => match.StartTime)
+                    .ToList()
+                    .ForEach(match => match.StartTime = now.AddSeconds(
+                        (double)(++i * (Competition.GameRules.DurationInSeconds! + Competition.GameRules.BreakInSeconds)))
+                    );
+            }
 
             CompetitorOne.InitializePointsForMatch(this);
             CompetitorTwo.InitializePointsForMatch(this);

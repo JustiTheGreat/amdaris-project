@@ -6,7 +6,7 @@ using AmdarisProject.utils.Exceptions;
 
 namespace AmdarisProject.models.competition
 {
-    public class TournamentCompetition(string name, string location, DateTime startTime, Game game)
+    public class TournamentCompetition(string name, string location, DateTime startTime, GameRules game)
         : Competition(name, location, startTime, game)
     {
         public IEnumerable<Stage> Stages { get; set; } = [];
@@ -31,15 +31,15 @@ namespace AmdarisProject.models.competition
         protected override void CreateMatches(IEnumerable<Competitor> competitors)
         {
             IEnumerable<KeyValuePair<Competitor, double>> competitorsByRating = competitors
-                .ToDictionary(competitor => competitor, competitor => competitor.GetRating(Game.Type))
+                .ToDictionary(competitor => competitor, competitor => competitor.GetRating(GameRules.Type))
                 .OrderByDescending(entry => entry.Value).ToList();
 
-            IEnumerable<Match> stageMatches = [];
+            List<Match> stageMatches = [];
             for (int i = 0; i < competitors.Count(); i += 2)
             {
-                Match match = new(Location, DateTime.Now, Game, competitors.ElementAt(i), competitors.ElementAt(i + 1), this);
-                stageMatches = stageMatches.Append(match);
-                Matches = Matches.Append(match);
+                Match match = CreateMatch(competitors.ElementAt(i), competitors.ElementAt(i + 1));
+                stageMatches.Add(match);
+                Matches.Add(match);
             }
 
             Stage stage = new(stageMatches);

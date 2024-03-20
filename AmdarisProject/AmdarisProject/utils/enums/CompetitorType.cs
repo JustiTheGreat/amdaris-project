@@ -3,6 +3,6 @@
     public enum CompetitorType
     {
         PLAYER,
-        TWO_PLAYER_TEAM
+        TEAM
     }
 }

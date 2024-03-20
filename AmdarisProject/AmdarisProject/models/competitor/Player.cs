@@ -88,7 +88,7 @@ namespace AmdarisProject.models.competitor
             int matchesOfGameTypeWon = matchesOfGameTypePlayed
                 .Where(match => match.Game.CompetitorType is CompetitorType.PLAYER ?
                     (match.GetWinner()?.Equals(this) ?? false)
-                    : (((match.GetWinner()) as TwoPlayerTeam)?.ContainsPlayer(this) ?? false))
+                    : (((match.GetWinner()) as Team)?.ContainsPlayer(this) ?? false))
                 .Count();
 
             return (double)matchesOfGameTypeWon / matchesOfGameTypePlayed.Count();
