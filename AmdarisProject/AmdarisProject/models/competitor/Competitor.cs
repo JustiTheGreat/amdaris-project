@@ -1,15 +1,13 @@
-﻿using AmdarisProject.utils.enums;
+﻿using AmdarisProject.models.competition;
 
 namespace AmdarisProject.models.competitor
 {
-    public abstract class Competitor(string name) : Model
+    public abstract class Competitor(string name, List<Match> matches, List<Competition> competitions) : Model
     {
         public string Name { get; set; } = name;
 
-        public abstract int GetPoints(Match match);
+        public List<Match> Matches { get; set; } = matches;
 
-        public abstract void InitializePointsForMatch(Match match);
-
-        public abstract double GetRating(GameType gameType);
+        public List<Competition> Competitions { get; set; } = competitions;
     }
 }

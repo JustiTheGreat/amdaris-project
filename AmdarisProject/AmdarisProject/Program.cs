@@ -1,105 +1,148 @@
-﻿using AmdarisProject.models;
+﻿using AmdarisProject;
+using AmdarisProject.handlers.competition;
+using AmdarisProject.handlers.competitor;
+using AmdarisProject.handlers.point;
+using AmdarisProject.models;
 using AmdarisProject.models.competition;
 using AmdarisProject.models.competitor;
+using AmdarisProject.repositories;
+using AmdarisProject.repositories.abstractions;
 using AmdarisProject.utils;
 using AmdarisProject.utils.enums;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
-int myTeamSize = 2;
+ServiceProvider serviceProvider = new ServiceCollection()
+    .AddSingleton<ICompetitionRepository, CompetitionRepository>()
+    .AddSingleton<ICompetitorRepository, CompetitorRepository>()
+    .AddSingleton<IMatchRepository, MatchRepository>()
+    .AddSingleton<IPointRepository, PointRepository>()
+    .AddSingleton<IStageRepository, StageRepository>()
+    .AddMediatR(configuration => configuration.RegisterServicesFromAssemblies(
+        typeof(ICompetitionRepository).Assembly,
+        typeof(ICompetitorRepository).Assembly,
+        typeof(IMatchRepository).Assembly,
+        typeof(IPointRepository).Assembly,
+        typeof(IStageRepository).Assembly
+    ))
+    .BuildServiceProvider();
+IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
 
-GameRules pingPong = new(3, null, GameType.PING_PONG);
-GameRules pingPongTeam = new(3, null, GameType.PING_PONG, myTeamSize);
-GameRules chess = new(1, null, GameType.CHESS);
-GameRules fifa = new(10, null, GameType.FIFA);
+ushort myTeamSize = 2;
 
-Player player1 = new("Player1");
-Player player2 = new("Player2");
-Player player3 = new("Player3");
-Player player4 = new("Player4");
-Player player5 = new("Player5");
-Player player6 = new("Player6");
-Player player7 = new("Player7");
-Player player8 = new("Player8");
+GameRules pingPong = new(3, null, null, GameType.PING_PONG);
+GameRules pingPongTeam = new(3, null, null, GameType.PING_PONG, myTeamSize);
+GameRules pingPongTeamTimed = new(null, 5, 1, GameType.PING_PONG, myTeamSize);
+GameRules chess = new(1, null, null, GameType.CHESS);
+GameRules fifa = new(10, null, null, GameType.FIFA);
 
-Team team1 = new("Team1", myTeamSize);
-Team team2 = new("Team2", myTeamSize);
-Team team3 = new("Team3", myTeamSize);
-Team team4 = new("Team4", myTeamSize);
+ulong player1Id = mediator.Send(new CreatePlayer("Player1")).Result.Id;
+ulong player2Id = mediator.Send(new CreatePlayer("Player2")).Result.Id;
+ulong player3Id = mediator.Send(new CreatePlayer("Player3")).Result.Id;
+ulong player4Id = mediator.Send(new CreatePlayer("Player4")).Result.Id;
+ulong player5Id = mediator.Send(new CreatePlayer("Player5")).Result.Id;
+ulong player6Id = mediator.Send(new CreatePlayer("Player6")).Result.Id;
+ulong player7Id = mediator.Send(new CreatePlayer("Player7")).Result.Id;
+ulong player8Id = mediator.Send(new CreatePlayer("Player8")).Result.Id;
 
-team1.AddPlayer(player1);
-team1.AddPlayer(player2);
-team2.AddPlayer(player3);
-team2.AddPlayer(player4);
-team3.AddPlayer(player5);
-team3.AddPlayer(player6);
-team4.AddPlayer(player7);
-team4.AddPlayer(player8);
+ulong team1Id = mediator.Send(new CreateTeam("Team1", myTeamSize)).Result.Id;
+ulong team2Id = mediator.Send(new CreateTeam("Team2", myTeamSize)).Result.Id;
+ulong team3Id = mediator.Send(new CreateTeam("Team3", myTeamSize)).Result.Id;
+ulong team4Id = mediator.Send(new CreateTeam("Team4", myTeamSize)).Result.Id;
+
+await mediator.Send(new AddPlayerToTeam(player1Id, team1Id));
+await mediator.Send(new AddPlayerToTeam(player2Id, team1Id));
+await mediator.Send(new AddPlayerToTeam(player3Id, team2Id));
+await mediator.Send(new AddPlayerToTeam(player4Id, team2Id));
+await mediator.Send(new AddPlayerToTeam(player5Id, team3Id));
+await mediator.Send(new AddPlayerToTeam(player6Id, team3Id));
+await mediator.Send(new AddPlayerToTeam(player7Id, team4Id));
+await mediator.Send(new AddPlayerToTeam(player8Id, team4Id));
 
 string location = "Amdaris";
 
-Competition competition1 = new OneVSAllCompetition("c1", location, DateTime.Now, pingPong);
-competition1.Register(player1);
-competition1.Register(player2);
-competition1.Register(player3);
+ulong competition1Id = mediator.Send(new CreateOneVSAllCompetition("c1", location, DateTime.Now, pingPong)).Result.Id;
+ulong competition2Id = mediator.Send(new CreateOneVSAllCompetition("c2", location, DateTime.Now, pingPongTeam)).Result.Id;
+ulong competition3Id = mediator.Send(new CreateTournamentCompetition("c3", location, DateTime.Now, pingPong)).Result.Id;
+ulong competition4Id = mediator.Send(new CreateTournamentCompetition("c4", location, DateTime.Now, pingPongTeam)).Result.Id;
+ulong competition5Id = mediator.Send(new CreateTournamentCompetition("c5", location, DateTime.Now, pingPongTeamTimed)).Result.Id;
 
-Competition competition2 = new OneVSAllCompetition("c2", location, DateTime.Now, pingPongTeam);
-competition2.Register(player1);
-competition2.Register(player2);
-competition2.Register(player3);
+await mediator.Send(new AddCompetitorToCompetition(player1Id, competition1Id));
+await mediator.Send(new AddCompetitorToCompetition(player2Id, competition1Id));
+await mediator.Send(new AddCompetitorToCompetition(player3Id, competition1Id));
 
-Competition competition3 = new TournamentCompetition("c3", location, DateTime.Now, pingPong);
-competition3.Register(player1);
-competition3.Register(player2);
-competition3.Register(player3);
-competition3.Register(player4);
+await mediator.Send(new AddCompetitorToCompetition(team1Id, competition2Id));
+await mediator.Send(new AddCompetitorToCompetition(team2Id, competition2Id));
+await mediator.Send(new AddCompetitorToCompetition(team3Id, competition2Id));
 
-Competition competition4 = new TournamentCompetition("c4", location, DateTime.Now, pingPongTeam);
-competition4.Register(team1);
-competition4.Register(team2);
-competition4.Register(team3);
-competition4.Register(team4);
+await mediator.Send(new AddCompetitorToCompetition(player1Id, competition3Id));
+await mediator.Send(new AddCompetitorToCompetition(player2Id, competition3Id));
+await mediator.Send(new AddCompetitorToCompetition(player3Id, competition3Id));
+await mediator.Send(new AddCompetitorToCompetition(player4Id, competition3Id));
 
-simulateCompetition(competition4);
+await mediator.Send(new AddCompetitorToCompetition(team1Id, competition4Id));
+await mediator.Send(new AddCompetitorToCompetition(team2Id, competition4Id));
+await mediator.Send(new AddCompetitorToCompetition(team3Id, competition4Id));
+await mediator.Send(new AddCompetitorToCompetition(team4Id, competition4Id));
 
-void simulateCompetition(Competition competition)
-{
-    Console.WriteLine();
-    competition.StopRegistrations();
-    competition.Start();
-    Console.WriteLine();
+await mediator.Send(new AddCompetitorToCompetition(team1Id, competition5Id));
+await mediator.Send(new AddCompetitorToCompetition(team2Id, competition5Id));
+await mediator.Send(new AddCompetitorToCompetition(team3Id, competition5Id));
+await mediator.Send(new AddCompetitorToCompetition(team4Id, competition5Id));
 
-    while (competition.GetUnfinishedMatches().Any())
-    {
-        foreach (Match match in competition.GetUnfinishedMatches())
-            SimulateMatch(match);
-    }
+ulong competitionToTestId = competition1Id;
+//AmdarisProjectTimer.AddCompetitionToSupervise(competitionToTest);
+//AmdarisProjectTimer.SetTimer();
 
-    competition.End();
-    Console.WriteLine($"The winner of competition {competition.Name} is competitor {competition.GetWinner().Name}");
-    Console.WriteLine($"Matches played: {competition.Matches.Count()}");
+//simulateCompetition(competitionToTest);
 
-    Console.WriteLine("Player ratings:");
-    foreach (Competitor competitor in competition.Competitors)
-        Console.WriteLine($"{competitor.Name}: {competitor.GetRating(competition.GameRules.Type)}");
-}
+//Console.ReadLine();
 
-void SimulateMatch(Match match)
-{
-    match.Start();
-    while (match.GetPointsCompetitorOne() != match.Game.WinAt
-        && match.GetPointsCompetitorTwo() != match.Game.WinAt)
-    {
-        Competitor competitor = new Random().Next(2) == 0 ? match.CompetitorOne : match.CompetitorTwo;
-        SimulateAddPointsToCompetitor(competitor, match);
-    }
-    match.End();
+//async void simulateCompetition(ulong competitionId)
+//{
+//    Console.WriteLine();
+//    await mediator.Send(new StopCompetitionRegistration(competitionId));
+//    await mediator.Send(new StartCompetition(competitionId));
+//    Console.WriteLine();
 
-    Console.WriteLine($"Winner: {match.GetWinner()?.Name ?? "DRAW"}");
-    Console.WriteLine();
-}
+//    while (competition.GetUnfinishedMatches().Any())
+//    {
+//        foreach (Match match in competition.GetUnfinishedMatches())
+//            SimulateMatch(match);
+//    }
 
-void SimulateAddPointsToCompetitor(Competitor competitor, Match match)
-{
-    Player player = competitor as Player
-        ?? (competitor as Team)?.Players.ElementAt(new Random().Next(myTeamSize))!;
-    player.AddPoints(match, 1);
-}
+//    //while (competition.GetUnfinishedMatches().Any()) ;
+//    await mediator.Send(new EndCompetition(competitionId));
+
+//    Console.WriteLine($"The winner of competition {competition.Name} is competitor {competition.GetWinner().Name}!");
+//    Console.WriteLine($"Matches played: {competition.Matches.Count}");
+//    competitionToTest.Matches.ForEach(match =>
+//        Console.WriteLine($"{match.StartTime}-{match.EndTime}; {match.GetPointsCompetitorOne()}-{match.GetPointsCompetitorTwo()}"));
+
+//    Console.WriteLine();
+
+//    Console.WriteLine("Player ratings:");
+//    foreach (Competitor competitor in competition.Competitors)
+//        Console.WriteLine($"{competitor.Name}: {competitor.GetRating(competition.GameRules.Type)}");
+//}
+
+//void SimulateMatch(Match match)
+//{
+//    match.Start();
+//    while (match.Status is not MatchStatus.FINISHED)
+//    {
+//        Competitor competitor = new Random().Next(2) == 0 ? match.CompetitorOne : match.CompetitorTwo;
+//        SimulateAddPointsToCompetitor(competitor, match);
+//    }
+
+//    Console.WriteLine($"Winner: {match.GetWinner()?.Name ?? "DRAW"}");
+//    Console.WriteLine();
+//}
+
+//void SimulateAddPointsToCompetitor(Competitor competitor, Match match)
+//{
+//    Player player = competitor as Player
+//        ?? (competitor as Team)?.Players.ElementAt(new Random().Next(myTeamSize))!;
+//    mediator.Send(new AddPointsToPoint(player));
+//    player.AddPoints(match, 1);
+//}

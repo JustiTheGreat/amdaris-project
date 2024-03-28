@@ -1,42 +1,35 @@
 ﻿using AmdarisProject.models;
-using AmdarisProject.utils;
+using AmdarisProject.repositories.abstractions;
+using AmdarisProject.utils.Exceptions;
 
 namespace AmdarisProject.repositories
 {
-    public class GenericRepository<T> where T : Model
+    public abstract class GenericRepository<T> : IGenericRepository<T> where T : Model
     {
-        private readonly List<T> _dataSet = [];
+        protected readonly List<T> _dataSet = [];
 
-        public T GetById(int id)
+        public T Create(T item)
         {
-            return _dataSet.First(item => item.Id == id)
-                ?? throw new NullReferenceException(MessageFormatter.Format(nameof(GenericRepository<T>), nameof(GetById), "not found"));
+            if (item is null)
+                throw new APArgumentException(nameof(GenericRepository<T>), nameof(Create), nameof(item));
 
+            _dataSet.Add(item);
+            return GetById(item.Id);
         }
+
+        public T GetById(ulong id)
+            => _dataSet.First(item => item.Id == id)
+                ?? throw new APNotFoundException(nameof(GenericRepository<T>), nameof(GetById), nameof(T));
+
+        public IEnumerable<T> GetByIds(IEnumerable<ulong> ids)
+            => ids.Select(GetById).ToList();
 
         public IEnumerable<T> GetAll()
-        {
-            return _dataSet;
-        }
+            => _dataSet;
 
-        public void Add(T item)
-        {
-            item = item
-                ?? throw new ArgumentNullException(MessageFormatter.Format(nameof(GenericRepository<T>), nameof(Add), "null value"));
-            _dataSet.Add(item);
-        }
+        public void Delete(ulong id)
+            => _dataSet.Remove(GetById(id));
 
-        public void Update(T item)
-        {
-            item = item
-                ?? throw new ArgumentNullException(MessageFormatter.Format(nameof(GenericRepository<T>), nameof(Add), "null value"));
-            T storedItem = GetById(item.Id);
-            storedItem.CopyDataFrom(item);
-        }
-
-        public void Delete(int id)
-        {
-            _dataSet.Remove(GetById(id));
-        }
+        public abstract T Update(T item);
     }
 }

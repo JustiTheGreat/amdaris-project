@@ -1,8 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "qjbyLWX9K/2Ypr1ChESvBB+K7CN4EvobBvZ7wevjvfIi6GhAjbATRvEMX09sUxR7hpOi0h/pYPJeHgydYcTJqg==",
+  "dgSpecHash": "/dZPy3nJgi2V7qoZQrExhqhhtQ1de1OJVlqUoUBU1u4Y80PybRL6ulJ4VGhpgedGvf97Hvv4wBCulsjamF19Yw==",
   "success": true,
   "projectFilePath": "C:\\Users\\justinian.zaharia\\Desktop\\amdaris-project\\AmdarisProject\\AmdarisProject\\AmdarisProject.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\justinian.zaharia\\.nuget\\packages\\mediatr\\12.2.0\\mediatr.12.2.0.nupkg.sha512",
+    "C:\\Users\\justinian.zaharia\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
+    "C:\\Users\\justinian.zaharia\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\8.0.0\\microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "C:\\Users\\justinian.zaharia\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512"
+  ],
   "logs": []
 }

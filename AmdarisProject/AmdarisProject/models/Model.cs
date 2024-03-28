@@ -2,11 +2,7 @@
 {
     public abstract class Model
     {
-        private static int instances = 0;
-        public int Id { get; set; } = ++instances;
-
-        public void CopyDataFrom(Model model)
-        {
-        }
+        private static ulong instances = 0;
+        public ulong Id { get; set; } = ++instances;
     }
 }
