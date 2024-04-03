@@ -1,9 +1,4 @@
-﻿using AmdarisProject.models;
-using AmdarisProject.models.competition;
-using AmdarisProject.utils.Exceptions;
-using System.Timers;
-
-namespace AmdarisProject
+﻿namespace AmdarisProject
 {
     public class AmdarisProjectTimer
     {

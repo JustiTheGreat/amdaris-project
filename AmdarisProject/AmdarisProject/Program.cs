@@ -1,14 +1,9 @@
-﻿using AmdarisProject;
-using AmdarisProject.handlers.competition;
+﻿using AmdarisProject.handlers.competition;
 using AmdarisProject.handlers.competitor;
-using AmdarisProject.handlers.point;
-using AmdarisProject.models;
-using AmdarisProject.models.competition;
-using AmdarisProject.models.competitor;
 using AmdarisProject.repositories;
 using AmdarisProject.repositories.abstractions;
 using AmdarisProject.utils;
-using AmdarisProject.utils.enums;
+using Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -89,6 +84,20 @@ await mediator.Send(new AddCompetitorToCompetition(team1Id, competition5Id));
 await mediator.Send(new AddCompetitorToCompetition(team2Id, competition5Id));
 await mediator.Send(new AddCompetitorToCompetition(team3Id, competition5Id));
 await mediator.Send(new AddCompetitorToCompetition(team4Id, competition5Id));
+
+mediator.Send(new GetTeams()).Result.ToList().ForEach(team =>
+{
+    Console.Write(team.Name + ": ");
+    team.Players.ForEach(player => Console.Write(player.Name + " "));
+    Console.WriteLine();
+});
+
+mediator.Send(new GetPlayers()).Result.ToList().ForEach(player =>
+{
+    Console.Write(player.Name + ": ");
+    player.Teams.ForEach(team => Console.Write(team.Name + " "));
+    Console.WriteLine();
+});
 
 ulong competitionToTestId = competition1Id;
 //AmdarisProjectTimer.AddCompetitionToSupervise(competitionToTest);
