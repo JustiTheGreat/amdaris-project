@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AmdarisProject.Application\AmdarisProject.Application.csproj" />
     <ProjectReference Include="..\AmdarisProject.Domain\AmdarisProject.Domain.csproj" />
   </ItemGroup>
 

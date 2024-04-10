@@ -1,9 +1,9 @@
-﻿namespace Domain.Exceptions
+﻿namespace AmdarisProject.Domain.Exceptions
 {
     public class AmdarisProjectException(string className, string methodName, string message)
-        : Exception(Format(className, methodName, message))
+        : Exception(FormatExceptionMessage(className, methodName, message))
     {
-        public static string Format(string className, string methodName, string message)
+        private static string FormatExceptionMessage(string className, string methodName, string message)
             => $"{className}: {methodName}: {message}";
     }
 }

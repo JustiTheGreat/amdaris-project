@@ -1,14 +1,15 @@
-﻿using Domain.Enums;
+﻿using AmdarisProject.Domain.Enums;
 
-namespace AmdarisProject.utils
+namespace AmdarisProject.Application.Utils
 {
-    public class GameRules(uint? winAt, ulong? durationInSeconds, ulong? breakInSeconds, GameType type, ushort teamSize = 1)
+    public class GameRules(uint? winAt, ulong? durationInSeconds, ulong? breakInSeconds, GameType type,
+        CompetitorType competitorType, ushort? teamSize)
     {
         public uint? WinAt { get; set; } = winAt;
         public ulong? DurationInSeconds { get; set; } = durationInSeconds;
         public ulong? BreakInSeconds { get; set; } = breakInSeconds;
         public GameType Type { get; set; } = type;
-        public CompetitorType CompetitorType { get; set; } = teamSize == 1 ? CompetitorType.PLAYER : CompetitorType.TEAM;
-        public ushort TeamSize { get; set; } = teamSize;
+        public CompetitorType CompetitorType { get; set; } = competitorType;
+        public ushort? TeamSize { get; set; } = teamSize;
     }
 }

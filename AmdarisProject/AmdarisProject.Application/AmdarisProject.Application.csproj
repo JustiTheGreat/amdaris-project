@@ -8,11 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="MediatR" Version="12.2.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AmdarisProject.Infrastructure\AmdarisProject.Infrastructure.csproj" />
+    <ProjectReference Include="..\AmdarisProject.Domain\AmdarisProject.Domain.csproj" />
   </ItemGroup>
 
 </Project>

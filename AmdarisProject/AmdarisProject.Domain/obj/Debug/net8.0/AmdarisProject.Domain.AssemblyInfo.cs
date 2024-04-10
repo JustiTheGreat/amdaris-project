@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AmdarisProject.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2694b6f214eb7d28f55e787b34da68c4df24b477")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ba1e59b3120e0d8c2080a508a098c4a5bf7277bd")]
 [assembly: System.Reflection.AssemblyProductAttribute("AmdarisProject.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AmdarisProject.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

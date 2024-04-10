@@ -1,20 +1,20 @@
-﻿using AmdarisProject.models.competition;
+﻿using AmdarisProject.Domain.Models.CompetitionModels;
 
-namespace AmdarisProject.models
+namespace AmdarisProject.Domain.Models
 {
     public class Stage : Model
     {
         public ushort StageLevel { get; set; }
-        public List<Match> Matches { get; set; }
-        public Competition Competition { get; set; }
+        public List<Match> Matches { get; set; } = [];
+        public TournamentCompetition TournamentCompetition { get; set; }
 
         public Stage() { }
 
-        public Stage(ushort stageLevel, List<Match> matches, Competition competition)
+        public Stage(ushort stageLevel, List<Match> matches, TournamentCompetition tournamentCompetition)
         {
             StageLevel = stageLevel;
             Matches = matches;
-            Competition = competition;
+            TournamentCompetition = tournamentCompetition;
         }
     }
 }

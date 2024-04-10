@@ -1,8 +1,7 @@
-﻿namespace AmdarisProject.models
+﻿namespace AmdarisProject.Domain.Models
 {
     public abstract class Model
     {
-        private static ulong instances = 0;
-        public ulong Id { get; set; } = ++instances;
+        public ulong Id { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Domain.Enums
+﻿namespace AmdarisProject.Domain.Enums
 {
     public enum CompetitorType
     {

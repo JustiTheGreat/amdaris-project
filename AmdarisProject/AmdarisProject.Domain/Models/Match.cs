@@ -1,8 +1,8 @@
-﻿using AmdarisProject.models.competition;
-using AmdarisProject.models.competitor;
-using Domain.Enums;
+﻿using AmdarisProject.Domain.Enums;
+using AmdarisProject.Domain.Models.CompetitionModels;
+using AmdarisProject.Domain.Models.CompetitorModels;
 
-namespace AmdarisProject.models
+namespace AmdarisProject.Domain.Models
 {
     public class Match : Model
     {
@@ -14,7 +14,7 @@ namespace AmdarisProject.models
         public Competitor CompetitorTwo { get; set; }
         public Competition Competition { get; set; }
         public Stage? Stage { get; set; }
-        public List<Point> Points { get; set; }
+        public List<Point> Points { get; set; } = [];
 
         public Match() { }
 

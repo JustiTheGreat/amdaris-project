@@ -1,11 +1,11 @@
+C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Domain\bin\Debug\net8.0\AmdarisProject.Domain.deps.json
+C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Domain\bin\Debug\net8.0\AmdarisProject.Domain.dll
+C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Domain\bin\Debug\net8.0\AmdarisProject.Domain.pdb
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Domain\obj\Debug\net8.0\AmdarisProject.Domain.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Domain\obj\Debug\net8.0\AmdarisProject.Domain.AssemblyInfoInputs.cache
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Domain\obj\Debug\net8.0\AmdarisProject.Domain.AssemblyInfo.cs
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Domain\obj\Debug\net8.0\AmdarisProject.Domain.csproj.CoreCompileInputs.cache
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Domain\obj\Debug\net8.0\AmdarisProject.Domain.sourcelink.json
-C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Domain\bin\Debug\net8.0\AmdarisProject.Domain.deps.json
-C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Domain\bin\Debug\net8.0\AmdarisProject.Domain.dll
-C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Domain\bin\Debug\net8.0\AmdarisProject.Domain.pdb
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Domain\obj\Debug\net8.0\AmdarisProject.Domain.dll
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Domain\obj\Debug\net8.0\refint\AmdarisProject.Domain.dll
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Domain\obj\Debug\net8.0\AmdarisProject.Domain.pdb

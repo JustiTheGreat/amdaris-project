@@ -1,6 +1,6 @@
-﻿using AmdarisProject.models.competitor;
+﻿using AmdarisProject.Domain.Models.CompetitorModels;
 
-namespace AmdarisProject.models
+namespace AmdarisProject.Domain.Models
 {
     public class Point : Model
     {
