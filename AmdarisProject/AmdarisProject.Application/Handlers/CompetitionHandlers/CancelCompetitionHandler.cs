@@ -17,13 +17,12 @@ namespace AmdarisProject.handlers.competition
         public async Task<CompetitionResponseDTO> Handle(CancelCompetition request, CancellationToken cancellationToken)
         {
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
-                ?? throw new APNotFoundException(nameof(GetCompetitionByIdHandler), nameof(Handle),
-                    [Tuple.Create(nameof(request.CompetitionId), request.CompetitionId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
 
             if (competition.Status is not CompetitionStatus.ORGANIZING
                 && competition.Status is not CompetitionStatus.NOT_STARTED
                 && competition.Status is not CompetitionStatus.STARTED)
-                throw new APIllegalStatusException(nameof(CancelCompetitionHandler), nameof(Handle), competition.Status);
+                throw new APIllegalStatusException(competition.Status);
 
             Competition updated;
 

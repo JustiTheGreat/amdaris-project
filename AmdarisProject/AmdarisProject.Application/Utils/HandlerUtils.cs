@@ -32,31 +32,30 @@ namespace AmdarisProject.Application.Utils
         public static async Task<uint> GetCompetitorMatchPointsUtil(IUnitOfWork unitOfWork, ulong matchId, ulong competitorId)
         {
             Match match = await unitOfWork.MatchRepository.GetById(matchId)
-                ?? throw new APNotFoundException(nameof(HandlerUtils), nameof(GetCompetitorMatchPointsUtil),
-                    [Tuple.Create(nameof(matchId), matchId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(matchId), matchId));
 
             if (match.Status is not MatchStatus.STARTED
                 && match.Status is not MatchStatus.FINISHED
                 && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_ONE
                 && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_TWO)
-                throw new APIllegalStatusException(nameof(HandlerUtils), nameof(GetCompetitorMatchPointsUtil), match.Status);
+                throw new APIllegalStatusException(match.Status);
 
             if (!MatchContainsCompetitor(match, competitorId))
-                throw new APCompetitorException(nameof(HandlerUtils), nameof(GetCompetitorMatchPointsUtil),
-                    $"Competitor {competitorId} not in match!");
+                throw new AmdarisProjectException($"Competitor {competitorId} not in match {match.Id}!");
 
             Competitor competitor = await unitOfWork.CompetitorRepository.GetById(competitorId)
-                ?? throw new APNotFoundException(nameof(HandlerUtils), nameof(GetCompetitorMatchPointsUtil),
-                    [Tuple.Create(nameof(competitorId), competitorId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(competitorId), competitorId));
 
             uint points = competitor is Player
                 ? unitOfWork.PointRepository.GetByPlayerAndMatch(competitorId, matchId).Result?.Value
-                    ?? throw new APNotFoundException(nameof(HandlerUtils), nameof(GetCompetitorMatchPointsUtil),
-                        [Tuple.Create(nameof(competitorId), competitorId), Tuple.Create(nameof(matchId), matchId)])
+                    ?? throw new APNotFoundException(
+                        [Tuple.Create(nameof(competitorId), competitorId), 
+                        Tuple.Create(nameof(matchId), matchId)])
                 : ((Team)competitor).Players
                     .Select(player => unitOfWork.PointRepository.GetByPlayerAndMatch(player.Id, matchId).Result?.Value
-                        ?? throw new APNotFoundException(nameof(HandlerUtils), nameof(GetCompetitorMatchPointsUtil),
-                            [Tuple.Create(nameof(player.Id), player.Id), Tuple.Create(nameof(matchId), matchId)]))
+                        ?? throw new APNotFoundException(
+                            [Tuple.Create(nameof(player.Id), player.Id), 
+                            Tuple.Create(nameof(matchId), matchId)]))
                     .Aggregate((point1, point2) => point1 + point2);
 
             return points;
@@ -65,11 +64,10 @@ namespace AmdarisProject.Application.Utils
         public static async Task<bool> MatchHasACompetitorWithTheWinningScoreUtil(IUnitOfWork unitOfWork, ulong matchId)
         {
             Match match = await unitOfWork.MatchRepository.GetById(matchId)
-                ?? throw new APNotFoundException(nameof(HandlerUtils), nameof(MatchHasACompetitorWithTheWinningScoreUtil),
-                    [Tuple.Create(nameof(matchId), matchId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(matchId), matchId));
 
             if (match.Status is not MatchStatus.STARTED or MatchStatus.FINISHED)
-                throw new APIllegalStatusException(nameof(HandlerUtils), nameof(MatchHasACompetitorWithTheWinningScoreUtil), match.Status);
+                throw new APIllegalStatusException(match.Status);
 
             uint? winAt = match.Competition.WinAt;
             bool aCompetitorHasTheWinningScore = winAt.HasValue
@@ -81,13 +79,12 @@ namespace AmdarisProject.Application.Utils
         private static async Task<Competitor?> GetMatchWinnerUtil(IUnitOfWork unitOfWork, ulong matchId)
         {
             Match match = await unitOfWork.MatchRepository.GetById(matchId)
-                ?? throw new APNotFoundException(nameof(HandlerUtils), nameof(GetMatchWinnerUtil),
-                [Tuple.Create(nameof(matchId), matchId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(matchId), matchId));
 
             if (match.Status is MatchStatus.NOT_STARTED or MatchStatus.STARTED or MatchStatus.CANCELED)
-                throw new APIllegalStatusException(nameof(HandlerUtils), nameof(GetMatchWinnerUtil), match.Status);
+                throw new APIllegalStatusException(match.Status);
 
-            Competitor? winner = null;
+            Competitor? winner;
 
             if (match.Status is MatchStatus.SPECIAL_WIN_COMPETITOR_ONE)
                 winner = match.CompetitorOne;
@@ -122,12 +119,11 @@ namespace AmdarisProject.Application.Utils
         public static async Task<uint> GetCompetitorCompetitionWinsUtil(IUnitOfWork unitOfWork, ulong competitorId, ulong competitionId)
         {
             Competition competition = await unitOfWork.CompetitionRepository.GetById(competitionId)
-                ?? throw new APNotFoundException(nameof(HandlerUtils), nameof(GetCompetitorCompetitionWinsUtil),
-                [Tuple.Create(nameof(competitionId), competitionId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(competitionId), competitionId));
 
             if (competition.Status is not CompetitionStatus.STARTED
                 && competition.Status is not CompetitionStatus.FINISHED)
-                throw new APIllegalStatusException(nameof(HandlerUtils), nameof(GetCompetitorCompetitionWinsUtil), competition.Status);
+                throw new APIllegalStatusException(competition.Status);
 
             uint wins = (uint)unitOfWork.MatchRepository.GetAllByCompetitorAndCompetition(competitorId, competitionId).Result
                 .Count(match => CompetitorIsPartOfTheWinningSideUtil(unitOfWork, match.Id, competitorId).Result);
@@ -137,12 +133,11 @@ namespace AmdarisProject.Application.Utils
         public static async Task<uint> GetCompetitorCompetitionPointsUtil(IUnitOfWork unitOfWork, ulong competitorId, ulong competitionId)
         {
             Competition competition = await unitOfWork.CompetitionRepository.GetById(competitionId)
-                ?? throw new APNotFoundException(nameof(HandlerUtils), nameof(GetCompetitorCompetitionPointsUtil),
-                    [Tuple.Create(nameof(competitionId), competitionId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(competitionId), competitionId));
 
             if (competition.Status is not CompetitionStatus.STARTED
                 && competition.Status is not CompetitionStatus.FINISHED)
-                throw new APIllegalStatusException(nameof(HandlerUtils), nameof(GetCompetitorCompetitionPointsUtil), competition.Status);
+                throw new APIllegalStatusException(competition.Status);
 
             uint points = unitOfWork.MatchRepository.GetAllByCompetitorAndCompetition(competitorId, competitionId).Result
                 .Select(match => GetCompetitorMatchPointsUtil(unitOfWork, match.Id, competitorId).Result)
@@ -153,12 +148,11 @@ namespace AmdarisProject.Application.Utils
         public static async Task<IEnumerable<RankingItemDTO>> GetCompetitionRankingUtil(IUnitOfWork unitOfWork, ulong competitionId)
         {
             Competition competition = await unitOfWork.CompetitionRepository.GetById(competitionId)
-                ?? throw new APNotFoundException(nameof(HandlerUtils), nameof(GetCompetitionRankingUtil),
-                    [Tuple.Create(nameof(competitionId), competitionId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(competitionId), competitionId));
 
             if (competition.Status is not CompetitionStatus.STARTED
                 && competition.Status is not CompetitionStatus.FINISHED)
-                throw new APIllegalStatusException(nameof(HandlerUtils), nameof(GetCompetitionRankingUtil), competition.Status);
+                throw new APIllegalStatusException(competition.Status);
 
             IEnumerable<RankingItemDTO> ranking = [.. competition.Competitors
                 .Select(competitor => new RankingItemDTO(
@@ -190,34 +184,28 @@ namespace AmdarisProject.Application.Utils
             ulong competitorTwoId, ulong competitionId)
         {
             Competitor competitorOne = await unitOfWork.CompetitorRepository.GetById(competitorOneId)
-                ?? throw new APNotFoundException(nameof(HandlerUtils), nameof(CreateMatch),
-                    [Tuple.Create(nameof(competitorOneId), competitorOneId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(competitorOneId), competitorOneId));
 
             Competitor competitorTwo = await unitOfWork.CompetitorRepository.GetById(competitorTwoId)
-                ?? throw new APNotFoundException(nameof(HandlerUtils), nameof(CreateMatch),
-                    [Tuple.Create(nameof(competitorTwoId), competitorTwoId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(competitorTwoId), competitorTwoId));
 
             Competition competition = await unitOfWork.CompetitionRepository.GetById(competitionId)
-                ?? throw new APNotFoundException(nameof(HandlerUtils), nameof(CreateMatch),
-                    [Tuple.Create(nameof(competitionId), competitionId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(competitionId), competitionId));
 
             if (competition.CompetitorType is CompetitorType.PLAYER
                     && (competitorOne is not Player || competitorTwo is not Player)
                 || competition.CompetitorType is CompetitorType.TEAM
                     && (competitorOne is not Team || competitorTwo is not Team))
-                throw new APCompetitorException(nameof(HandlerUtils), nameof(CreateMatch), "Competiors not matching the competition type!");
+                throw new AmdarisProjectException("Competiors not matching the competition type!");
 
             if (competitorOne.Id == competitorTwo.Id)
-                throw new APCompetitorException(nameof(HandlerUtils), nameof(CreateMatch),
-                    $"Trying to create a match with the same competitor on both sides!");
+                throw new AmdarisProjectException($"Trying to create a match with the same competitor on both sides!");
 
             if (!CompetitionContainsCompetitor(competition, competitorOne.Id))
-                throw new APCompetitorException(nameof(HandlerUtils), nameof(CreateMatch),
-                    $"Competitor {competitorOne.Id} not registered to competition {competition.Id}!");
+                throw new AmdarisProjectException($"Competitor {competitorOne.Id} not registered to competition {competition.Id}!");
 
             if (!CompetitionContainsCompetitor(competition, competitorTwo.Id))
-                throw new APCompetitorException(nameof(HandlerUtils), nameof(CreateMatch),
-                $"Competitor {competitorTwo.Id} not registered to competition {competition.Id}!");
+                throw new AmdarisProjectException($"Competitor {competitorTwo.Id} not registered to competition {competition.Id}!");
 
             DateTime? matchStartTime = null;
 
@@ -230,7 +218,7 @@ namespace AmdarisProject.Application.Utils
                 else
                 {
                     DateTime lastStartTime = competition.Matches.Max(match => match.StartTime)
-                        ?? throw new AmdarisProjectException(nameof(HandlerUtils), nameof(CreateMatch), "Null start time for a timed match!");
+                        ?? throw new AmdarisProjectException("Null start time for a timed match!");
 
                     matchStartTime = lastStartTime.AddSeconds(
                         (double)(competition.DurationInSeconds! + competition.BreakInSeconds!));
@@ -259,7 +247,7 @@ namespace AmdarisProject.Application.Utils
             IEnumerable<Match> matches = await unitOfWork.MatchRepository.GetByIds(matchIds);
 
             if (!matches.Any())
-                throw new APArgumentException(nameof(HandlerUtils), nameof(CreateStage), nameof(matches));
+                throw new APArgumentException(nameof(matches));
 
             int numberOfMatches = matches.Count();
             ushort stageLevel = 0;
@@ -267,20 +255,19 @@ namespace AmdarisProject.Application.Utils
             while (numberOfMatches != 1)
             {
                 if (numberOfMatches % 2 == 1)
-                    throw new APArgumentException(nameof(HandlerUtils), nameof(CreateStage), nameof(matches));
+                    throw new APArgumentException(nameof(matches));
 
                 stageLevel++;
                 numberOfMatches /= numberOfMatches;
             }
 
             Competition competition = await unitOfWork.CompetitionRepository.GetById(competitionId)
-                ?? throw new APNotFoundException(nameof(HandlerUtils), nameof(CreateStage),
-                [Tuple.Create(nameof(competitionId), competitionId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(competitionId), competitionId));
 
             foreach (Match match in matches)
             {
                 if (match.Id != competition.Id || match.Status is not MatchStatus.NOT_STARTED)
-                    throw new APArgumentException(nameof(HandlerUtils), nameof(CreateStage), nameof(matches));
+                    throw new APArgumentException(nameof(matches));
             }
 
             StageCreateDTO stage = new()
@@ -342,8 +329,7 @@ namespace AmdarisProject.Application.Utils
             }
 
             Competition competition = await unitOfWork.CompetitionRepository.GetById(competitionId)
-                ?? throw new APNotFoundException(nameof(HandlerUtils), nameof(CreateStage),
-                [Tuple.Create(nameof(competitionId), competitionId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(competitionId), competitionId));
 
             bool allMatchesWerePlayed = !(await unitOfWork.MatchRepository.GetUnfinishedByCompetition(competition.Id)).Any();
 

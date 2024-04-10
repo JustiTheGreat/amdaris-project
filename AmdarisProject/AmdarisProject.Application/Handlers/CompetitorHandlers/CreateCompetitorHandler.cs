@@ -18,7 +18,7 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
         {
             Competitor mapped = request.CompetitorCreateDTO is PlayerCreateDTO ? request.CompetitorCreateDTO.Adapt<Player>()
                 : request.CompetitorCreateDTO is TeamCreateDTO ? request.CompetitorCreateDTO.Adapt<Team>()
-                : throw new AmdarisProjectException(nameof(CreateCompetitor), nameof(Handle), nameof(request.CompetitorCreateDTO));
+                : throw new AmdarisProjectException(nameof(request.CompetitorCreateDTO));
 
             Competitor created;
 
@@ -37,7 +37,7 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
 
             CompetitorResponseDTO response = created is Player ? created.Adapt<PlayerResponseDTO>()
                 : created is Team ? created.Adapt<TeamResponseDTO>()
-                : throw new AmdarisProjectException(nameof(CreateCompetitor), nameof(Handle), nameof(created));
+                : throw new AmdarisProjectException(nameof(created));
 
             return response;
         }

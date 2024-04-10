@@ -16,8 +16,7 @@ namespace AmdarisProject.handlers.competition
         public async Task<CompetitionResponseDTO> Handle(GetCompetitionById request, CancellationToken cancellationToken)
         {
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
-                ?? throw new APNotFoundException(nameof(GetCompetitionByIdHandler), nameof(Handle),
-                    [Tuple.Create(nameof(request.CompetitionId), request.CompetitionId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
 
             CompetitionResponseDTO response = competition.Adapt<CompetitionResponseDTO>();
             return response;

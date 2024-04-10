@@ -18,11 +18,10 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
         public async Task<MatchResponseDTO> Handle(CancelMatch request, CancellationToken cancellationToken)
         {
             Match match = await _unitOfWork.MatchRepository.GetById(request.MatchId)
-                ?? throw new APNotFoundException(nameof(CancelMatchHandler), nameof(Handle),
-                    [Tuple.Create(nameof(request.MatchId), request.MatchId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), request.MatchId));
 
             if (match.Status is not MatchStatus.NOT_STARTED or MatchStatus.STARTED)
-                throw new APIllegalStatusException(nameof(CancelMatchHandler), nameof(Handle), match.Status);
+                throw new APIllegalStatusException(match.Status);
 
             Match updated;
 
@@ -45,8 +44,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             }
 
             updated = await _unitOfWork.MatchRepository.GetById(updated.Id)
-                ?? throw new APNotFoundException(nameof(CancelMatchHandler), nameof(Handle),
-                    [Tuple.Create(nameof(updated.Id), updated.Id)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(updated.Id), updated.Id));
 
             MatchResponseDTO response = updated.Adapt<MatchResponseDTO>();
             return response;

@@ -19,11 +19,10 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
         public async Task<MatchResponseDTO> Handle(SpecialWinMatch request, CancellationToken cancellationToken)
         {
             Match match = await _unitOfWork.MatchRepository.GetById(request.MatchId)
-                ?? throw new APNotFoundException(nameof(SpecialWinMatchHandler), nameof(Handle),
-                    [Tuple.Create(nameof(request.MatchId), request.MatchId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), request.MatchId));
 
             if (match.Status is not MatchStatus.STARTED)
-                throw new APIllegalStatusException(nameof(MatchCreateDTO), nameof(Handle), match.Status);
+                throw new APIllegalStatusException(match.Status);
 
             match.Status = request.MatchCompetitor is MatchCompetitor.COMPETITOR_ONE
                     ? MatchStatus.SPECIAL_WIN_COMPETITOR_ONE
@@ -50,8 +49,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             }
 
             updated = await _unitOfWork.MatchRepository.GetById(updated.Id)
-                ?? throw new APNotFoundException(nameof(SpecialWinMatchHandler), nameof(Handle),
-                    [Tuple.Create(nameof(updated.Id), updated.Id)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(updated.Id), updated.Id));
 
             MatchResponseDTO response = updated.Adapt<MatchResponseDTO>();
             return response;

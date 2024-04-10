@@ -13,8 +13,7 @@ namespace AmdarisProject.Infrastructure.Repositories
         public async Task<bool> ContainsCompetitor(ulong matchId, ulong competitorId)
         {
             Match match = await GetById(matchId)
-                ?? throw new APNotFoundException(nameof(MatchRepository), nameof(ContainsCompetitor),
-                    [Tuple.Create(nameof(matchId), matchId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(matchId), matchId));
 
             bool containsCompetitor = HandlerUtils.MatchContainsCompetitor(match, competitorId);
             return containsCompetitor;

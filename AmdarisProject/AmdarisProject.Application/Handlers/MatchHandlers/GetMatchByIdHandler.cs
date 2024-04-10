@@ -16,8 +16,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
         public async Task<MatchResponseDTO> Handle(GetMatchById request, CancellationToken cancellationToken)
         {
             Match match = await _unitOfWork.MatchRepository.GetById(request.MatchId)
-                ?? throw new APNotFoundException(nameof(GetMatchByIdHandler), nameof(Handle),
-                    [Tuple.Create(nameof(request.MatchId), request.MatchId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), request.MatchId));
 
             MatchResponseDTO response = match.Adapt<MatchResponseDTO>();
             return response;

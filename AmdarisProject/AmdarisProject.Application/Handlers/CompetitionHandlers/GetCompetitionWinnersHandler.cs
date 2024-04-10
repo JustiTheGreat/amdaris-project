@@ -19,11 +19,10 @@ namespace AmdarisProject.handlers.competition
         public async Task<IEnumerable<CompetitorResponseDTO>> Handle(GetCompetitionWinner request, CancellationToken cancellationToken)
         {
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
-                ?? throw new APNotFoundException(nameof(StartCompetitionHandler), nameof(Handle),
-                    [Tuple.Create(nameof(request.CompetitionId), request.CompetitionId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
 
             if (competition.Status is not CompetitionStatus.FINISHED)
-                throw new APIllegalStatusException(nameof(GetCompetitionWinnersHandler), nameof(Handle), competition.Status);
+                throw new APIllegalStatusException(competition.Status);
 
             IEnumerable<Competitor> firstPlaceCompetitors =
                 await HandlerUtils.GetCompetitionFirstPlaceCompetitorsUtil(_unitOfWork, request.CompetitionId);

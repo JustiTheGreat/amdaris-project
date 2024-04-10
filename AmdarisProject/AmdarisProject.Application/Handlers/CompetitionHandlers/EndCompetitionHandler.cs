@@ -17,17 +17,15 @@ namespace AmdarisProject.handlers.competition
         public async Task<CompetitionResponseDTO> Handle(EndCompetition request, CancellationToken cancellationToken)
         {
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
-                ?? throw new APNotFoundException(nameof(GetCompetitionByIdHandler), nameof(Handle),
-                    [Tuple.Create(nameof(request.CompetitionId), request.CompetitionId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
 
             if (competition.Status is not CompetitionStatus.STARTED)
-                throw new APIllegalStatusException(nameof(EndCompetitionHandler), nameof(Handle), competition.Status);
+                throw new APIllegalStatusException(competition.Status);
 
             bool allMatchesEnded = !(await _unitOfWork.MatchRepository.GetUnfinishedByCompetition(competition.Id)).Any();
 
             if (!allMatchesEnded)
-                throw new AmdarisProjectException(nameof(EndCompetitionHandler), nameof(Handle),
-                    $"Competition {competition.Id} still has unfinished matches!");
+                throw new AmdarisProjectException($"Competition {competition.Id} still has unfinished matches!");
 
             Competition updated;
 

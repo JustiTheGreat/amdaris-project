@@ -4,10 +4,10 @@ namespace AmdarisProject.Domain.Exceptions
 {
     public class APIllegalStatusException : AmdarisProjectException
     {
-        public APIllegalStatusException(string className, string methodName, CompetitionStatus status)
-            : base(className, methodName, status.ToString()) { }
+        public APIllegalStatusException(CompetitionStatus status)
+            : base(status.ToString()) { }
 
-        public APIllegalStatusException(string className, string methodName, MatchStatus status)
-            : base(className, methodName, status.ToString()) { }
+        public APIllegalStatusException(MatchStatus status)
+            : base(status.ToString()) { }
     }
 }

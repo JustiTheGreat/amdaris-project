@@ -18,20 +18,18 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
         public async Task<MatchResponseDTO> Handle(StartMatch request, CancellationToken cancellationToken)
         {
             Match match = await _unitOfWork.MatchRepository.GetById(request.MatchId)
-                ?? throw new APNotFoundException(nameof(StartMatchHandler), nameof(Handle),
-                    [Tuple.Create(nameof(request.MatchId), request.MatchId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), request.MatchId));
 
             if (match.Competition.Status is not CompetitionStatus.STARTED)
-                throw new APIllegalStatusException(nameof(StartMatchHandler), nameof(Handle), match.Competition.Status);
+                throw new APIllegalStatusException(match.Competition.Status);
 
             bool anotherMatchIsBeingPlayed = match.Competition.Matches.Any(match => match.Status is MatchStatus.STARTED);
 
             if (anotherMatchIsBeingPlayed)
-                throw new AmdarisProjectException(nameof(StartMatchHandler), nameof(Handle),
-                    "Cannot start a match while another one is being played!");
+                throw new AmdarisProjectException("Cannot start a match while another one is being played!");
 
             if (match.Status is not MatchStatus.NOT_STARTED)
-                throw new APIllegalStatusException(nameof(StartMatchHandler), nameof(Handle), match.Status);
+                throw new APIllegalStatusException(match.Status);
 
             Match updated;
 
@@ -60,10 +58,14 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 throw;
             }
 
+            updated = await _unitOfWork.MatchRepository.GetById(match.Id)
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), match.Id));
+
             //TODO remove
             Console.WriteLine($"Competition {match.Competition.Name}: " +
                 $"Match between {match.CompetitorOne.Name} and {match.CompetitorTwo.Name} has started!");
             //
+
             MatchResponseDTO response = updated.Adapt<MatchResponseDTO>();
             return response;
         }

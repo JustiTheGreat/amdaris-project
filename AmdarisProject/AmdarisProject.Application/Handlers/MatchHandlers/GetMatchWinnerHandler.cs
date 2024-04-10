@@ -19,13 +19,12 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
         public async Task<CompetitorResponseDTO?> Handle(GetMatchWinner request, CancellationToken cancellationToken)
         {
             Match match = await _unitOfWork.MatchRepository.GetById(request.MatchId)
-                ?? throw new APNotFoundException(nameof(GetMatchWinnerHandler), nameof(Handle),
-                    [Tuple.Create(nameof(request.MatchId), request.MatchId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), request.MatchId));
 
             if (match.Status is MatchStatus.NOT_STARTED or MatchStatus.STARTED or MatchStatus.CANCELED)
-                throw new APIllegalStatusException(nameof(GetMatchWinnerHandler), nameof(Handle), match.Status);
+                throw new APIllegalStatusException(match.Status);
 
-            Competitor? winner = null;
+            Competitor? winner;
 
             if (match.Status is MatchStatus.SPECIAL_WIN_COMPETITOR_ONE)
                 winner = match.CompetitorOne;

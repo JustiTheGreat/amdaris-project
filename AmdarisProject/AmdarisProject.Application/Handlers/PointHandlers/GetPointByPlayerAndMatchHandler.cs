@@ -16,8 +16,9 @@ namespace AmdarisProject.handlers.point
         public async Task<PointResponseDTO> Handle(GetPointByPlayerAndMatch request, CancellationToken cancellationToken)
         {
             Point point = await _unitOfWork.PointRepository.GetByPlayerAndMatch(request.PlayerId, request.MatchId)
-                ?? throw new APNotFoundException(nameof(GetPointByPlayerAndMatch), nameof(Handle),
-                    [Tuple.Create(nameof(request.PlayerId), request.PlayerId), Tuple.Create(nameof(request.MatchId), request.MatchId)]);
+                ?? throw new APNotFoundException(
+                    [Tuple.Create(nameof(request.PlayerId), request.PlayerId), 
+                    Tuple.Create(nameof(request.MatchId), request.MatchId)]);
 
             PointResponseDTO response = point.Adapt<PointResponseDTO>();
             return response;

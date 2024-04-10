@@ -18,14 +18,13 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
         public async Task<MatchResponseDTO> Handle(EndMatch request, CancellationToken cancellationToken)
         {
             Match match = await _unitOfWork.MatchRepository.GetById(request.MatchId)
-                ?? throw new APNotFoundException(nameof(EndMatchHandler), nameof(Handle),
-                   [Tuple.Create(nameof(request.MatchId), request.MatchId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), request.MatchId));
 
             if (match.Status is not MatchStatus.STARTED)
-                throw new APIllegalStatusException(nameof(EndMatchHandler), nameof(Handle), match.Status);
+                throw new APIllegalStatusException(match.Status);
 
             if (!await HandlerUtils.MatchHasACompetitorWithTheWinningScoreUtil(_unitOfWork, match.Id))
-                throw new APPointsException(nameof(EndMatchHandler), nameof(Handle), "Not enough points to end the match!");
+                throw new AmdarisProjectException($"Match {match.Id} doesn't have a competitor with the winning number of points!");
 
             Match updated;
 
@@ -49,8 +48,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             }
 
             updated = await _unitOfWork.MatchRepository.GetById(updated.Id)
-                ?? throw new APNotFoundException(nameof(EndMatchHandler), nameof(Handle),
-                   [Tuple.Create(nameof(updated.Id), updated.Id)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(updated.Id), updated.Id));
 
             //TODO remove
             uint competitorOneMatchPoints = await HandlerUtils.GetCompetitorMatchPointsUtil(_unitOfWork, updated.Id, updated.CompetitorOne.Id);
@@ -59,6 +57,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 $"{match.CompetitorOne.Name} and {match.CompetitorTwo.Name} has ended with score " +
                 $"{competitorOneMatchPoints}-{competitorTwoMatchPoints}!");
             //
+
             MatchResponseDTO response = updated.Adapt<MatchResponseDTO>();
             return response;
         }

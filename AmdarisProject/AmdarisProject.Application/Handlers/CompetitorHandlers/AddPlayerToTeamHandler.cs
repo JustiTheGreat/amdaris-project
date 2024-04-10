@@ -18,19 +18,16 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
         {
             //TODO what kind of persistence a team should have (per competition?, or forever?)
             Team team = (Team)(await _unitOfWork.CompetitorRepository.GetById(request.TeamId)
-                ?? throw new APNotFoundException(nameof(AddPlayerToTeamHandler), nameof(Handle),
-                    [Tuple.Create(nameof(request.TeamId), request.TeamId)]));
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.TeamId), request.TeamId)));
 
             Player player = (Player)(await _unitOfWork.CompetitorRepository.GetById(request.PlayerId)
-                ?? throw new APNotFoundException(nameof(AddPlayerToTeamHandler), nameof(Handle),
-                    [Tuple.Create(nameof(request.PlayerId), request.PlayerId)]));
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.PlayerId), request.PlayerId)));
 
             if (team.Players.Count == team.TeamSize)
-                throw new APCompetitorNumberException(nameof(AddPlayerToTeamHandler), nameof(Handle), $"Team {team.Id} is full!");
+                throw new AmdarisProjectException($"Team {team.Id} is full!");
 
             if (HandlerUtils.TeamContainsPlayer(team, request.PlayerId))
-                throw new APCompetitorException(nameof(AddPlayerToTeamHandler), nameof(Handle),
-                    $"Player {request.PlayerId} is already a member of team {team.Id}!");
+                throw new AmdarisProjectException($"Player {player.Id} is already a member of team {team.Id}!");
 
             Team updated;
 

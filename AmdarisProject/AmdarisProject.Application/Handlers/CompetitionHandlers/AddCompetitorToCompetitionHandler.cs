@@ -18,20 +18,17 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 
         public async Task<CompetitionResponseDTO> Handle(AddCompetitorToCompetition request, CancellationToken cancellationToken)
         {
+            Competitor competitor = await _unitOfWork.CompetitorRepository.GetById(request.CompetitorId)
+                    ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitorId), request.CompetitorId));
+
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
-                ?? throw new APNotFoundException(nameof(AddCompetitorToCompetitionHandler), nameof(Handle),
-                    [Tuple.Create(nameof(request.CompetitionId), request.CompetitionId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
 
             if (competition.Status is not CompetitionStatus.ORGANIZING)
-                throw new APIllegalStatusException(nameof(AddCompetitorToCompetitionHandler), nameof(Handle), competition.Status);
+                throw new APIllegalStatusException(competition.Status);
 
             if (HandlerUtils.CompetitionContainsCompetitor(competition, request.CompetitorId))
-                throw new APCompetitorException(nameof(AddCompetitorToCompetitionHandler), nameof(Handle),
-                    $"Competitor {request.CompetitorId} is already registered to {competition.Id}!");
-
-            Competitor competitor = await _unitOfWork.CompetitorRepository.GetById(request.CompetitorId)
-                    ?? throw new APNotFoundException(nameof(AddCompetitorToCompetitionHandler), nameof(Handle),
-                    [Tuple.Create(nameof(request.CompetitorId), request.CompetitorId)]);
+                throw new AmdarisProjectException($"Competitor {competitor.Id} is already registered to {competition.Id}!");
 
             //TODO check if competitor is team and player from team is in another team from competition
 
@@ -57,7 +54,7 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 
             CompetitionResponseDTO response = competition is OneVSAllCompetition ? competition.Adapt<OneVSAllCompetitionResponseDTO>()
                 : competition is TournamentCompetition ? competition.Adapt<TournamentCompetitionResponseDTO>()
-                : throw new AmdarisProjectException(nameof(AddCompetitorToCompetitionHandler), nameof(Handle), nameof(competition));
+                : throw new AmdarisProjectException(nameof(competition));
 
             return response;
         }

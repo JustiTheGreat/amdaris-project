@@ -19,11 +19,10 @@ namespace AmdarisProject.handlers.competition
         public async Task<CompetitionResponseDTO> Handle(StopCompetitionRegistration request, CancellationToken cancellationToken)
         {
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
-                ?? throw new APNotFoundException(nameof(StopCompetitionRegistrationHandler), nameof(Handle),
-                    [Tuple.Create(nameof(request.CompetitionId), request.CompetitionId)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
 
             if (competition.Status is not CompetitionStatus.ORGANIZING)
-                throw new APIllegalStatusException(nameof(StopCompetitionRegistrationHandler), nameof(Handle), competition.Status);
+                throw new APIllegalStatusException(competition.Status);
 
             CheckCompetitionCompetitorNumber(competition);
 
@@ -48,8 +47,7 @@ namespace AmdarisProject.handlers.competition
             }
 
             updated = await _unitOfWork.CompetitionRepository.GetById(updated.Id)
-                ?? throw new APNotFoundException(nameof(CancelMatchHandler), nameof(Handle),
-                    [Tuple.Create(nameof(updated.Id), updated.Id)]);
+                ?? throw new APNotFoundException(Tuple.Create(nameof(updated.Id), updated.Id));
 
             //TODO remove
             Console.WriteLine($"Registrations for competition {updated.Name} have stopped!");
@@ -65,22 +63,20 @@ namespace AmdarisProject.handlers.competition
                 int competitorNumber = oneVSAllCompetition.Competitors.Count;
 
                 if (competitorNumber < 2)
-                    throw new APCompetitorNumberException(nameof(StopCompetitionRegistrationHandler),
-                        nameof(CheckOneVSAllCompetitionCompetitorNumber), competitorNumber.ToString());
+                    throw new AmdarisProjectException($"Competition {oneVSAllCompetition.Id} has only {competitorNumber} competitors!");
             }
+
             void CheckTournamentCompetitionCompetitorNumber(TournamentCompetition tournamentCompetition)
             {
                 int competitorNumber = tournamentCompetition.Competitors.Count;
 
                 if (competitorNumber < 2)
-                    throw new APCompetitorNumberException(nameof(StopCompetitionRegistrationHandler),
-                        nameof(CheckCompetitionCompetitorNumber), competitorNumber.ToString());
+                    throw new AmdarisProjectException($"Competition {tournamentCompetition.Id} has only {competitorNumber} competitors!");
 
                 while (competitorNumber != 1)
                 {
                     if (competitorNumber % 2 == 1)
-                        throw new APCompetitorNumberException(nameof(StopCompetitionRegistrationHandler),
-                            nameof(CheckCompetitionCompetitorNumber), competitorNumber.ToString());
+                        throw new AmdarisProjectException($"Tournament competition {tournamentCompetition.Id} has an unfit number of competitors: {competitorNumber}!");
 
                     competitorNumber /= 2;
                 }

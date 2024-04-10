@@ -19,7 +19,7 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
         public async Task<CompetitionResponseDTO> Handle(CreateCompetition request, CancellationToken cancellationToken)
         {
             if (request.CompetitionCreateDTO.Status is not CompetitionStatus.ORGANIZING)
-                throw new APIllegalStatusException(nameof(CreateCompetitionHandler), nameof(Handle), request.CompetitionCreateDTO.Status);
+                throw new APIllegalStatusException(request.CompetitionCreateDTO.Status);
 
             if (request.CompetitionCreateDTO.WinAt is null
                 && request.CompetitionCreateDTO.DurationInSeconds is null && request.CompetitionCreateDTO.BreakInSeconds is null
@@ -27,12 +27,12 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
                 || request.CompetitionCreateDTO.DurationInSeconds is not null && request.CompetitionCreateDTO.BreakInSeconds is null
                 || request.CompetitionCreateDTO.CompetitorType is CompetitorType.PLAYER && request.CompetitionCreateDTO.TeamSize is not null
                 || request.CompetitionCreateDTO.CompetitorType is CompetitorType.TEAM && (request.CompetitionCreateDTO.TeamSize is null || request.CompetitionCreateDTO.TeamSize < 2))
-                throw new APArgumentException(nameof(CreateCompetitionHandler), nameof(Handle), nameof(request.CompetitionCreateDTO));
+                throw new APArgumentException(nameof(request.CompetitionCreateDTO));
 
             Competition mapped =
                 request.CompetitionCreateDTO is OneVSAllCompetitionCreateDTO ? request.CompetitionCreateDTO.Adapt<OneVSAllCompetition>()
                 : request.CompetitionCreateDTO is TournamentCompetitionCreateDTO ? request.CompetitionCreateDTO.Adapt<TournamentCompetition>()
-                : throw new AmdarisProjectException(nameof(CreateCompetitionHandler), nameof(Handle), nameof(request.CompetitionCreateDTO));
+                : throw new AmdarisProjectException(nameof(request.CompetitionCreateDTO));
 
             Competition competition;
 
@@ -52,7 +52,7 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
             CompetitionResponseDTO response =
                 competition is OneVSAllCompetition ? competition.Adapt<OneVSAllCompetitionResponseDTO>()
                 : competition is TournamentCompetition ? competition.Adapt<TournamentCompetitionResponseDTO>()
-                : throw new AmdarisProjectException(nameof(CreateCompetitionHandler), nameof(Handle), nameof(competition));
+                : throw new AmdarisProjectException(nameof(competition));
 
             return response;
         }
