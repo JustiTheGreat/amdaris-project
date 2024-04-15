@@ -7,12 +7,12 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.MatchHandlers
 {
-    public record GetMatchById(ulong MatchId) : IRequest<MatchResponseDTO>;
+    public record GetMatchById(Guid MatchId) : IRequest<MatchResponseDTO>;
     public class GetMatchByIdHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<GetMatchById, MatchResponseDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IMapper _mapper;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<MatchResponseDTO> Handle(GetMatchById request, CancellationToken cancellationToken)
         {

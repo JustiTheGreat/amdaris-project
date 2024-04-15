@@ -7,7 +7,7 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.CompetitorHandlers
 {
-    public record GetCompetitorById(ulong CompetitorId) : IRequest<CompetitorResponseDTO>;
+    public record GetCompetitorById(Guid CompetitorId) : IRequest<CompetitorResponseDTO>;
     public class GetCompetitorByIdHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<GetCompetitorById, CompetitorResponseDTO>
     {

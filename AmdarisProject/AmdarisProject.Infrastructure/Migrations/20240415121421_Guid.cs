@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace AmdarisProject.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class _1 : Migration
+    public partial class Guid : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,8 +15,7 @@ namespace AmdarisProject.Infrastructure.Migrations
                 name: "Competitions",
                 columns: table => new
                 {
-                    Id = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -39,8 +39,7 @@ namespace AmdarisProject.Infrastructure.Migrations
                 name: "Competitors",
                 columns: table => new
                 {
-                    Id = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
                     TeamSize = table.Column<int>(type: "int", nullable: true)
@@ -54,10 +53,9 @@ namespace AmdarisProject.Infrastructure.Migrations
                 name: "Stage",
                 columns: table => new
                 {
-                    Id = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StageLevel = table.Column<int>(type: "int", nullable: false),
-                    TournamentCompetitionId = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
+                    TournamentCompetitionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -74,8 +72,8 @@ namespace AmdarisProject.Infrastructure.Migrations
                 name: "CompetitionCompetitor",
                 columns: table => new
                 {
-                    CompetitionsId = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
-                    CompetitorsId = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
+                    CompetitionsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CompetitorsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -98,8 +96,8 @@ namespace AmdarisProject.Infrastructure.Migrations
                 name: "PlayerTeam",
                 columns: table => new
                 {
-                    PlayersId = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
-                    TeamsId = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
+                    PlayersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TeamsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -121,16 +119,15 @@ namespace AmdarisProject.Infrastructure.Migrations
                 name: "Matches",
                 columns: table => new
                 {
-                    Id = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CompetitorOneId = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
-                    CompetitorTwoId = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
-                    CompetitionId = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
-                    StageId = table.Column<decimal>(type: "decimal(20,0)", nullable: true)
+                    CompetitorOneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CompetitorTwoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CompetitionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StageId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -163,11 +160,10 @@ namespace AmdarisProject.Infrastructure.Migrations
                 name: "Points",
                 columns: table => new
                 {
-                    Id = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Value = table.Column<long>(type: "bigint", nullable: false),
-                    MatchId = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
-                    PlayerId = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
+                    MatchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PlayerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {

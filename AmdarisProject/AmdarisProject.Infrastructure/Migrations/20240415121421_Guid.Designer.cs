@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmdarisProject.Infrastructure.Migrations
 {
     [DbContext(typeof(AmdarisProjectDBContext))]
-    [Migration("20240410114336_test")]
-    partial class test
+    [Migration("20240415121421_Guid")]
+    partial class Guid
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,9 @@ namespace AmdarisProject.Infrastructure.Migrations
 
             modelBuilder.Entity("AmdarisProject.Domain.Models.CompetitionModels.Competition", b =>
                 {
-                    b.Property<decimal>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(20,0)");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal?>("BreakInSeconds")
                         .HasColumnType("decimal(20,0)");
@@ -89,11 +87,9 @@ namespace AmdarisProject.Infrastructure.Migrations
 
             modelBuilder.Entity("AmdarisProject.Domain.Models.CompetitorModels.Competitor", b =>
                 {
-                    b.Property<decimal>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(20,0)");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
@@ -115,20 +111,18 @@ namespace AmdarisProject.Infrastructure.Migrations
 
             modelBuilder.Entity("AmdarisProject.Domain.Models.Match", b =>
                 {
-                    b.Property<decimal>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(20,0)");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("Id"));
+                    b.Property<Guid>("CompetitionId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("CompetitionId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<Guid>("CompetitorOneId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("CompetitorOneId")
-                        .HasColumnType("decimal(20,0)");
-
-                    b.Property<decimal>("CompetitorTwoId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<Guid>("CompetitorTwoId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("datetime2");
@@ -137,8 +131,8 @@ namespace AmdarisProject.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("StageId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<Guid?>("StageId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("StartTime")
                         .HasColumnType("datetime2");
@@ -162,17 +156,15 @@ namespace AmdarisProject.Infrastructure.Migrations
 
             modelBuilder.Entity("AmdarisProject.Domain.Models.Point", b =>
                 {
-                    b.Property<decimal>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(20,0)");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("Id"));
+                    b.Property<Guid>("MatchId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("MatchId")
-                        .HasColumnType("decimal(20,0)");
-
-                    b.Property<decimal>("PlayerId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<long>("Value")
                         .HasColumnType("bigint");
@@ -188,17 +180,15 @@ namespace AmdarisProject.Infrastructure.Migrations
 
             modelBuilder.Entity("AmdarisProject.Domain.Models.Stage", b =>
                 {
-                    b.Property<decimal>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(20,0)");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("StageLevel")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("TournamentCompetitionId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<Guid>("TournamentCompetitionId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -209,11 +199,11 @@ namespace AmdarisProject.Infrastructure.Migrations
 
             modelBuilder.Entity("CompetitionCompetitor", b =>
                 {
-                    b.Property<decimal>("CompetitionsId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<Guid>("CompetitionsId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("CompetitorsId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<Guid>("CompetitorsId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("CompetitionsId", "CompetitorsId");
 
@@ -224,11 +214,11 @@ namespace AmdarisProject.Infrastructure.Migrations
 
             modelBuilder.Entity("PlayerTeam", b =>
                 {
-                    b.Property<decimal>("PlayersId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<Guid>("PlayersId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("TeamsId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<Guid>("TeamsId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("PlayersId", "TeamsId");
 

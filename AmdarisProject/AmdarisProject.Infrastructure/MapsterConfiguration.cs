@@ -57,7 +57,7 @@ namespace AmdarisProject.Presentation
                 .Map(dest => dest.CompetitorOne, src => src.CompetitorOne.Id)
                 .Map(dest => dest.CompetitorTwo, src => src.CompetitorTwo.Id)
                 .Map(dest => dest.Competition, src => src.Competition.Id)
-                .Map(dest => dest.Stage, src => src.Stage == null ? (ulong?)null : src.Stage.Id)
+                .Map(dest => dest.Stage, src => src.Stage == null ? (Guid?)null : src.Stage.Id)
                 .Map(dest => dest.Points, src => src.Points.GetIds());
             config.ForType<MatchCreateDTO, Match>()
                 .Map(dest => dest.CompetitorOne, src => new Player())
@@ -125,7 +125,7 @@ namespace AmdarisProject.Presentation
                 .Map(dest => dest.CompetitorOne, src => src.CompetitorOne.Id)
                 .Map(dest => dest.CompetitorTwo, src => src.CompetitorTwo.Id)
                 .Map(dest => dest.Competition, src => src.Competition.Id)
-                .Map(dest => dest.Stage, src => src.Stage == null ? (ulong?)null : src.Stage.Id)
+                .Map(dest => dest.Stage, src => src.Stage == null ? (Guid?)null : src.Stage.Id)
                 .Map(dest => dest.Points, src => src.Points.GetIds());
             TypeAdapterConfig<MatchCreateDTO, Match>.NewConfig()
                 .Map(dest => dest.CompetitorOne, src => new Player())
@@ -174,7 +174,7 @@ namespace AmdarisProject.Presentation
                 .Map(dest => dest.CompetitorOne, src => src.CompetitorOne.Id)
                 .Map(dest => dest.CompetitorTwo, src => src.CompetitorTwo.Id)
                 .Map(dest => dest.Competition, src => src.Competition.Id)
-                .Map(dest => dest.Stage, src => src.Stage == null ? (ulong?)null : src.Stage.Id)
+                .Map(dest => dest.Stage, src => src.Stage == null ? (Guid?)null : src.Stage.Id)
                 .Map(dest => dest.Points, src => src.Points.GetIds());
 
             TypeAdapterConfig<Point, PointCreateDTO>.NewConfig()

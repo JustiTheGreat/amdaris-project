@@ -21,7 +21,7 @@ namespace AmdarisProject.Infrastructure
         {
             //TODO move to appsettings
             if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseSqlServer("Server=ROMOB41072;Database=AmdarisProject2;Trusted_Connection=True;TrustServerCertificate=True;");
+                optionsBuilder.UseSqlServer("Server=ROMOB41072;Database=AmdarisProject;Trusted_Connection=True;TrustServerCertificate=True;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

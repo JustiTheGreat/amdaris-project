@@ -9,7 +9,7 @@ using MediatR;
 
 namespace AmdarisProject.handlers.competition
 {
-    public record StopCompetitionRegistration(ulong CompetitionId) : IRequest<CompetitionResponseDTO>;
+    public record StopCompetitionRegistration(Guid CompetitionId) : IRequest<CompetitionResponseDTO>;
     public class StopCompetitionRegistrationHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<StopCompetitionRegistration, CompetitionResponseDTO>
     {

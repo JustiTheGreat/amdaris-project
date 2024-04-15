@@ -6,7 +6,7 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.CompetitorHandlers
 {
-    public record GetCompetitorRating(ulong CompetitorId, GameType GameType) : IRequest<double>;
+    public record GetCompetitorRating(Guid CompetitorId, GameType GameType) : IRequest<double>;
     public class GetCompetitiorRatingHandler(IUnitOfWork unitOfWork)
         : IRequestHandler<GetCompetitorRating, double>
     {

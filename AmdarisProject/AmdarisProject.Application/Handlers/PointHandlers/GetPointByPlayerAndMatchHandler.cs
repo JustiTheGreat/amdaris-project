@@ -7,7 +7,7 @@ using MediatR;
 
 namespace AmdarisProject.handlers.point
 {
-    public record GetPointByPlayerAndMatch(ulong PlayerId, ulong MatchId) : IRequest<PointResponseDTO>;
+    public record GetPointByPlayerAndMatch(Guid PlayerId, Guid MatchId) : IRequest<PointResponseDTO>;
     public class GetPointByPlayerAndMatchHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<GetPointByPlayerAndMatch, PointResponseDTO>
     {

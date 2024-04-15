@@ -19,9 +19,9 @@ namespace AmdarisProject.Infrastructure.Repositories
             .Select(competitor => (Player)competitor)
             .ToListAsync();
 
-        public async Task<IEnumerable<Player>> GetTeamPlayers(ulong teamId)
+        public async Task<IEnumerable<Player>> GetTeamPlayers(Guid teamId)
             => await _dbContext.Set<Competitor>()
-            .Where(competitor => (competitor is Player) && ((Player)competitor).Teams.Exists(team => team.Id == teamId))
+            .Where(competitor => (competitor is Player) && ((Player)competitor).Teams.Exists(team => team.Id.Equals(teamId)))
             .Select(competitor => (Player)competitor)
             .ToListAsync();
     }

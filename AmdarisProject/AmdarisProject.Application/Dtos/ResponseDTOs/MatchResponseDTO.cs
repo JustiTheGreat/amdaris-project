@@ -8,10 +8,10 @@ namespace AmdarisProject.Application.Dtos.ResponseDTOs
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public MatchStatus? Status { get; set; }
-        public ulong? CompetitorOne { get; set; }
-        public ulong? CompetitorTwo { get; set; }
-        public ulong? Competition { get; set; }
-        public ulong? Stage { get; set; }
-        public List<ulong> Points { get; set; } = [];
+        public Guid? CompetitorOne { get; set; }
+        public Guid? CompetitorTwo { get; set; }
+        public Guid? Competition { get; set; }
+        public Guid? Stage { get; set; }
+        public List<Guid> Points { get; set; } = [];
     }
 }

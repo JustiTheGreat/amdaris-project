@@ -2,6 +2,6 @@
 {
     public class TournamentCompetitionResponseDTO : CompetitionResponseDTO
     {
-        public IEnumerable<ulong> Stages { get; set; } = [];
+        public IEnumerable<Guid> Stages { get; set; } = [];
     }
 }

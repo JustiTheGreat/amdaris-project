@@ -8,7 +8,7 @@ using MediatR;
 
 namespace AmdarisProject.handlers.competition
 {
-    public record GetCompetitionFirstPlaceCompetitors(ulong CompetitionId) : IRequest<IEnumerable<CompetitorResponseDTO>>;
+    public record GetCompetitionFirstPlaceCompetitors(Guid CompetitionId) : IRequest<IEnumerable<CompetitorResponseDTO>>;
     public class GetCompetitionFirstPlaceCompetitorsHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<GetCompetitionFirstPlaceCompetitors, IEnumerable<CompetitorResponseDTO>>
     {

@@ -1,9 +1,3 @@
-C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\obj\Debug\net8.0\AmdarisProject.Infrastructure.csproj.AssemblyReference.cache
-C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\obj\Debug\net8.0\AmdarisProject.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\obj\Debug\net8.0\AmdarisProject.Infrastructure.AssemblyInfoInputs.cache
-C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\obj\Debug\net8.0\AmdarisProject.Infrastructure.AssemblyInfo.cs
-C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\obj\Debug\net8.0\AmdarisProject.Infrastructure.csproj.CoreCompileInputs.cache
-C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\obj\Debug\net8.0\AmdarisProject.Infrastructure.sourcelink.json
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\bin\Debug\net8.0\AmdarisProject.Infrastructure.deps.json
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\bin\Debug\net8.0\AmdarisProject.Infrastructure.runtimeconfig.json
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\bin\Debug\net8.0\AmdarisProject.Infrastructure.dll
@@ -12,6 +6,12 @@ C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\bin\Debug\net8.0\AmdarisProject.Domain.dll
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\bin\Debug\net8.0\AmdarisProject.Application.pdb
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\bin\Debug\net8.0\AmdarisProject.Domain.pdb
+C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\obj\Debug\net8.0\AmdarisProject.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\obj\Debug\net8.0\AmdarisProject.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\obj\Debug\net8.0\AmdarisProject.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\obj\Debug\net8.0\AmdarisProject.Infrastructure.AssemblyInfo.cs
+C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\obj\Debug\net8.0\AmdarisProject.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\obj\Debug\net8.0\AmdarisProject.Infrastructure.sourcelink.json
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\obj\Debug\net8.0\AmdarisP.BCDBFB89.Up2Date
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\obj\Debug\net8.0\AmdarisProject.Infrastructure.dll
 C:\Users\justinian.zaharia\Desktop\amdaris-project\AmdarisProject\AmdarisProject.Infrastructure\obj\Debug\net8.0\refint\AmdarisProject.Infrastructure.dll

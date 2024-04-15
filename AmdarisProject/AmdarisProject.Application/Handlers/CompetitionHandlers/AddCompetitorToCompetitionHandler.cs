@@ -10,7 +10,7 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 {
-    public record AddCompetitorToCompetition(ulong CompetitorId, ulong CompetitionId) : IRequest<CompetitionResponseDTO>;
+    public record AddCompetitorToCompetition(Guid CompetitorId, Guid CompetitionId) : IRequest<CompetitionResponseDTO>;
     public class AddCompetitorToCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<AddCompetitorToCompetition, CompetitionResponseDTO>
     {

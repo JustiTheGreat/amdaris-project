@@ -4,13 +4,13 @@ namespace AmdarisProject.Domain.Exceptions
 {
     public class APNotFoundException : AmdarisProjectException
     {
-        public APNotFoundException(Tuple<string, ulong> id) : base(FormatId(id)) { }
+        public APNotFoundException(Tuple<string, Guid> id) : base(FormatId(id)) { }
 
-        public APNotFoundException(List<Tuple<string, ulong>> ids) : base(FormatIds(ids)) { }
+        public APNotFoundException(List<Tuple<string, Guid>> ids) : base(FormatIds(ids)) { }
 
-        private static string FormatId(Tuple<string, ulong> id) => $"{id.Item1}={id.Item2};";
+        private static string FormatId(Tuple<string, Guid> id) => $"{id.Item1}={id.Item2};";
 
-        private static string FormatIds(List<Tuple<string, ulong>> ids)
+        private static string FormatIds(List<Tuple<string, Guid>> ids)
         {
             StringBuilder stringBuilder = new();
             ids.ForEach(id => stringBuilder = stringBuilder.Append(FormatId(id)));

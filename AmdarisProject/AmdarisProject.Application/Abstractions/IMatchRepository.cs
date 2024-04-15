@@ -5,14 +5,14 @@ namespace AmdarisProject.Application.Abstractions
 {
     public interface IMatchRepository : IGenericRepository<Match>
     {
-        Task<bool> ContainsCompetitor(ulong matchId, ulong competitorId);
+        Task<bool> ContainsCompetitor(Guid matchId, Guid competitorId);
 
-        Task<IEnumerable<Match>> GetUnfinishedByCompetition(ulong competitionId);
+        Task<IEnumerable<Match>> GetUnfinishedByCompetition(Guid competitionId);
 
-        Task<IEnumerable<Match>> GetAllByCompetitorAndGameType(ulong competitorId, GameType gameType);
+        Task<IEnumerable<Match>> GetAllByCompetitorAndGameType(Guid competitorId, GameType gameType);
 
-        Task<IEnumerable<Match>> GetAllByCompetitorAndCompetition(ulong competitorId, ulong competitionId);
+        Task<IEnumerable<Match>> GetAllByCompetitorAndCompetition(Guid competitorId, Guid competitionId);
 
-        Task<IEnumerable<Match>> GetNotStartedByCompetitionOrderedByStartTime(ulong competitionId);
+        Task<IEnumerable<Match>> GetNotStartedByCompetitionOrderedByStartTime(Guid competitionId);
     }
 }

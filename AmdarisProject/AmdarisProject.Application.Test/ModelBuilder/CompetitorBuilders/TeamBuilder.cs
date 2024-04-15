@@ -9,7 +9,7 @@ namespace AmdarisProject.Application.Test.ModelBuilder.CompetitorBuilders
         public static TeamBuilder CreateBasic()
             => new(new Team()
             {
-                Id = ++_instances,
+                Id = Guid.NewGuid(),
                 Name = "Test",
                 TeamSize = 2,
             });

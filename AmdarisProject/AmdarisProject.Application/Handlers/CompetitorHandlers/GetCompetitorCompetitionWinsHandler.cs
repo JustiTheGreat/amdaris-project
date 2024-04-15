@@ -4,7 +4,7 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.CompetitorHandlers
 {
-    public record GetCompetitorCompetitionWins(ulong CompetitorId, ulong CompetitionId) : IRequest<uint>;
+    public record GetCompetitorCompetitionWins(Guid CompetitorId, Guid CompetitionId) : IRequest<uint>;
     public class GetCompetitorCompetitionWinsHandler(IUnitOfWork unitOfWork)
         : IRequestHandler<GetCompetitorCompetitionWins, uint>
     {

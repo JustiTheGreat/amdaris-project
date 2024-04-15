@@ -8,10 +8,10 @@ namespace AmdarisProject.Application.Dtos.CreateDTOs
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public required MatchStatus Status { get; set; }
-        public required ulong CompetitorOne { get; set; }
-        public required ulong CompetitorTwo { get; set; }
-        public required ulong Competition { get; set; }
-        public ulong? Stage { get; set; }
-        public List<ulong> Points { get; set; } = [];
+        public required Guid CompetitorOne { get; set; }
+        public required Guid CompetitorTwo { get; set; }
+        public required Guid Competition { get; set; }
+        public Guid? Stage { get; set; }
+        public List<Guid> Points { get; set; } = [];
     }
 }

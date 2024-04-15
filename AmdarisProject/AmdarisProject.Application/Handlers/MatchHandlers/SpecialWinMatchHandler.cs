@@ -9,7 +9,7 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.MatchHandlers
 {
-    public record SpecialWinMatch(ulong MatchId, MatchCompetitor MatchCompetitor) : IRequest<MatchResponseDTO>;
+    public record SpecialWinMatch(Guid MatchId, MatchCompetitor MatchCompetitor) : IRequest<MatchResponseDTO>;
     public class SpecialWinMatchHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<SpecialWinMatch, MatchResponseDTO>
     {

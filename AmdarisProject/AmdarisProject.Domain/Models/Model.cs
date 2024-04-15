@@ -2,6 +2,6 @@
 {
     public abstract class Model
     {
-        public ulong Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

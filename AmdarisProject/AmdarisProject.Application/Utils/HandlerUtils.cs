@@ -13,23 +13,23 @@ namespace AmdarisProject.Application.Utils
 {
     public static class HandlerUtils
     {
-        public static bool CompetitionContainsCompetitor(Competition competition, ulong competitorId)
+        public static bool CompetitionContainsCompetitor(Competition competition, Guid competitorId)
             => competition.Competitors.Any(
-                competitor => competitor.Id == competitorId
+                competitor => competitor.Id.Equals(competitorId)
                 || competition.CompetitorType is CompetitorType.TEAM
                         && TeamContainsPlayer((Team)competitor, competitorId));
 
-        public static bool MatchContainsCompetitor(Match match, ulong competitorId)
-            => match.CompetitorOne.Id == competitorId
-            || match.CompetitorTwo.Id == competitorId
+        public static bool MatchContainsCompetitor(Match match, Guid competitorId)
+            => match.CompetitorOne.Id.Equals(competitorId)
+            || match.CompetitorTwo.Id.Equals(competitorId)
             || match.Competition.CompetitorType is CompetitorType.TEAM
                 && match.CompetitorOne is Team teamOne && TeamContainsPlayer(teamOne, competitorId)
                     || match.CompetitorTwo is Team teamTwo && TeamContainsPlayer(teamTwo, competitorId);
 
-        public static bool TeamContainsPlayer(Team team, ulong playerId)
-            => team.Players.Any(player => player.Id == playerId);
+        public static bool TeamContainsPlayer(Team team, Guid playerId)
+            => team.Players.Any(player => player.Id.Equals(playerId));
 
-        public static async Task<uint> GetCompetitorMatchPointsUtil(IUnitOfWork unitOfWork, ulong matchId, ulong competitorId)
+        public static async Task<uint> GetCompetitorMatchPointsUtil(IUnitOfWork unitOfWork, Guid matchId, Guid competitorId)
         {
             Match match = await unitOfWork.MatchRepository.GetById(matchId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(matchId), matchId));
@@ -61,7 +61,7 @@ namespace AmdarisProject.Application.Utils
             return points;
         }
 
-        public static async Task<bool> MatchHasACompetitorWithTheWinningScoreUtil(IUnitOfWork unitOfWork, ulong matchId)
+        public static async Task<bool> MatchHasACompetitorWithTheWinningScoreUtil(IUnitOfWork unitOfWork, Guid matchId)
         {
             Match match = await unitOfWork.MatchRepository.GetById(matchId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(matchId), matchId));
@@ -76,7 +76,7 @@ namespace AmdarisProject.Application.Utils
             return aCompetitorHasTheWinningScore;
         }
 
-        private static async Task<Competitor?> GetMatchWinnerUtil(IUnitOfWork unitOfWork, ulong matchId)
+        private static async Task<Competitor?> GetMatchWinnerUtil(IUnitOfWork unitOfWork, Guid matchId)
         {
             Match match = await unitOfWork.MatchRepository.GetById(matchId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(matchId), matchId));
@@ -104,21 +104,21 @@ namespace AmdarisProject.Application.Utils
             return winner;
         }
 
-        public static async Task<bool> CompetitorIsPartOfTheWinningSideUtil(IUnitOfWork unitOfWork, ulong matchId, ulong competitorId)
+        public static async Task<bool> CompetitorIsPartOfTheWinningSideUtil(IUnitOfWork unitOfWork, Guid matchId, Guid competitorId)
         {
             Competitor? competitor = await GetMatchWinnerUtil(unitOfWork, matchId);
-            return competitor is not null && competitor.Id == competitorId
+            return competitor is not null && competitor.Id.Equals(competitorId)
                 || competitor is Team team && TeamContainsPlayer(team, competitor.Id);
         }
 
-        public static double GetCompetitorWinRatingOfMatchesUtil(IUnitOfWork unitOfWork, IEnumerable<Match> playedMatches, ulong competitorId)
+        public static double GetCompetitorWinRatingOfMatchesUtil(IUnitOfWork unitOfWork, IEnumerable<Match> playedMatches, Guid competitorId)
         {
             uint wins = (uint)playedMatches.Count(match => CompetitorIsPartOfTheWinningSideUtil(unitOfWork, match.Id, competitorId).Result);
             double rating = (double)wins / playedMatches.Count();
             return rating;
         }
 
-        public static async Task<uint> GetCompetitorCompetitionWinsUtil(IUnitOfWork unitOfWork, ulong competitorId, ulong competitionId)
+        public static async Task<uint> GetCompetitorCompetitionWinsUtil(IUnitOfWork unitOfWork, Guid competitorId, Guid competitionId)
         {
             Competition competition = await unitOfWork.CompetitionRepository.GetById(competitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(competitionId), competitionId));
@@ -132,7 +132,7 @@ namespace AmdarisProject.Application.Utils
             return wins;
         }
 
-        public static async Task<uint> GetCompetitorCompetitionPointsUtil(IUnitOfWork unitOfWork, ulong competitorId, ulong competitionId)
+        public static async Task<uint> GetCompetitorCompetitionPointsUtil(IUnitOfWork unitOfWork, Guid competitorId, Guid competitionId)
         {
             Competition competition = await unitOfWork.CompetitionRepository.GetById(competitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(competitionId), competitionId));
@@ -147,7 +147,7 @@ namespace AmdarisProject.Application.Utils
             return points;
         }
 
-        public static async Task<IEnumerable<RankingItemDTO>> GetCompetitionRankingUtil(IUnitOfWork unitOfWork, ulong competitionId)
+        public static async Task<IEnumerable<RankingItemDTO>> GetCompetitionRankingUtil(IUnitOfWork unitOfWork, Guid competitionId)
         {
             Competition competition = await unitOfWork.CompetitionRepository.GetById(competitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(competitionId), competitionId));
@@ -170,20 +170,20 @@ namespace AmdarisProject.Application.Utils
             return ranking;
         }
 
-        public static async Task<IEnumerable<Competitor>> GetCompetitionFirstPlaceCompetitorsUtil(IUnitOfWork unitOfWork, ulong competitionId)
+        public static async Task<IEnumerable<Competitor>> GetCompetitionFirstPlaceCompetitorsUtil(IUnitOfWork unitOfWork, Guid competitionId)
         {
             IEnumerable<RankingItemDTO> ranking = await GetCompetitionRankingUtil(unitOfWork, competitionId);
             uint maxWinsOnCompetition = ranking.First().Wins;
             uint maxPointsOnCompetition = ranking.First().Points;
-            IEnumerable<ulong> firstPlaceCompetitorIds = ranking
+            IEnumerable<Guid> firstPlaceCompetitorIds = ranking
                 .Where(rankingItem => rankingItem.Wins == maxWinsOnCompetition && rankingItem.Points == maxPointsOnCompetition)
                 .Select(rankingItem => rankingItem.CompetitorId).ToList();
             IEnumerable<Competitor> firstPlaceCompetitors = await unitOfWork.CompetitorRepository.GetByIds(firstPlaceCompetitorIds);
             return firstPlaceCompetitors;
         }
 
-        private static async Task<Match> CreateMatch(IUnitOfWork unitOfWork, IMapper mapper, string location, ulong competitorOneId,
-            ulong competitorTwoId, ulong competitionId)
+        private static async Task<Match> CreateMatch(IUnitOfWork unitOfWork, IMapper mapper, string location, Guid competitorOneId,
+            Guid competitorTwoId, Guid competitionId)
         {
             Competitor competitorOne = await unitOfWork.CompetitorRepository.GetById(competitorOneId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(competitorOneId), competitorOneId));
@@ -200,7 +200,7 @@ namespace AmdarisProject.Application.Utils
                     && (competitorOne is not Team || competitorTwo is not Team))
                 throw new AmdarisProjectException("Competiors not matching the competition type!");
 
-            if (competitorOne.Id == competitorTwo.Id)
+            if (competitorOne.Id.Equals(competitorTwo.Id))
                 throw new AmdarisProjectException($"Trying to create a match with the same competitor on both sides!");
 
             if (!CompetitionContainsCompetitor(competition, competitorOne.Id))
@@ -245,8 +245,8 @@ namespace AmdarisProject.Application.Utils
             return created;
         }
 
-        private static async Task<Stage> CreateStage(IUnitOfWork unitOfWork, IMapper mapper, ulong competitionId,
-            IEnumerable<ulong> matchIds)
+        private static async Task<Stage> CreateStage(IUnitOfWork unitOfWork, IMapper mapper, Guid competitionId,
+            IEnumerable<Guid> matchIds)
         {
             IEnumerable<Match> matches = await unitOfWork.MatchRepository.GetByIds(matchIds);
 
@@ -270,7 +270,7 @@ namespace AmdarisProject.Application.Utils
 
             foreach (Match match in matches)
             {
-                if (match.Id != competition.Id || match.Status is not MatchStatus.NOT_STARTED)
+                if (!match.Competition.Id.Equals(competition.Id) || match.Status is not MatchStatus.NOT_STARTED)
                     throw new APArgumentException(nameof(matches));
             }
 
@@ -286,7 +286,7 @@ namespace AmdarisProject.Application.Utils
             return created;
         }
 
-        public static async Task<IEnumerable<Match>> CreateCompetitionMatchesUtil(IUnitOfWork unitOfWork, IMapper mapper, ulong competitionId)
+        public static async Task<IEnumerable<Match>> CreateCompetitionMatchesUtil(IUnitOfWork unitOfWork, IMapper mapper, Guid competitionId)
         {
             async Task<IEnumerable<Match>> CreateOneVSAllCompetitionMatches(OneVSAllCompetition oneVSAllCompetition, IEnumerable<Competitor> competitors)
             {
@@ -321,7 +321,7 @@ namespace AmdarisProject.Application.Utils
 
                 //TODO tournament competition cancel advancement logic
 
-                List<ulong> stageMatchIds = [];
+                List<Guid> stageMatchIds = [];
                 for (int i = 0; i < competitors.Count(); i += 2)
                 {
                     Match created = CreateMatch(unitOfWork, mapper, tournamentCompetition.Location, competitors.ElementAt(i).Id,

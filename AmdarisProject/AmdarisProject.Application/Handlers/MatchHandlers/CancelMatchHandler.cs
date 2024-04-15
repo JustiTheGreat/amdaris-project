@@ -9,7 +9,7 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.MatchHandlers
 {
-    public record CancelMatch(ulong MatchId) : IRequest<MatchResponseDTO>;
+    public record CancelMatch(Guid MatchId) : IRequest<MatchResponseDTO>;
     public class CancelMatchHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<CancelMatch, MatchResponseDTO>
     {

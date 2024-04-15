@@ -8,7 +8,7 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.CompetitorHandlers
 {
-    public record AddPlayerToTeam(ulong PlayerId, ulong TeamId) : IRequest<TeamResponseDTO>;
+    public record AddPlayerToTeam(Guid PlayerId, Guid TeamId) : IRequest<TeamResponseDTO>;
     public class AddPlayerToTeamHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<AddPlayerToTeam, TeamResponseDTO>
     {

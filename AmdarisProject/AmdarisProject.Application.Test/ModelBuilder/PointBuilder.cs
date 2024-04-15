@@ -11,7 +11,7 @@ namespace AmdarisProject.Application.Test.ModelBuilder
         public static PointBuilder CreateBasic()
             => new(new Point()
             {
-                Id = ++_instances,
+                Id = Guid.NewGuid(),
                 Value = 0,
                 Match = Builders.CreateBasicMatch().Get(),
                 Player = Builders.CreateBasicPlayer().Get(),

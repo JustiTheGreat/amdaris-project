@@ -22,10 +22,10 @@ namespace AmdarisProject.Infrastructure.Repositories
             return created;
         }
 
-        public async Task<T?> GetById(ulong id)
-            => await _dbContext.Set<T>().FirstOrDefaultAsync(item => item.Id == id);
+        public async Task<T?> GetById(Guid id)
+            => await _dbContext.Set<T>().FirstOrDefaultAsync(item => item.Id.Equals(id));
 
-        public async Task<IEnumerable<T>> GetByIds(IEnumerable<ulong> ids)
+        public async Task<IEnumerable<T>> GetByIds(IEnumerable<Guid> ids)
             => ids.Select(id => GetById(id).Result
                 ?? throw new APNotFoundException(Tuple.Create(nameof(id), id))).ToList();
 
@@ -33,7 +33,7 @@ namespace AmdarisProject.Infrastructure.Repositories
         public async Task<IEnumerable<T>> GetAll()
             => await _dbContext.Set<T>().ToListAsync();
 
-        public async Task Delete(ulong id)
+        public async Task Delete(Guid id)
             => _dbContext.Set<T>().Remove(await GetById(id)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(id), id)));
 

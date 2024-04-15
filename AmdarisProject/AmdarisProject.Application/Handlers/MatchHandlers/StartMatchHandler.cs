@@ -9,7 +9,7 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.MatchHandlers
 {
-    public record StartMatch(ulong MatchId) : IRequest<MatchResponseDTO>;
+    public record StartMatch(Guid MatchId) : IRequest<MatchResponseDTO>;
     public class StartMatchHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<StartMatch, MatchResponseDTO>
     {

@@ -27,9 +27,9 @@ namespace AmdarisProject.Application.Test
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.PointRepository).Returns(_pointRepositoryMock.Object);
 
-            _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<ulong>())).Returns(Task.FromResult((Match?)match));
-            _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<ulong>())).Returns(Task.FromResult((Competitor?)player));
-            _pointRepositoryMock.Setup(o => o.GetByPlayerAndMatch(It.IsAny<ulong>(), It.IsAny<ulong>())).Returns(Task.FromResult((Point?)point));
+            _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
+            _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competitor?)player));
+            _pointRepositoryMock.Setup(o => o.GetByPlayerAndMatch(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.FromResult((Point?)point));
 
             GetCompetitorMatchPoints command = new(player.Id, match.Id);
             GetCompetitorMatchPointsHandler handler = new(_unitOfWorkMock.Object);
@@ -37,9 +37,9 @@ namespace AmdarisProject.Application.Test
             uint response = await handler.Handle(command, default);
 
             Assert.True(response == 5);
-            _matchRepositoryMock.Verify(o => o.GetById(It.IsAny<ulong>()), Times.Once);
-            _competitorRepositoryMock.Verify(o => o.GetById(It.IsAny<ulong>()), Times.Once);
-            _pointRepositoryMock.Verify(o => o.GetByPlayerAndMatch(It.IsAny<ulong>(), It.IsAny<ulong>()), Times.Once);
+            _matchRepositoryMock.Verify(o => o.GetById(It.IsAny<Guid>()), Times.Once);
+            _competitorRepositoryMock.Verify(o => o.GetById(It.IsAny<Guid>()), Times.Once);
+            _pointRepositoryMock.Verify(o => o.GetByPlayerAndMatch(It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Once);
         }
 
         [Fact]
@@ -47,12 +47,12 @@ namespace AmdarisProject.Application.Test
         {
             Match match = Builders.CreateBasicMatch().Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
-            _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<ulong>())).Returns(Task.FromResult((Match?)null));
-            GetCompetitorMatchPoints command = new(It.IsAny<ulong>(), match.Id);
+            _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)null));
+            GetCompetitorMatchPoints command = new(It.IsAny<Guid>(), match.Id);
             GetCompetitorMatchPointsHandler handler = new(_unitOfWorkMock.Object);
 
             await Assert.ThrowsAsync<APNotFoundException>(async () => await handler.Handle(command, default));
-            _matchRepositoryMock.Verify(o => o.GetById(It.IsAny<ulong>()), Times.Once);
+            _matchRepositoryMock.Verify(o => o.GetById(It.IsAny<Guid>()), Times.Once);
         }
 
         public static TheoryData<Match> IllegalStatusMatches = new()
@@ -66,12 +66,12 @@ namespace AmdarisProject.Application.Test
         public async Task Test_GetCompetitorMatchPointsHandler_IllegalStatusMatch_Throws_APIllegalStatusException(Match match)
         {
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
-            _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<ulong>())).Returns(Task.FromResult((Match?)match));
-            GetCompetitorMatchPoints command = new(It.IsAny<ulong>(), match.Id);
+            _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
+            GetCompetitorMatchPoints command = new(It.IsAny<Guid>(), match.Id);
             GetCompetitorMatchPointsHandler handler = new(_unitOfWorkMock.Object);
 
             await Assert.ThrowsAsync<APIllegalStatusException>(async () => await handler.Handle(command, default));
-            _matchRepositoryMock.Verify(o => o.GetById(It.IsAny<ulong>()), Times.Once);
+            _matchRepositoryMock.Verify(o => o.GetById(It.IsAny<Guid>()), Times.Once);
         }
 
         [Fact]
@@ -80,12 +80,12 @@ namespace AmdarisProject.Application.Test
             Player player = Builders.CreateBasicPlayer().Get();
             Match match = Builders.CreateBasicMatch().Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
-            _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<ulong>())).Returns(Task.FromResult((Match?)match));
+            _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             GetCompetitorMatchPoints command = new(player.Id, match.Id);
             GetCompetitorMatchPointsHandler handler = new(_unitOfWorkMock.Object);
 
             await Assert.ThrowsAsync<AmdarisProjectException>(async () => await handler.Handle(command, default));
-            _matchRepositoryMock.Verify(o => o.GetById(It.IsAny<ulong>()), Times.Once);
+            _matchRepositoryMock.Verify(o => o.GetById(It.IsAny<Guid>()), Times.Once);
         }
 
         [Fact]
@@ -97,15 +97,15 @@ namespace AmdarisProject.Application.Test
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.PointRepository).Returns(_pointRepositoryMock.Object);
 
-            _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<ulong>())).Returns(Task.FromResult((Match?)match));
-            _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<ulong>())).Returns(Task.FromResult((Competitor?)null));
+            _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
+            _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competitor?)null));
 
             GetCompetitorMatchPoints command = new(player.Id, match.Id);
             GetCompetitorMatchPointsHandler handler = new(_unitOfWorkMock.Object);
 
             await Assert.ThrowsAsync<APNotFoundException>(async () => await handler.Handle(command, default));
-            _matchRepositoryMock.Verify(o => o.GetById(It.IsAny<ulong>()), Times.Once);
-            _competitorRepositoryMock.Verify(o => o.GetById(It.IsAny<ulong>()), Times.Once);
+            _matchRepositoryMock.Verify(o => o.GetById(It.IsAny<Guid>()), Times.Once);
+            _competitorRepositoryMock.Verify(o => o.GetById(It.IsAny<Guid>()), Times.Once);
         }
 
         [Fact]
@@ -117,17 +117,17 @@ namespace AmdarisProject.Application.Test
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.PointRepository).Returns(_pointRepositoryMock.Object);
 
-            _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<ulong>())).Returns(Task.FromResult((Match?)match));
-            _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<ulong>())).Returns(Task.FromResult((Competitor?)player));
-            _pointRepositoryMock.Setup(o => o.GetByPlayerAndMatch(It.IsAny<ulong>(), It.IsAny<ulong>())).Returns(Task.FromResult((Point?)null));
+            _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
+            _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competitor?)player));
+            _pointRepositoryMock.Setup(o => o.GetByPlayerAndMatch(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.FromResult((Point?)null));
 
             GetCompetitorMatchPoints command = new(player.Id, match.Id);
             GetCompetitorMatchPointsHandler handler = new(_unitOfWorkMock.Object);
 
             await Assert.ThrowsAsync<APNotFoundException>(async () => await handler.Handle(command, default));
-            _matchRepositoryMock.Verify(o => o.GetById(It.IsAny<ulong>()), Times.Once);
-            _competitorRepositoryMock.Verify(o => o.GetById(It.IsAny<ulong>()), Times.Once);
-            _pointRepositoryMock.Verify(o => o.GetByPlayerAndMatch(It.IsAny<ulong>(), It.IsAny<ulong>()), Times.Once);
+            _matchRepositoryMock.Verify(o => o.GetById(It.IsAny<Guid>()), Times.Once);
+            _competitorRepositoryMock.Verify(o => o.GetById(It.IsAny<Guid>()), Times.Once);
+            _pointRepositoryMock.Verify(o => o.GetByPlayerAndMatch(It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Once);
         }
     }
 }

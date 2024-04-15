@@ -12,7 +12,7 @@ namespace AmdarisProject.Application.Test.ModelBuilder
         public static MatchBuilder CreateBasic()
             => new(new Match()
             {
-                Id = ++_instances,
+                Id = Guid.NewGuid(),
                 Location = "Test",
                 StartTime = DateTime.Now,
                 EndTime = DateTime.Now,

@@ -10,7 +10,7 @@ namespace AmdarisProject.Application.Test.ModelBuilder.CompetitionBuilders
         public static TournamentCompetitionBuilder CreateBasic()
             => new(new TournamentCompetition()
             {
-                Id = ++_instances,
+                Id = Guid.NewGuid(),
                 Name = "Test",
                 Location = "Test",
                 StartTime = DateTime.Now,

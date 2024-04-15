@@ -10,7 +10,7 @@ using MediatR;
 
 namespace AmdarisProject.handlers.competition
 {
-    public record GetCompetitionWinner(ulong CompetitionId) : IRequest<IEnumerable<CompetitorResponseDTO>>;
+    public record GetCompetitionWinner(Guid CompetitionId) : IRequest<IEnumerable<CompetitorResponseDTO>>;
     public class GetCompetitionWinnersHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<GetCompetitionWinner, IEnumerable<CompetitorResponseDTO>>
     {

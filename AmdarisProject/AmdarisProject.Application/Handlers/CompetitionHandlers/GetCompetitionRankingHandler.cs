@@ -5,7 +5,7 @@ using MediatR;
 
 namespace AmdarisProject.handlers.competition
 {
-    public record GetCompetitionRanking(ulong CompetitionId) : IRequest<IEnumerable<RankingItemDTO>>;
+    public record GetCompetitionRanking(Guid CompetitionId) : IRequest<IEnumerable<RankingItemDTO>>;
     public class GetCompetitionRankingHandler(IUnitOfWork unitOfWork)
         : IRequestHandler<GetCompetitionRanking, IEnumerable<RankingItemDTO>>
     {

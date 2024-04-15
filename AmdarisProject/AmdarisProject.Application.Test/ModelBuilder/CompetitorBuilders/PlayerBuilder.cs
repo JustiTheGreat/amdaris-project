@@ -9,7 +9,7 @@ namespace AmdarisProject.Application.Test.ModelBuilder.CompetitorBuilders
         public static PlayerBuilder CreateBasic()
             => new(new Player()
             {
-                Id = ++_instances,
+                Id = Guid.NewGuid(),
                 Name = "Test",
             });
     }

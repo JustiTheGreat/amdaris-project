@@ -8,6 +8,6 @@ namespace AmdarisProject.Application.Abstractions
 
         Task<IEnumerable<Player>> GetAllPlayers();
 
-        Task<IEnumerable<Player>> GetTeamPlayers(ulong teamId);
+        Task<IEnumerable<Player>> GetTeamPlayers(Guid teamId);
     }
 }
