@@ -5,16 +5,17 @@ using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using Mapster;
+using MapsterMapper;
 using MediatR;
 
 namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 {
     public record AddCompetitorToCompetition(ulong CompetitorId, ulong CompetitionId) : IRequest<CompetitionResponseDTO>;
-    public class AddCompetitorToCompetitionHandler(IUnitOfWork unitOfWork)
+    public class AddCompetitorToCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<AddCompetitorToCompetition, CompetitionResponseDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<CompetitionResponseDTO> Handle(AddCompetitorToCompetition request, CancellationToken cancellationToken)
         {
@@ -52,8 +53,8 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
             Console.WriteLine($"Competitor {competitor.Name} has registered to competition {competition.Name}!");
             //
 
-            CompetitionResponseDTO response = competition is OneVSAllCompetition ? competition.Adapt<OneVSAllCompetitionResponseDTO>()
-                : competition is TournamentCompetition ? competition.Adapt<TournamentCompetitionResponseDTO>()
+            CompetitionResponseDTO response = competition is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(competition)
+                : competition is TournamentCompetition ? _mapper.Map<TournamentCompetitionResponseDTO>(competition)
                 : throw new AmdarisProjectException(nameof(competition));
 
             return response;

@@ -5,16 +5,17 @@ using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using Mapster;
+using MapsterMapper;
 using MediatR;
 
 namespace AmdarisProject.Application.Handlers.MatchHandlers
 {
     public record GetMatchWinner(ulong MatchId) : IRequest<CompetitorResponseDTO?>;
-    public class GetMatchWinnerHandler(IUnitOfWork unitOfWork)
+    public class GetMatchWinnerHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<GetMatchWinner, CompetitorResponseDTO?>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<CompetitorResponseDTO?> Handle(GetMatchWinner request, CancellationToken cancellationToken)
         {
@@ -39,7 +40,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                     : match.CompetitorTwo;
             }
 
-            CompetitorResponseDTO? response = winner?.Adapt<CompetitorResponseDTO>();
+            CompetitorResponseDTO? response = winner is null ? null : _mapper.Map<CompetitorResponseDTO>(winner);
             return response;
         }
     }

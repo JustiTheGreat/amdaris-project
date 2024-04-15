@@ -7,7 +7,7 @@ using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using Mapster;
+using MapsterMapper;
 
 namespace AmdarisProject.Application.Utils
 {
@@ -23,8 +23,8 @@ namespace AmdarisProject.Application.Utils
             => match.CompetitorOne.Id == competitorId
             || match.CompetitorTwo.Id == competitorId
             || match.Competition.CompetitorType is CompetitorType.TEAM
-                && TeamContainsPlayer((Team)match.CompetitorOne, competitorId)
-                    || TeamContainsPlayer((Team)match.CompetitorTwo, competitorId);
+                && match.CompetitorOne is Team teamOne && TeamContainsPlayer(teamOne, competitorId)
+                    || match.CompetitorTwo is Team teamTwo && TeamContainsPlayer(teamTwo, competitorId);
 
         public static bool TeamContainsPlayer(Team team, ulong playerId)
             => team.Players.Any(player => player.Id == playerId);
@@ -49,12 +49,12 @@ namespace AmdarisProject.Application.Utils
             uint points = competitor is Player
                 ? unitOfWork.PointRepository.GetByPlayerAndMatch(competitorId, matchId).Result?.Value
                     ?? throw new APNotFoundException(
-                        [Tuple.Create(nameof(competitorId), competitorId), 
+                        [Tuple.Create(nameof(competitorId), competitorId),
                         Tuple.Create(nameof(matchId), matchId)])
                 : ((Team)competitor).Players
                     .Select(player => unitOfWork.PointRepository.GetByPlayerAndMatch(player.Id, matchId).Result?.Value
                         ?? throw new APNotFoundException(
-                            [Tuple.Create(nameof(player.Id), player.Id), 
+                            [Tuple.Create(nameof(player.Id), player.Id),
                             Tuple.Create(nameof(matchId), matchId)]))
                     .Aggregate((point1, point2) => point1 + point2);
 
@@ -81,7 +81,9 @@ namespace AmdarisProject.Application.Utils
             Match match = await unitOfWork.MatchRepository.GetById(matchId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(matchId), matchId));
 
-            if (match.Status is MatchStatus.NOT_STARTED or MatchStatus.STARTED or MatchStatus.CANCELED)
+            if (match.Status is not MatchStatus.FINISHED
+                && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_ONE
+                && match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_TWO)
                 throw new APIllegalStatusException(match.Status);
 
             Competitor? winner;
@@ -180,7 +182,7 @@ namespace AmdarisProject.Application.Utils
             return firstPlaceCompetitors;
         }
 
-        private static async Task<Match> CreateMatch(IUnitOfWork unitOfWork, string location, ulong competitorOneId,
+        private static async Task<Match> CreateMatch(IUnitOfWork unitOfWork, IMapper mapper, string location, ulong competitorOneId,
             ulong competitorTwoId, ulong competitionId)
         {
             Competitor competitorOne = await unitOfWork.CompetitorRepository.GetById(competitorOneId)
@@ -225,7 +227,7 @@ namespace AmdarisProject.Application.Utils
                 }
             }
 
-            MatchCreateDTO match = new()
+            MatchCreateDTO matchCreateDTO = new()
             {
                 Location = location,
                 StartTime = matchStartTime,
@@ -238,11 +240,13 @@ namespace AmdarisProject.Application.Utils
                 Points = [],
             };
 
-            Match created = await unitOfWork.MatchRepository.Create(match.Adapt<Match>());
+            Match mapped = mapper.Map<Match>(matchCreateDTO);
+            Match created = await unitOfWork.MatchRepository.Create(mapped);
             return created;
         }
 
-        private static async Task<Stage> CreateStage(IUnitOfWork unitOfWork, ulong competitionId, IEnumerable<ulong> matchIds)
+        private static async Task<Stage> CreateStage(IUnitOfWork unitOfWork, IMapper mapper, ulong competitionId,
+            IEnumerable<ulong> matchIds)
         {
             IEnumerable<Match> matches = await unitOfWork.MatchRepository.GetByIds(matchIds);
 
@@ -277,11 +281,12 @@ namespace AmdarisProject.Application.Utils
                 TournamentCompetition = competition.Id,
             };
 
-            Stage created = await unitOfWork.StageRepository.Create(stage.Adapt<Stage>());
+            Stage mapped = mapper.Map<Stage>(stage);
+            Stage created = await unitOfWork.StageRepository.Create(mapped);
             return created;
         }
 
-        public static async Task<IEnumerable<Match>> CreateCompetitionMatchesUtil(IUnitOfWork unitOfWork, ulong competitionId)
+        public static async Task<IEnumerable<Match>> CreateCompetitionMatchesUtil(IUnitOfWork unitOfWork, IMapper mapper, ulong competitionId)
         {
             async Task<IEnumerable<Match>> CreateOneVSAllCompetitionMatches(OneVSAllCompetition oneVSAllCompetition, IEnumerable<Competitor> competitors)
             {
@@ -291,7 +296,7 @@ namespace AmdarisProject.Application.Utils
                 {
                     for (int j = i + 1; j < competitors.Count(); j++)
                     {
-                        Match created = await CreateMatch(unitOfWork, oneVSAllCompetition.Location, competitors.ElementAt(i).Id,
+                        Match created = await CreateMatch(unitOfWork, mapper, oneVSAllCompetition.Location, competitors.ElementAt(i).Id,
                             competitors.ElementAt(j).Id, oneVSAllCompetition.Id);
                         matches.Add(created);
                     }
@@ -319,12 +324,12 @@ namespace AmdarisProject.Application.Utils
                 List<ulong> stageMatchIds = [];
                 for (int i = 0; i < competitors.Count(); i += 2)
                 {
-                    Match created = CreateMatch(unitOfWork, tournamentCompetition.Location, competitors.ElementAt(i).Id,
+                    Match created = CreateMatch(unitOfWork, mapper, tournamentCompetition.Location, competitors.ElementAt(i).Id,
                         competitors.ElementAt(i + 1).Id, tournamentCompetition.Id).Result;
                     stageMatchIds.Add(created.Id);
                     matches.Add(created);
                 }
-                Stage stage = await CreateStage(unitOfWork, tournamentCompetition.Id, stageMatchIds);
+                Stage stage = await CreateStage(unitOfWork, mapper, tournamentCompetition.Id, stageMatchIds);
                 return matches;
             }
 

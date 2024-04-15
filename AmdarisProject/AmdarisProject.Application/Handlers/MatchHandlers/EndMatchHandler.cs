@@ -4,16 +4,17 @@ using AmdarisProject.Application.Utils;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
-using Mapster;
+using MapsterMapper;
 using MediatR;
 
 namespace AmdarisProject.Application.Handlers.MatchHandlers
 {
     public record EndMatch(ulong MatchId) : IRequest<MatchResponseDTO>;
-    public class EndMatchHandler(IUnitOfWork unitOfWork)
+    public class EndMatchHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<EndMatch, MatchResponseDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<MatchResponseDTO> Handle(EndMatch request, CancellationToken cancellationToken)
         {
@@ -35,8 +36,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 match.EndTime = DateTime.Now;
                 updated = await _unitOfWork.MatchRepository.Update(match);
 
-                //TODO CreateBonusMatches
-                await HandlerUtils.CreateCompetitionMatchesUtil(_unitOfWork, updated.Competition.Id);
+                await HandlerUtils.CreateCompetitionMatchesUtil(_unitOfWork, _mapper, updated.Competition.Id);
 
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();
@@ -58,7 +58,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 $"{competitorOneMatchPoints}-{competitorTwoMatchPoints}!");
             //
 
-            MatchResponseDTO response = updated.Adapt<MatchResponseDTO>();
+            MatchResponseDTO response = _mapper.Map<MatchResponseDTO>(updated);
             return response;
         }
     }

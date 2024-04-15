@@ -3,16 +3,17 @@ using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
 using AmdarisProject.Application.Utils;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using Mapster;
+using MapsterMapper;
 using MediatR;
 
 namespace AmdarisProject.Application.Handlers.CompetitorHandlers
 {
     public record AddPlayerToTeam(ulong PlayerId, ulong TeamId) : IRequest<TeamResponseDTO>;
-    public class AddPlayerToTeamHandler(IUnitOfWork unitOfWork)
+    public class AddPlayerToTeamHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<AddPlayerToTeam, TeamResponseDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<TeamResponseDTO> Handle(AddPlayerToTeam request, CancellationToken cancellationToken)
         {
@@ -45,7 +46,7 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
                 throw;
             }
 
-            TeamResponseDTO response = updated.Adapt<TeamResponseDTO>();
+            TeamResponseDTO response = _mapper.Map<TeamResponseDTO>(team);
             return response;
         }
     }

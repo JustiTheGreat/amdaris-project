@@ -2,7 +2,7 @@
 {
     public class CompetitorCreateDTO : CreateDTO
     {
-        public required string Name { get; init; }
+        public required string Name { get; set; }
         public List<ulong> Matches { get; set; } = [];
         public List<ulong> Competitions { get; set; } = [];
     }

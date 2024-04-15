@@ -4,16 +4,17 @@ using AmdarisProject.Application.Utils;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
-using Mapster;
+using MapsterMapper;
 using MediatR;
 
 namespace AmdarisProject.handlers.point
 {
     public record AddPointsToPoint(ulong PlayerId, ulong MatchId, ushort PointsToBeAdded) : IRequest<PointResponseDTO>;
-    public class AddPointsToPointHandler(IUnitOfWork unitOfWork)
+    public class AddPointsToPointHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<AddPointsToPoint, PointResponseDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<PointResponseDTO> Handle(AddPointsToPoint request, CancellationToken cancellationToken)
         {
@@ -48,7 +49,7 @@ namespace AmdarisProject.handlers.point
                 throw;
             }
 
-            PointResponseDTO response = point.Adapt<PointResponseDTO>();
+            PointResponseDTO response = _mapper.Map<PointResponseDTO>(updated);
             return response;
         }
     }

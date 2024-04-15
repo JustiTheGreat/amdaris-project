@@ -4,16 +4,17 @@ using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using Mapster;
+using MapsterMapper;
 using MediatR;
 
 namespace AmdarisProject.Application.Handlers.MatchHandlers
 {
     public record StartMatch(ulong MatchId) : IRequest<MatchResponseDTO>;
-    public class StartMatchHandler(IUnitOfWork unitOfWork)
+    public class StartMatchHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<StartMatch, MatchResponseDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<MatchResponseDTO> Handle(StartMatch request, CancellationToken cancellationToken)
         {
@@ -66,7 +67,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 $"Match between {match.CompetitorOne.Name} and {match.CompetitorTwo.Name} has started!");
             //
 
-            MatchResponseDTO response = updated.Adapt<MatchResponseDTO>();
+            MatchResponseDTO response = _mapper.Map<MatchResponseDTO>(updated);
             return response;
         }
 

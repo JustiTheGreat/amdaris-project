@@ -15,6 +15,9 @@ namespace AmdarisProject.Infrastructure.Repositories
             if (item is null)
                 throw new APArgumentException(nameof(item));
 
+            if (GetById(item.Id).Result is not null)
+                throw new APArgumentException(nameof(item.Id));
+
             T created = (await _dbContext.Set<T>().AddAsync(item)).Entity;
             return created;
         }
@@ -23,7 +26,7 @@ namespace AmdarisProject.Infrastructure.Repositories
             => await _dbContext.Set<T>().FirstOrDefaultAsync(item => item.Id == id);
 
         public async Task<IEnumerable<T>> GetByIds(IEnumerable<ulong> ids)
-            => ids.Select(id => GetById(id).Result 
+            => ids.Select(id => GetById(id).Result
                 ?? throw new APNotFoundException(Tuple.Create(nameof(id), id))).ToList();
 
 

@@ -19,6 +19,7 @@ namespace AmdarisProject.Infrastructure
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //TODO move to appsettings
             if (!optionsBuilder.IsConfigured)
                 optionsBuilder.UseSqlServer("Server=ROMOB41072;Database=AmdarisProject2;Trusted_Connection=True;TrustServerCertificate=True;");
         }

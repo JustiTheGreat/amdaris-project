@@ -2,8 +2,8 @@
 {
     public class StageCreateDTO : CreateDTO
     {
-        public required ushort StageLevel { get; init; }
+        public required ushort StageLevel { get; set; }
         public List<ulong> Matches { get; set; } = [];
-        public required ulong TournamentCompetition { get; init; }
+        public required ulong TournamentCompetition { get; set; }
     }
 }

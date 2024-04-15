@@ -8,19 +8,19 @@ using AmdarisProject.Domain.Enums;
 using AmdarisProject.Infrastructure;
 using AmdarisProject.Infrastructure.Repositories;
 using AmdarisProject.Presentation;
+using MapsterMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 IServiceProvider serviceProvider = new ServiceCollection()
-    .AddDbContext<AmdarisProjectDBContext>(options =>
-        options.UseSqlServer("Server=ROMOB41072;Database=AmdarisProject2;Trusted_Connection=True;TrustServerCertificate=True;"))
+    .AddDbContext<AmdarisProjectDBContext>()
     .AddScoped<ICompetitionRepository, CompetitionRepository>()
     .AddScoped<ICompetitorRepository, CompetitorRepository>()
     .AddScoped<IMatchRepository, MatchRepository>()
     .AddScoped<IPointRepository, PointRepository>()
     .AddScoped<IStageRepository, StageRepository>()
     .AddScoped<IUnitOfWork, UnitOfWork>()
+    .AddScoped<IMapper, Mapper>(sp => new Mapper(MapsterConfiguration.GetMapsterConfiguration()))
     .AddMediatR(configuration => configuration.RegisterServicesFromAssemblies(
         typeof(ICompetitionRepository).Assembly,
         typeof(ICompetitorRepository).Assembly,
@@ -29,8 +29,6 @@ IServiceProvider serviceProvider = new ServiceCollection()
         typeof(IStageRepository).Assembly
     ))
     .BuildServiceProvider();
-
-MapsterConfiguration.ConfigureMapster();
 
 IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
 
