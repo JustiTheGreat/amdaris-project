@@ -2,7 +2,6 @@
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 
 namespace AmdarisProject.Infrastructure.Repositories
 {

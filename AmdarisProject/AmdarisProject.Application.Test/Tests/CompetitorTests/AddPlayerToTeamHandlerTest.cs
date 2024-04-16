@@ -9,7 +9,7 @@ using Mapster;
 using MapsterMapper;
 using Moq;
 
-namespace AmdarisProject.Application.Test
+namespace AmdarisProject.Application.Test.Tests.CompetitorTests
 {
     public class AddPlayerToTeamHandlerTest
     {
@@ -37,7 +37,7 @@ namespace AmdarisProject.Application.Test
 
             _competitorRepositoryMock.Verify(o => o.Update(It.Is<Team>(t => t.Players.Any(p => p.Id.Equals(player.Id)))), Times.Once);
             Assert.Equal(team.Id, response.Id);
-            Assert.Equal(player.Id, response.Players[response.Players.Count - 1]);
+            Assert.Equal(player.Id, response.Players[^1]);
         }
 
         [Fact]

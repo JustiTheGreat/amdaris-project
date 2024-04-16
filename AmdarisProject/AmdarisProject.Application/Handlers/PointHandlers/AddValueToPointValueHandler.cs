@@ -48,9 +48,9 @@ namespace AmdarisProject.handlers.point
                 await _unitOfWork.BeginTransactionAsync();
                 updated = await _unitOfWork.PointRepository.Update(point);
 
-                if (PlayerIsPartOfMatchCompetitor(match.Competition.CompetitorType, match.CompetitorOne, request.PlayerId))
+                if (HandlerUtils.CompetitorIsOrIsPartOfCompetitor(match.CompetitorOne, request.PlayerId))
                     match.CompetitorOnePoints += request.PointsToBeAdded;
-                else if (PlayerIsPartOfMatchCompetitor(match.Competition.CompetitorType, match.CompetitorTwo, request.PlayerId))
+                else if (HandlerUtils.CompetitorIsOrIsPartOfCompetitor(match.CompetitorTwo, request.PlayerId))
                     match.CompetitorTwoPoints += request.PointsToBeAdded;
 
                 await _unitOfWork.MatchRepository.Update(match);

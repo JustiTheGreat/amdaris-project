@@ -1,7 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Utils;
-using AmdarisProject.Application.Utils.ExtensionMethods;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
@@ -47,8 +46,8 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 await _unitOfWork.BeginTransactionAsync();
                 match.Status = request.Status;
                 match.EndTime = DateTime.Now;
-                match.CompetitorOnePoints = await HandlerUtils.GetCompetitorMatchPointsUtil(_unitOfWork, match, match.CompetitorOne.Id);
-                match.CompetitorTwoPoints = await HandlerUtils.GetCompetitorMatchPointsUtil(_unitOfWork, match, match.CompetitorTwo.Id);
+                //match.CompetitorOnePoints = await GetCompetitorMatchPointsUtil(match, match.CompetitorOne.Id);
+                //match.CompetitorTwoPoints = await GetCompetitorMatchPointsUtil(match, match.CompetitorTwo.Id);
                 match.Winner = GetMatchWinner(match);
                 updated = await _unitOfWork.MatchRepository.Update(match);
 
@@ -84,5 +83,26 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 : match.CompetitorOnePoints < match.CompetitorTwoPoints ? match.CompetitorTwo
                 : null)
             : throw new APIllegalStatusException(match.Status);
+
+        //private async Task<uint> GetCompetitorMatchPointsUtil(Match match, Guid competitorId)
+        //{
+        //    if (match.Status is not MatchStatus.STARTED
+        //        || match.Status is not MatchStatus.FINISHED
+        //        || match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_ONE
+        //        || match.Status is not MatchStatus.SPECIAL_WIN_COMPETITOR_TWO)
+        //        throw new APIllegalStatusException(match.Status);
+
+        //    return match.CompetitorOne.Id.Equals(competitorId) ? (uint)match.CompetitorOnePoints!
+        //        : match.CompetitorTwo.Id.Equals(competitorId) ? (uint)match.CompetitorTwoPoints!
+        //        : match.CompetitorOne is Team teamOne ?
+        //            (await _unitOfWork.PointRepository.GetByPlayersAndMatch(teamOne.Players.GetIds(), match.Id))
+        //            .Select(point => point.Value)
+        //            .Aggregate((point1, point2) => point1 + point2)
+        //        : match.CompetitorTwo is Team teamTwo ?
+        //            (await _unitOfWork.PointRepository.GetByPlayersAndMatch(teamTwo.Players.GetIds(), match.Id))
+        //            .Select(point => point.Value)
+        //            .Aggregate((point1, point2) => point1 + point2)
+        //        : throw new AmdarisProjectException("Trying to get points for a competitor not in match!");
+        //}
     }
 }

@@ -1,14 +1,4 @@
-﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Handlers.CompetitorHandlers;
-using AmdarisProject.Application.Test.ModelBuilder;
-using AmdarisProject.Domain.Enums;
-using AmdarisProject.Domain.Exceptions;
-using AmdarisProject.Domain.Models;
-using AmdarisProject.Domain.Models.CompetitorModels;
-using Moq;
-using Match = AmdarisProject.Domain.Models.Match;
-
-namespace AmdarisProject.Application.Test
+﻿namespace AmdarisProject.Application.Test.Tests.CompetitorTests
 {
     public class GetCompetitorMatchPointsHandlerTest
     {

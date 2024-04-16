@@ -10,7 +10,7 @@ using Mapster;
 using MapsterMapper;
 using Moq;
 
-namespace AmdarisProject.Application.Test
+namespace AmdarisProject.Application.Test.Tests.CompetitorTests
 {
     public class CreateCompetitorHandlerTest
     {

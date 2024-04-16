@@ -11,7 +11,7 @@ using Mapster;
 using MapsterMapper;
 using Moq;
 
-namespace AmdarisProject.Application.Test
+namespace AmdarisProject.Application.Test.Tests.CompetitionTests
 {
     public class CreateCompetitionHandlerTest
     {

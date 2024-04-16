@@ -38,5 +38,16 @@ namespace AmdarisProject.Infrastructure.Repositories
                 .Where(match => match.Competition.Id.Equals(competitionId) && match.Status == MatchStatus.NOT_STARTED)
                 .OrderBy(match => match.StartTime)
                 .ToListAsync();
+
+        public async Task<double> GetCompetitorWinRatingForGameType(Guid competitorId, GameType gameType)
+        {
+            int playedMatchesOfGameType = (await GetAllByCompetitorAndGameType(competitorId, gameType)).Count();
+            int wonMatchedOfGameType = await _dbContext.Set<Match>()
+                .Where(match => match.Competition.GameType == gameType && match.Winner != null
+                    && HandlerUtils.CompetitorIsOrIsPartOfCompetitor(match.Winner, competitorId))
+                .CountAsync();
+            double winRating = playedMatchesOfGameType == 0 ? 0 : wonMatchedOfGameType / playedMatchesOfGameType;
+            return winRating;
+        }
     }
 }
