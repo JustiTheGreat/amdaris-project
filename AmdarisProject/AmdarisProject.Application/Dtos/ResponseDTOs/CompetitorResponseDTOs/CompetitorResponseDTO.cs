@@ -4,6 +4,7 @@
     {
         public string Name { get; set; }
         public List<Guid> Matches { get; set; } = [];
+        public List<Guid> WonMatches { get; set; } = [];
         public List<Guid> Competitions { get; set; } = [];
     }
 }

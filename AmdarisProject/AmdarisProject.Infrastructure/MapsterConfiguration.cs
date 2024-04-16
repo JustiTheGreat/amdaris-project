@@ -33,31 +33,37 @@ namespace AmdarisProject.Presentation
 
             config.ForType<Player, PlayerResponseDTO>()
                 .Map(dest => dest.Matches, src => src.Matches.GetIds())
+                .Map(dest => dest.WonMatches, src => src.WonMatches.GetIds())
                 .Map(dest => dest.Competitions, src => src.Competitions.GetIds())
                 .Map(dest => dest.Teams, src => src.Teams.GetIds())
                 .Map(dest => dest.Points, src => src.Points.GetIds());
             config.ForType<PlayerCreateDTO, Player>()
                 .Map(dest => dest.Matches, src => new List<Match>())
+                .Map(dest => dest.WonMatches, src => new List<Match>())
                 .Map(dest => dest.Competitions, src => new List<Competition>())
                 .Map(dest => dest.Teams, src => new List<Team>())
                 .Map(dest => dest.Points, src => new List<Point>());
 
             config.ForType<Team, TeamResponseDTO>()
                 .Map(dest => dest.Matches, src => src.Matches.GetIds())
+                .Map(dest => dest.WonMatches, src => src.WonMatches.GetIds())
                 .Map(dest => dest.Competitions, src => src.Competitions.GetIds())
                 .Map(dest => dest.Players, src => src.Players.GetIds());
             config.ForType<TeamCreateDTO, Team>()
                 .Map(dest => dest.Matches, src => new List<Match>())
+                .Map(dest => dest.WonMatches, src => new List<Match>())
                 .Map(dest => dest.Competitions, src => new List<Competition>())
                 .Map(dest => dest.Players, src => new List<Player>());
 
             config.ForType<Match, MatchResponseDTO>()
                 .Map(dest => dest.CompetitorOne, src => src.CompetitorOne.Id)
                 .Map(dest => dest.CompetitorTwo, src => src.CompetitorTwo.Id)
+                .Map(dest => dest.Winner, src => src.Winner == null ? (Guid?)null : src.Winner.Id)
                 .Map(dest => dest.Competition, src => src.Competition.Id)
                 .Map(dest => dest.Points, src => src.Points.GetIds());
             config.ForType<MatchCreateDTO, Match>()
                 .Map(dest => dest.CompetitorOne, src => new Player())
+                .Map(dest => dest.CompetitorTwo, src => new Player())
                 .Map(dest => dest.CompetitorTwo, src => new Player())
                 .Map(dest => dest.Competition, src => new OneVSAllCompetition())
                 .Map(dest => dest.Points, src => new List<Point>());
@@ -90,31 +96,37 @@ namespace AmdarisProject.Presentation
 
             TypeAdapterConfig<Player, PlayerResponseDTO>.NewConfig()
                 .Map(dest => dest.Matches, src => src.Matches.GetIds())
+                .Map(dest => dest.WonMatches, src => src.WonMatches.GetIds())
                 .Map(dest => dest.Competitions, src => src.Competitions.GetIds())
                 .Map(dest => dest.Teams, src => src.Teams.GetIds())
                 .Map(dest => dest.Points, src => src.Points.GetIds());
             TypeAdapterConfig<PlayerCreateDTO, Player>.NewConfig()
                 .Map(dest => dest.Matches, src => new List<Match>())
+                .Map(dest => dest.WonMatches, src => new List<Match>())
                 .Map(dest => dest.Competitions, src => new List<Competition>())
                 .Map(dest => dest.Teams, src => new List<Team>())
                 .Map(dest => dest.Points, src => new List<Point>());
 
             TypeAdapterConfig<Team, TeamResponseDTO>.NewConfig()
                 .Map(dest => dest.Matches, src => src.Matches.GetIds())
+                .Map(dest => dest.WonMatches, src => src.WonMatches.GetIds())
                 .Map(dest => dest.Competitions, src => src.Competitions.GetIds())
                 .Map(dest => dest.Players, src => src.Players.GetIds());
             TypeAdapterConfig<TeamCreateDTO, Team>.NewConfig()
                 .Map(dest => dest.Matches, src => new List<Match>())
+                .Map(dest => dest.WonMatches, src => new List<Match>())
                 .Map(dest => dest.Competitions, src => new List<Competition>())
                 .Map(dest => dest.Players, src => new List<Player>());
 
             TypeAdapterConfig<Match, MatchResponseDTO>.NewConfig()
                 .Map(dest => dest.CompetitorOne, src => src.CompetitorOne.Id)
                 .Map(dest => dest.CompetitorTwo, src => src.CompetitorTwo.Id)
+                .Map(dest => dest.Winner, src => src.Winner == null ? (Guid?)null : src.Winner.Id)
                 .Map(dest => dest.Competition, src => src.Competition.Id)
                 .Map(dest => dest.Points, src => src.Points.GetIds());
             TypeAdapterConfig<MatchCreateDTO, Match>.NewConfig()
                 .Map(dest => dest.CompetitorOne, src => new Player())
+                .Map(dest => dest.CompetitorTwo, src => new Player())
                 .Map(dest => dest.CompetitorTwo, src => new Player())
                 .Map(dest => dest.Competition, src => new OneVSAllCompetition())
                 .Map(dest => dest.Points, src => new List<Point>());
@@ -138,18 +150,21 @@ namespace AmdarisProject.Presentation
 
             TypeAdapterConfig<Player, PlayerCreateDTO>.NewConfig()
                 .Map(dest => dest.Matches, src => src.Matches.GetIds())
+                .Map(dest => dest.WonMatches, src => src.WonMatches.GetIds())
                 .Map(dest => dest.Competitions, src => src.Competitions.GetIds())
                 .Map(dest => dest.Teams, src => src.Teams.GetIds())
                 .Map(dest => dest.Points, src => src.Points.GetIds());
 
             TypeAdapterConfig<Team, TeamCreateDTO>.NewConfig()
                 .Map(dest => dest.Matches, src => src.Matches.GetIds())
+                .Map(dest => dest.WonMatches, src => src.WonMatches.GetIds())
                 .Map(dest => dest.Competitions, src => src.Competitions.GetIds())
                 .Map(dest => dest.Players, src => src.Players.GetIds());
 
             TypeAdapterConfig<Match, MatchCreateDTO>.NewConfig()
                 .Map(dest => dest.CompetitorOne, src => src.CompetitorOne.Id)
                 .Map(dest => dest.CompetitorTwo, src => src.CompetitorTwo.Id)
+                .Map(dest => dest.Winner, src => src.Winner == null ? (Guid?)null : src.Winner.Id)
                 .Map(dest => dest.Competition, src => src.Competition.Id)
                 .Map(dest => dest.Points, src => src.Points.GetIds());
 
