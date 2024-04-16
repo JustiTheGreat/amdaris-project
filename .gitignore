@@ -2,18 +2,16 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/AmdarisProject/.vs/AmdarisProject
-/AmdarisProject/AmdarisProject/bin
-/AmdarisProject/AmdarisProject/obj
-/AmdarisProject/AmdarisProject.Application/bin
-/AmdarisProject/AmdarisProject.Application/obj
-/AmdarisProject/AmdarisProject.Application.Test/bin
-/AmdarisProject/AmdarisProject.Application.Test/obj
-/AmdarisProject/AmdarisProject.Domain/bin
-/AmdarisProject/AmdarisProject.Domain/obj
-/AmdarisProject/AmdarisProject.Infrastructure/bin
-/AmdarisProject/AmdarisProject.Infrastructure/obj
-
-*.bin
-*.cache
 *.csproj
+
+/AmdarisProject/.vs/*
+/AmdarisProject/AmdarisProject/bin/*
+/AmdarisProject/AmdarisProject/obj/*
+/AmdarisProject/AmdarisProject.Application/bin/*
+/AmdarisProject/AmdarisProject.Application/obj/*
+/AmdarisProject/AmdarisProject.Application.Test/bin/*
+/AmdarisProject/AmdarisProject.Application.Test/obj/*
+/AmdarisProject/AmdarisProject.Domain/bin/*
+/AmdarisProject/AmdarisProject.Domain/obj/*
+/AmdarisProject/AmdarisProject.Infrastructure/bin/*
+/AmdarisProject/AmdarisProject.Infrastructure/obj/*
