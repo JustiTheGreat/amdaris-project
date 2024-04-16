@@ -3,15 +3,14 @@
 namespace AmdarisProject.Infrastructure
 {
     public class UnitOfWork(AmdarisProjectDBContext dbContext, ICompetitionRepository competitionRepository,
-        ICompetitorRepository competitorRepository, IMatchRepository matchRepository, IPointRepository pointRepository,
-        IStageRepository stageRepository) : IUnitOfWork
+        ICompetitorRepository competitorRepository, IMatchRepository matchRepository, IPointRepository pointRepository)
+        : IUnitOfWork
     {
         private readonly AmdarisProjectDBContext _dbContext = dbContext;
         public ICompetitionRepository CompetitionRepository { get; private set; } = competitionRepository;
         public ICompetitorRepository CompetitorRepository { get; private set; } = competitorRepository;
         public IMatchRepository MatchRepository { get; private set; } = matchRepository;
         public IPointRepository PointRepository { get; private set; } = pointRepository;
-        public IStageRepository StageRepository { get; private set; } = stageRepository;
 
         public async Task SaveAsync()
         {

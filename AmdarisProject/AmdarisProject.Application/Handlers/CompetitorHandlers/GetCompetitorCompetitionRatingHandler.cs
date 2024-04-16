@@ -15,7 +15,7 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
         {
             IEnumerable<Match> playedMatches = await _unitOfWork.MatchRepository
                 .GetAllByCompetitorAndCompetition(request.CompetitorId, request.CompetitionId);
-            double rating = HandlerUtils.GetCompetitorWinRatingOfMatchesUtil(_unitOfWork, playedMatches, request.CompetitorId);
+            double rating = HandlerUtils.GetCompetitorWinRatingOfMatches(playedMatches, request.CompetitorId);
             return rating;
         }
     }

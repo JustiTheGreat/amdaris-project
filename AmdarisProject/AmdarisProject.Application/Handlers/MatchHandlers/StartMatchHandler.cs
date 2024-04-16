@@ -39,13 +39,15 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 await _unitOfWork.BeginTransactionAsync();
 
                 DateTime now = DateTime.Now;
+                bool lateStart = match.StartTime is not null && now > match.StartTime;
+
                 match.Status = MatchStatus.STARTED;
                 match.StartTime = now;
+                match.CompetitorOnePoints = 0;
+                match.CompetitorTwoPoints = 0;
                 updated = await _unitOfWork.MatchRepository.Update(match);
 
                 await InitializePointsForMatchPlayers(match);
-
-                bool lateStart = match.StartTime is not null && now > match.StartTime;
 
                 if (lateStart)
                     await UpdateUnstartedMatchesStartTimes(match);

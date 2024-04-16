@@ -2,6 +2,7 @@
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace AmdarisProject.Infrastructure.Repositories
 {
@@ -26,9 +27,16 @@ namespace AmdarisProject.Infrastructure.Repositories
             => await _dbContext.Set<T>().FirstOrDefaultAsync(item => item.Id.Equals(id));
 
         public async Task<IEnumerable<T>> GetByIds(IEnumerable<Guid> ids)
-            => ids.Select(id => GetById(id).Result
-                ?? throw new APNotFoundException(Tuple.Create(nameof(id), id))).ToList();
+        {
+            if (!ids.Any()) return [];
 
+            IEnumerable<T> items = await _dbContext.Set<T>().Where(item => ids.Contains(item.Id)).ToListAsync();
+            bool allIdsWereFound = ids.All(id => items.Any(point => point.Id.Equals(id)));
+
+            if (!allIdsWereFound) throw new APNotFoundException(nameof(ids));
+
+            return items;
+        }
 
         public async Task<IEnumerable<T>> GetAll()
             => await _dbContext.Set<T>().ToListAsync();

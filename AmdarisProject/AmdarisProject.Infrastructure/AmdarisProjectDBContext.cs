@@ -11,7 +11,6 @@ namespace AmdarisProject.Infrastructure
         public DbSet<Competition> Competitions { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<Point> Points { get; set; }
-        public DbSet<Stage> Stage { get; set; }
 
         public AmdarisProjectDBContext() { }
 
@@ -49,17 +48,20 @@ namespace AmdarisProject.Infrastructure
             modelBuilder.Entity<Match>().Property(match => match.Location).IsRequired();
             modelBuilder.Entity<Match>().Property(match => match.Status).IsRequired().HasConversion<string>();
             modelBuilder.Entity<Match>()
-               .HasOne(match => match.CompetitorOne)
-               .WithMany(competitor => competitor.Matches)
-               .OnDelete(DeleteBehavior.NoAction)
-               .IsRequired();
+                .HasOne(match => match.CompetitorOne)
+                .WithMany(competitor => competitor.Matches)
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired();
             //modelBuilder.Entity<Match>()
             //    .HasOne(match => match.CompetitorTwo)
             //    .WithMany(competitor => competitor.Matches)
             //    .OnDelete(DeleteBehavior.NoAction)
             //    .IsRequired();
+            modelBuilder.Entity<Match>()
+                .HasOne(match => match.Winner)
+                .WithMany(competitor => competitor.WonMatches)
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Match>().HasOne(match => match.Competition).WithMany(competition => competition.Matches).IsRequired();
-            modelBuilder.Entity<Match>().HasOne(match => match.Stage).WithMany(stage => stage.Matches);
 
             modelBuilder.Entity<Point>().Property(point => point.Value).IsRequired();
             modelBuilder.Entity<Point>()
@@ -70,11 +72,6 @@ namespace AmdarisProject.Infrastructure
             modelBuilder.Entity<Point>()
                 .HasOne(point => point.Player)
                 .WithMany(player => player.Points)
-                .IsRequired();
-
-            modelBuilder.Entity<Stage>()
-                .HasOne(stage => stage.TournamentCompetition)
-                .WithMany(tournamentCompetition => tournamentCompetition.Stages)
                 .IsRequired();
         }
     }

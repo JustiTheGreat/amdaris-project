@@ -18,15 +18,13 @@ IServiceProvider serviceProvider = new ServiceCollection()
     .AddScoped<ICompetitorRepository, CompetitorRepository>()
     .AddScoped<IMatchRepository, MatchRepository>()
     .AddScoped<IPointRepository, PointRepository>()
-    .AddScoped<IStageRepository, StageRepository>()
     .AddScoped<IUnitOfWork, UnitOfWork>()
     .AddScoped<IMapper, Mapper>(sp => new Mapper(MapsterConfiguration.GetMapsterConfiguration()))
     .AddMediatR(configuration => configuration.RegisterServicesFromAssemblies(
         typeof(ICompetitionRepository).Assembly,
         typeof(ICompetitorRepository).Assembly,
         typeof(IMatchRepository).Assembly,
-        typeof(IPointRepository).Assembly,
-        typeof(IStageRepository).Assembly
+        typeof(IPointRepository).Assembly
     ))
     .BuildServiceProvider();
 

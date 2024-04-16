@@ -5,7 +5,7 @@ namespace AmdarisProject.Domain.Models.CompetitorModels
     public class Team : Competitor
     {
         public ushort TeamSize { get; set; }
-        public List<Player> Players { get; set; } = [];
+        public virtual List<Player> Players { get; set; } = [];
 
         public Team() : base()
         {

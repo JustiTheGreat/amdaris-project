@@ -46,7 +46,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             updated = await _unitOfWork.MatchRepository.GetById(updated.Id)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(updated.Id), updated.Id));
 
-            MatchResponseDTO response = _mapper.Map<MatchResponseDTO>(match);
+            MatchResponseDTO response = _mapper.Map<MatchResponseDTO>(updated);
             return response;
         }
     }

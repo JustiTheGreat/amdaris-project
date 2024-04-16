@@ -16,11 +16,10 @@ namespace AmdarisProject.Application.Test.ModelBuilder
                 Location = "Test",
                 StartTime = DateTime.Now,
                 EndTime = DateTime.Now,
-                Status = Domain.Enums.MatchStatus.FINISHED,
+                Status = MatchStatus.FINISHED,
                 CompetitorOne = Builders.CreateBasicPlayer().Get(),
                 CompetitorTwo = Builders.CreateBasicPlayer().Get(),
                 Competition = Builders.CreateBasicOneVSAllCompetition().Get(),
-                Stage = null,
                 Points = []
             });
 

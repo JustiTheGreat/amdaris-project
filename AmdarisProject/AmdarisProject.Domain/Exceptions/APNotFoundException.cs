@@ -4,6 +4,8 @@ namespace AmdarisProject.Domain.Exceptions
 {
     public class APNotFoundException : AmdarisProjectException
     {
+        public APNotFoundException(string message) : base(message) { }
+
         public APNotFoundException(Tuple<string, Guid> id) : base(FormatId(id)) { }
 
         public APNotFoundException(List<Tuple<string, Guid>> ids) : base(FormatIds(ids)) { }

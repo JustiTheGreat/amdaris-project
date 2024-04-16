@@ -11,7 +11,11 @@ namespace AmdarisProject.Application.Dtos.CreateDTOs
         public required Guid CompetitorOne { get; set; }
         public required Guid CompetitorTwo { get; set; }
         public required Guid Competition { get; set; }
-        public Guid? Stage { get; set; }
+        public uint? CompetitorOnePoints { get; set; }
+        public uint? CompetitorTwoPoints { get; set; }
+        public Guid? Winner { get; set; }
+        public ushort? StageLevel { get; set; }
+        public ushort? StageIndex { get; set; }
         public List<Guid> Points { get; set; } = [];
     }
 }

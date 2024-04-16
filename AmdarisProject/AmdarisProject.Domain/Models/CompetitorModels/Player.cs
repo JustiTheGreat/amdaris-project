@@ -4,8 +4,8 @@ namespace AmdarisProject.Domain.Models.CompetitorModels
 {
     public class Player : Competitor
     {
-        public List<Point> Points { get; set; } = [];
-        public List<Team> Teams { get; set; } = [];
+        public virtual List<Point> Points { get; set; } = [];
+        public virtual List<Team> Teams { get; set; } = [];
 
         public Player() : base()
         {

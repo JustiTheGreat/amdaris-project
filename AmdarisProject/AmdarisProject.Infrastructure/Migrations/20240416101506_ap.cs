@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AmdarisProject.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Guid : Migration
+    public partial class ap : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,8 +25,7 @@ namespace AmdarisProject.Infrastructure.Migrations
                     BreakInSeconds = table.Column<decimal>(type: "decimal(20,0)", nullable: true),
                     GameType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CompetitorType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TeamSize = table.Column<int>(type: "int", nullable: true),
-                    Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false)
+                    TeamSize = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -47,25 +46,6 @@ namespace AmdarisProject.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Competitors", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Stage",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StageLevel = table.Column<int>(type: "int", nullable: false),
-                    TournamentCompetitionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Stage", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Stage_Competitions_TournamentCompetitionId",
-                        column: x => x.TournamentCompetitionId,
-                        principalTable: "Competitions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,29 +73,6 @@ namespace AmdarisProject.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PlayerTeam",
-                columns: table => new
-                {
-                    PlayersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TeamsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PlayerTeam", x => new { x.PlayersId, x.TeamsId });
-                    table.ForeignKey(
-                        name: "FK_PlayerTeam_Competitors_PlayersId",
-                        column: x => x.PlayersId,
-                        principalTable: "Competitors",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_PlayerTeam_Competitors_TeamsId",
-                        column: x => x.TeamsId,
-                        principalTable: "Competitors",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Matches",
                 columns: table => new
                 {
@@ -127,7 +84,11 @@ namespace AmdarisProject.Infrastructure.Migrations
                     CompetitorOneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CompetitorTwoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CompetitionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StageId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    CompetitorOnePoints = table.Column<long>(type: "bigint", nullable: true),
+                    CompetitorTwoPoints = table.Column<long>(type: "bigint", nullable: true),
+                    WinnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    StageLevel = table.Column<int>(type: "int", nullable: true),
+                    StageIndex = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -150,10 +111,33 @@ namespace AmdarisProject.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Matches_Stage_StageId",
-                        column: x => x.StageId,
-                        principalTable: "Stage",
+                        name: "FK_Matches_Competitors_WinnerId",
+                        column: x => x.WinnerId,
+                        principalTable: "Competitors",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlayerTeam",
+                columns: table => new
+                {
+                    PlayersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TeamsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlayerTeam", x => new { x.PlayersId, x.TeamsId });
+                    table.ForeignKey(
+                        name: "FK_PlayerTeam_Competitors_PlayersId",
+                        column: x => x.PlayersId,
+                        principalTable: "Competitors",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PlayerTeam_Competitors_TeamsId",
+                        column: x => x.TeamsId,
+                        principalTable: "Competitors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -202,9 +186,9 @@ namespace AmdarisProject.Infrastructure.Migrations
                 column: "CompetitorTwoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Matches_StageId",
+                name: "IX_Matches_WinnerId",
                 table: "Matches",
-                column: "StageId");
+                column: "WinnerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PlayerTeam_TeamsId",
@@ -220,11 +204,6 @@ namespace AmdarisProject.Infrastructure.Migrations
                 name: "IX_Points_PlayerId",
                 table: "Points",
                 column: "PlayerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Stage_TournamentCompetitionId",
-                table: "Stage",
-                column: "TournamentCompetitionId");
         }
 
         /// <inheritdoc />
@@ -243,13 +222,10 @@ namespace AmdarisProject.Infrastructure.Migrations
                 name: "Matches");
 
             migrationBuilder.DropTable(
-                name: "Competitors");
-
-            migrationBuilder.DropTable(
-                name: "Stage");
-
-            migrationBuilder.DropTable(
                 name: "Competitions");
+
+            migrationBuilder.DropTable(
+                name: "Competitors");
         }
     }
 }
