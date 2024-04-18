@@ -2,7 +2,7 @@
 {
     public class TeamResponseDTO : CompetitorResponseDTO
     {
-        public ushort? TeamSize { get; set; }
-        public List<ulong> Players { get; set; } = [];
+        public ushort TeamSize { get; set; }
+        public List<Guid> Players { get; set; } = [];
     }
 }

@@ -3,16 +3,17 @@ using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
-using Mapster;
+using MapsterMapper;
 using MediatR;
 
 namespace AmdarisProject.handlers.competition
 {
-    public record StartCompetition(ulong CompetitionId) : IRequest<CompetitionResponseDTO>;
-    public class StartCompetitionHandler(IUnitOfWork unitOfWork)
+    public record StartCompetition(Guid CompetitionId) : IRequest<CompetitionResponseDTO>;
+    public class StartCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<StartCompetition, CompetitionResponseDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<CompetitionResponseDTO> Handle(StartCompetition request, CancellationToken cancellationToken)
         {
@@ -27,7 +28,7 @@ namespace AmdarisProject.handlers.competition
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-                competition.Status = CompetitionStatus.NOT_STARTED;
+                competition.Status = CompetitionStatus.STARTED;
                 updated = await _unitOfWork.CompetitionRepository.Update(competition);
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();
@@ -41,7 +42,10 @@ namespace AmdarisProject.handlers.competition
             //TODO remove
             Console.WriteLine($"Competition {updated.Name} started!");
             //
-            CompetitionResponseDTO response = updated.Adapt<CompetitionResponseDTO>();
+
+            CompetitionResponseDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(updated)
+                : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionResponseDTO>(updated)
+                : throw new AmdarisProjectException("Unexpected competition type!");
             return response;
         }
     }

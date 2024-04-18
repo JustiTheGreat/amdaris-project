@@ -15,8 +15,8 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
         public GameType GameType { get; set; }
         public CompetitorType CompetitorType { get; set; }
         public ushort? TeamSize { get; set; }
-        public List<Competitor> Competitors { get; set; } = [];
-        public List<Match> Matches { get; set; } = [];
+        public virtual List<Competitor> Competitors { get; set; } = [];
+        public virtual List<Match> Matches { get; set; } = [];
 
         public Competition()
         {

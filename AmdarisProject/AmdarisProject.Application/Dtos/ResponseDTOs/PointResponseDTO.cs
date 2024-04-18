@@ -2,8 +2,8 @@
 {
     public class PointResponseDTO : ResponseDTO
     {
-        public uint? Value { get; set; }
-        public ulong? Match { get; set; }
-        public ulong? Player { get; set; }
+        public uint Value { get; set; }
+        public Guid? Match { get; set; }
+        public Guid? Player { get; set; }
     }
 }

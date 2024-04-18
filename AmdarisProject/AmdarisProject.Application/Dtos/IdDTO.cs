@@ -2,6 +2,6 @@
 {
     public abstract class IdDTO
     {
-        public ulong Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

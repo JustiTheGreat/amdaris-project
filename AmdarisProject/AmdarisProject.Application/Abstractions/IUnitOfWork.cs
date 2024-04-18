@@ -6,7 +6,6 @@
         ICompetitorRepository CompetitorRepository { get; }
         IMatchRepository MatchRepository { get; }
         IPointRepository PointRepository { get; }
-        IStageRepository StageRepository { get; }
 
         Task SaveAsync();
         Task BeginTransactionAsync();

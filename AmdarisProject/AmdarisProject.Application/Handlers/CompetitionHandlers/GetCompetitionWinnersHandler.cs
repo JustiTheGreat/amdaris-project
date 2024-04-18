@@ -1,20 +1,23 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
-using AmdarisProject.Application.Utils;
+using AmdarisProject.Application.Services;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using Mapster;
+using MapsterMapper;
 using MediatR;
 
 namespace AmdarisProject.handlers.competition
 {
-    public record GetCompetitionWinner(ulong CompetitionId) : IRequest<IEnumerable<CompetitorResponseDTO>>;
-    public class GetCompetitionWinnersHandler(IUnitOfWork unitOfWork)
+    public record GetCompetitionWinner(Guid CompetitionId) : IRequest<IEnumerable<CompetitorResponseDTO>>;
+    public class GetCompetitionWinnersHandler(IUnitOfWork unitOfWork, IMapper mapper,
+        ICompetitionRankingService competitionRankingService)
         : IRequestHandler<GetCompetitionWinner, IEnumerable<CompetitorResponseDTO>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
+        private readonly ICompetitionRankingService _competitionRankingService = competitionRankingService;
 
         public async Task<IEnumerable<CompetitorResponseDTO>> Handle(GetCompetitionWinner request, CancellationToken cancellationToken)
         {
@@ -25,9 +28,8 @@ namespace AmdarisProject.handlers.competition
                 throw new APIllegalStatusException(competition.Status);
 
             IEnumerable<Competitor> firstPlaceCompetitors =
-                await HandlerUtils.GetCompetitionFirstPlaceCompetitorsUtil(_unitOfWork, request.CompetitionId);
-            IEnumerable<CompetitorResponseDTO> response =
-                firstPlaceCompetitors.Select(competitor => competitor.Adapt<CompetitorResponseDTO>()).ToList();
+                await _competitionRankingService.GetCompetitionFirstPlaceCompetitors(request.CompetitionId);
+            IEnumerable<CompetitorResponseDTO> response = firstPlaceCompetitors.Select(_mapper.Map<CompetitorResponseDTO>).ToList();
             return response;
         }
     }

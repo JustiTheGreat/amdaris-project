@@ -2,7 +2,7 @@
 {
     public class PlayerResponseDTO : CompetitorResponseDTO
     {
-        public List<ulong> Points { get; set; } = [];
-        public List<ulong> Teams { get; set; } = [];
+        public List<Guid> Points { get; set; } = [];
+        public List<Guid> Teams { get; set; } = [];
     }
 }

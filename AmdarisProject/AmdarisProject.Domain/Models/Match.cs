@@ -13,13 +13,18 @@ namespace AmdarisProject.Domain.Models
         public Competitor CompetitorOne { get; set; }
         public Competitor CompetitorTwo { get; set; }
         public Competition Competition { get; set; }
-        public Stage? Stage { get; set; }
-        public List<Point> Points { get; set; } = [];
+        public uint? CompetitorOnePoints { get; set; }
+        public uint? CompetitorTwoPoints { get; set; }
+        public Competitor? Winner { get; set; }
+        public ushort? StageLevel { get; set; }
+        public ushort? StageIndex { get; set; }
+        public virtual List<Point> Points { get; set; } = [];
 
         public Match() { }
 
         public Match(string location, DateTime? startTime, DateTime? endTime, MatchStatus status, Competitor competitorOne,
-            Competitor competitorTwo, Competition competition, Stage? stage, List<Point> points)
+            Competitor competitorTwo, Competition competition, uint? competitorOnePoints, uint? competitorTwoPoints,
+            Competitor? winner, ushort? stageLevel, ushort? stageIndex, List<Point> points)
         {
             Location = location;
             StartTime = startTime;
@@ -28,7 +33,11 @@ namespace AmdarisProject.Domain.Models
             CompetitorOne = competitorOne;
             CompetitorTwo = competitorTwo;
             Competition = competition;
-            Stage = stage;
+            CompetitorOnePoints = competitorOnePoints;
+            CompetitorTwoPoints = competitorTwoPoints;
+            Winner = winner;
+            StageLevel = stageLevel;
+            StageIndex = stageIndex;
             Points = points;
         }
     }

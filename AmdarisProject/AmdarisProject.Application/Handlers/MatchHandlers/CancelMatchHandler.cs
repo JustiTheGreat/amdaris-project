@@ -1,19 +1,22 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
-using AmdarisProject.Application.Utils;
+using AmdarisProject.Application.Services;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
-using Mapster;
+using MapsterMapper;
 using MediatR;
 
 namespace AmdarisProject.Application.Handlers.MatchHandlers
 {
-    public record CancelMatch(ulong MatchId) : IRequest<MatchResponseDTO>;
-    public class CancelMatchHandler(IUnitOfWork unitOfWork)
+    public record CancelMatch(Guid MatchId) : IRequest<MatchResponseDTO>;
+    public class CancelMatchHandler(IUnitOfWork unitOfWork, IMapper mapper,
+        ICreateCompetitionMatchesService createCompetitionMatchesService)
         : IRequestHandler<CancelMatch, MatchResponseDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
+        private readonly ICreateCompetitionMatchesService _createCompetitionMatchesService = createCompetitionMatchesService;
 
         public async Task<MatchResponseDTO> Handle(CancelMatch request, CancellationToken cancellationToken)
         {
@@ -31,8 +34,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 match.Status = MatchStatus.CANCELED;
                 updated = await _unitOfWork.MatchRepository.Update(match);
 
-                //TODO CreateBonusMatches
-                await HandlerUtils.CreateCompetitionMatchesUtil(_unitOfWork, updated.Competition.Id);
+                await _createCompetitionMatchesService.CreateCompetitionMatches(updated.Competition.Id);
 
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();
@@ -46,7 +48,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             updated = await _unitOfWork.MatchRepository.GetById(updated.Id)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(updated.Id), updated.Id));
 
-            MatchResponseDTO response = updated.Adapt<MatchResponseDTO>();
+            MatchResponseDTO response = _mapper.Map<MatchResponseDTO>(updated);
             return response;
         }
     }

@@ -3,16 +3,17 @@ using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
-using Mapster;
+using MapsterMapper;
 using MediatR;
 
 namespace AmdarisProject.handlers.competition
 {
-    public record CancelCompetition(ulong CompetitionId) : IRequest<CompetitionResponseDTO>;
-    public class CancelCompetitionHandler(IUnitOfWork unitOfWork)
+    public record CancelCompetition(Guid CompetitionId) : IRequest<CompetitionResponseDTO>;
+    public class CancelCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<CancelCompetition, CompetitionResponseDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<CompetitionResponseDTO> Handle(CancelCompetition request, CancellationToken cancellationToken)
         {
@@ -43,7 +44,7 @@ namespace AmdarisProject.handlers.competition
             //TODO remove
             Console.WriteLine($"Competition {updated.Name} ended!");
             //
-            CompetitionResponseDTO response = updated.Adapt<CompetitionResponseDTO>();
+            CompetitionResponseDTO response = _mapper.Map<CompetitionResponseDTO>(updated);
             return response;
         }
     }

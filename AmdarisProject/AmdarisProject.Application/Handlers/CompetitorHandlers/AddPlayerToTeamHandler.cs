@@ -1,18 +1,19 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
-using AmdarisProject.Application.Utils;
+using AmdarisProject.Application.ExtensionMethods;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using Mapster;
+using MapsterMapper;
 using MediatR;
 
 namespace AmdarisProject.Application.Handlers.CompetitorHandlers
 {
-    public record AddPlayerToTeam(ulong PlayerId, ulong TeamId) : IRequest<TeamResponseDTO>;
-    public class AddPlayerToTeamHandler(IUnitOfWork unitOfWork)
+    public record AddPlayerToTeam(Guid PlayerId, Guid TeamId) : IRequest<TeamResponseDTO>;
+    public class AddPlayerToTeamHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<AddPlayerToTeam, TeamResponseDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<TeamResponseDTO> Handle(AddPlayerToTeam request, CancellationToken cancellationToken)
         {
@@ -26,7 +27,7 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
             if (team.Players.Count == team.TeamSize)
                 throw new AmdarisProjectException($"Team {team.Id} is full!");
 
-            if (HandlerUtils.TeamContainsPlayer(team, request.PlayerId))
+            if (team.ContainsPlayer(request.PlayerId))
                 throw new AmdarisProjectException($"Player {player.Id} is already a member of team {team.Id}!");
 
             Team updated;
@@ -45,7 +46,7 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
                 throw;
             }
 
-            TeamResponseDTO response = updated.Adapt<TeamResponseDTO>();
+            TeamResponseDTO response = _mapper.Map<TeamResponseDTO>(team);
             return response;
         }
     }

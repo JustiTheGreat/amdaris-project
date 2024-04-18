@@ -3,10 +3,10 @@
     public interface IGenericRepository<T>
     {
         Task<T> Create(T item);
-        Task<T?> GetById(ulong id);
-        Task<IEnumerable<T>> GetByIds(IEnumerable<ulong> ids);
+        Task<T?> GetById(Guid id);
+        Task<IEnumerable<T>> GetByIds(IEnumerable<Guid> ids);
         Task<IEnumerable<T>> GetAll();
-        Task Delete(ulong id);
+        Task Delete(Guid id);
         Task<T> Update(T item);
     }
 }

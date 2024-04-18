@@ -4,16 +4,17 @@ using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using Mapster;
+using MapsterMapper;
 using MediatR;
 
 namespace AmdarisProject.Application.Handlers.MatchHandlers
 {
-    public record StartMatch(ulong MatchId) : IRequest<MatchResponseDTO>;
-    public class StartMatchHandler(IUnitOfWork unitOfWork)
+    public record StartMatch(Guid MatchId) : IRequest<MatchResponseDTO>;
+    public class StartMatchHandler(IUnitOfWork unitOfWork, IMapper mapper)
         : IRequestHandler<StartMatch, MatchResponseDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<MatchResponseDTO> Handle(StartMatch request, CancellationToken cancellationToken)
         {
@@ -38,13 +39,15 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 await _unitOfWork.BeginTransactionAsync();
 
                 DateTime now = DateTime.Now;
+                bool lateStart = match.StartTime is not null && now > match.StartTime;
+
                 match.Status = MatchStatus.STARTED;
                 match.StartTime = now;
+                match.CompetitorOnePoints = 0;
+                match.CompetitorTwoPoints = 0;
                 updated = await _unitOfWork.MatchRepository.Update(match);
 
                 await InitializePointsForMatchPlayers(match);
-
-                bool lateStart = match.StartTime is not null && now > match.StartTime;
 
                 if (lateStart)
                     await UpdateUnstartedMatchesStartTimes(match);
@@ -66,7 +69,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 $"Match between {match.CompetitorOne.Name} and {match.CompetitorTwo.Name} has started!");
             //
 
-            MatchResponseDTO response = updated.Adapt<MatchResponseDTO>();
+            MatchResponseDTO response = _mapper.Map<MatchResponseDTO>(updated);
             return response;
         }
 
