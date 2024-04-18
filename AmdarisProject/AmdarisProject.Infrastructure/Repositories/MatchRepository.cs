@@ -1,5 +1,5 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Utils;
+using AmdarisProject.Application.ExtensionMethods;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
@@ -15,7 +15,7 @@ namespace AmdarisProject.Infrastructure.Repositories
             Match match = await GetById(matchId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(matchId), matchId));
 
-            bool containsCompetitor = HandlerUtils.MatchContainsCompetitor(match, competitorId);
+            bool containsCompetitor = match.ContainsCompetitor(competitorId);
             return containsCompetitor;
         }
 
@@ -26,12 +26,13 @@ namespace AmdarisProject.Infrastructure.Repositories
             .ToListAsync();
 
         public async Task<IEnumerable<Match>> GetAllByCompetitorAndGameType(Guid competitorId, GameType gameType)
-            => await _dbContext.Set<Match>().Where(match => match.Competition.GameType == gameType
-            && HandlerUtils.MatchContainsCompetitor(match, competitorId)).ToListAsync();
+            => (await _dbContext.Set<Match>().Where(match => match.Competition.GameType == gameType)
+            .Include(match => match.CompetitorOne).Include(match => match.CompetitorTwo).ToListAsync())
+            .Where(match => match.ContainsCompetitor(competitorId)).ToList();
 
         public async Task<IEnumerable<Match>> GetAllByCompetitorAndCompetition(Guid competitorId, Guid competitionId)
             => await _dbContext.Set<Match>().Where(match => match.Competition.Id.Equals(competitionId)
-            && HandlerUtils.MatchContainsCompetitor(match, competitorId)).ToListAsync();
+            && match.ContainsCompetitor(competitorId)).ToListAsync();
 
         public async Task<IEnumerable<Match>> GetNotStartedByCompetitionOrderedByStartTime(Guid competitionId)
             => await _dbContext.Set<Match>()
@@ -42,11 +43,13 @@ namespace AmdarisProject.Infrastructure.Repositories
         public async Task<double> GetCompetitorWinRatingForGameType(Guid competitorId, GameType gameType)
         {
             int playedMatchesOfGameType = (await GetAllByCompetitorAndGameType(competitorId, gameType)).Count();
-            int wonMatchedOfGameType = await _dbContext.Set<Match>()
-                .Where(match => match.Competition.GameType == gameType && match.Winner != null
-                    && HandlerUtils.CompetitorIsOrIsPartOfCompetitor(match.Winner, competitorId))
-                .CountAsync();
-            double winRating = playedMatchesOfGameType == 0 ? 0 : wonMatchedOfGameType / playedMatchesOfGameType;
+            int wonMatchedOfGameType = (await _dbContext.Set<Match>()
+                .Where(match => match.Competition.GameType == gameType && match.Winner != null)
+                .Include(match => match.Winner)
+                .ToListAsync())
+                .Where(match => match.Winner!.IsOrContainsCompetitor(competitorId))
+                .Count();
+            var winRating = (playedMatchesOfGameType == 0 ? 0 : wonMatchedOfGameType / (double)playedMatchesOfGameType);
             return winRating;
         }
     }

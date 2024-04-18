@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
-using AmdarisProject.Application.Utils;
+using AmdarisProject.Application.ExtensionMethods;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using MapsterMapper;
@@ -27,7 +27,7 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
             if (team.Players.Count == team.TeamSize)
                 throw new AmdarisProjectException($"Team {team.Id} is full!");
 
-            if (HandlerUtils.TeamContainsPlayer(team, request.PlayerId))
+            if (team.ContainsPlayer(request.PlayerId))
                 throw new AmdarisProjectException($"Player {player.Id} is already a member of team {team.Id}!");
 
             Team updated;

@@ -1,5 +1,5 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Utils;
+using AmdarisProject.Application.ExtensionMethods;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using Microsoft.EntityFrameworkCore;
@@ -48,10 +48,10 @@ namespace AmdarisProject.Infrastructure.Repositories
                     && c.CompetitorType == CompetitorType.TEAM
                     && c.TeamSize == team.TeamSize) != null
                     && team.Players.All(player =>
-                        !HandlerUtils.CompetitionContainsCompetitor(team.Competitions.FirstOrDefault(c =>
+                        !team.Competitions.FirstOrDefault(c =>
                                 c.Id.Equals(competitionId)
                                 && c.CompetitorType == CompetitorType.TEAM
-                                && c.TeamSize == team.TeamSize)!, player.Id)))
+                                && c.TeamSize == team.TeamSize).ContainsCompetitor(player.Id)))
                 .ToListAsync();
     }
 }

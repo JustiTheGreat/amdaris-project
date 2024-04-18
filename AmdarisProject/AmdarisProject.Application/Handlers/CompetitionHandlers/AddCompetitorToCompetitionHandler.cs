@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
-using AmdarisProject.Application.Utils;
+using AmdarisProject.Application.ExtensionMethods;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
@@ -28,7 +28,7 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
             if (competition.Status is not CompetitionStatus.ORGANIZING)
                 throw new APIllegalStatusException(competition.Status);
 
-            if (HandlerUtils.CompetitionContainsCompetitor(competition, request.CompetitorId))
+            if (competition.ContainsCompetitor(request.CompetitorId))
                 throw new AmdarisProjectException($"Competitor {competitor.Id} is already registered to {competition.Id}!");
 
             //TODO check if competitor is team and player from team is in another team from competition

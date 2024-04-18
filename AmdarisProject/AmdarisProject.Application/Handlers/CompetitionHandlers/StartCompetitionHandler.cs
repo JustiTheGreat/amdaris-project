@@ -28,7 +28,7 @@ namespace AmdarisProject.handlers.competition
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-                competition.Status = CompetitionStatus.NOT_STARTED;
+                competition.Status = CompetitionStatus.STARTED;
                 updated = await _unitOfWork.CompetitionRepository.Update(competition);
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();
@@ -43,7 +43,9 @@ namespace AmdarisProject.handlers.competition
             Console.WriteLine($"Competition {updated.Name} started!");
             //
 
-            CompetitionResponseDTO response = _mapper.Map<CompetitionResponseDTO>(updated);
+            CompetitionResponseDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(updated)
+                : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionResponseDTO>(updated)
+                : throw new AmdarisProjectException("Unexpected competition type!");
             return response;
         }
     }

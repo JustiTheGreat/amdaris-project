@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
-using AmdarisProject.Application.Utils;
+using AmdarisProject.Application.Services;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
@@ -10,11 +10,13 @@ using MediatR;
 namespace AmdarisProject.handlers.competition
 {
     public record StopCompetitionRegistration(Guid CompetitionId) : IRequest<CompetitionResponseDTO>;
-    public class StopCompetitionRegistrationHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public class StopCompetitionRegistrationHandler(IUnitOfWork unitOfWork, IMapper mapper,
+        ICreateCompetitionMatchesService createCompetitionMatchesService)
         : IRequestHandler<StopCompetitionRegistration, CompetitionResponseDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ICreateCompetitionMatchesService _createCompetitionMatchesService = createCompetitionMatchesService;
 
         public async Task<CompetitionResponseDTO> Handle(StopCompetitionRegistration request, CancellationToken cancellationToken)
         {
@@ -34,7 +36,7 @@ namespace AmdarisProject.handlers.competition
                 competition.Status = CompetitionStatus.NOT_STARTED;
                 updated = await _unitOfWork.CompetitionRepository.Update(competition);
 
-                await HandlerUtils.CreateCompetitionMatchesUtil(_unitOfWork, _mapper, updated.Id);
+                await _createCompetitionMatchesService.CreateCompetitionMatches(updated.Id);
 
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();
@@ -52,7 +54,9 @@ namespace AmdarisProject.handlers.competition
             Console.WriteLine($"Registrations for competition {updated.Name} have stopped!");
             //
 
-            CompetitionResponseDTO response = _mapper.Map<CompetitionResponseDTO>(updated);
+            CompetitionResponseDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(updated)
+                : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionResponseDTO>(updated)
+                : throw new AmdarisProjectException("Unexpected competition type!");
             return response;
         }
 
