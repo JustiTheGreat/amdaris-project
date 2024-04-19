@@ -18,7 +18,21 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
 
         public async Task<MatchResponseDTO> Handle(EndMatch request, CancellationToken cancellationToken)
         {
-            Match updated = await _endMatchService.End(request.MatchId, request.Status);
+            Match updated;
+
+            try
+            {
+                await _unitOfWork.BeginTransactionAsync();
+                updated = await _endMatchService.End(request.MatchId, request.Status);
+                await _unitOfWork.SaveAsync();
+                await _unitOfWork.CommitTransactionAsync();
+            }
+            catch (Exception)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
+
             MatchResponseDTO response = _mapper.Map<MatchResponseDTO>(updated);
             return response;
         }

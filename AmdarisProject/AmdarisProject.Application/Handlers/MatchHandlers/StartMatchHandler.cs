@@ -89,7 +89,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
 
             async Task CreatePointsForTeamPlayers(Team team)
             {
-                IEnumerable<Player> players = await _unitOfWork.CompetitorRepository.GetTeamPlayers(team.Id);
+                IEnumerable<Player> players = await _unitOfWork.CompetitorRepository.GetPlayersInTeam(team.Id);
                 foreach (Player player in players)
                     await CreatePoint(player);
             }

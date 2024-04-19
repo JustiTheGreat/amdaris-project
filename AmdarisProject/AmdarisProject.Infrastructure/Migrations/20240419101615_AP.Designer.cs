@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmdarisProject.Infrastructure.Migrations
 {
     [DbContext(typeof(AmdarisProjectDBContext))]
-    [Migration("20240416101506_ap")]
-    partial class ap
+    [Migration("20240419101615_AP")]
+    partial class AP
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,6 +37,11 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.Property<string>("CompetitorType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
 
                     b.Property<decimal?>("DurationInSeconds")
                         .HasColumnType("decimal(20,0)");
@@ -70,10 +75,16 @@ namespace AmdarisProject.Infrastructure.Migrations
 
                     b.ToTable("Competitions", t =>
                         {
+                            t.HasCheckConstraint("CK_StageLevel", "[StageLevel] >= 0");
+
                             t.HasCheckConstraint("CK_competitor_type", "[CompetitorType] = 'Player' AND [TeamSize] = NULL OR [CompetitorType] = 'Team' AND [TeamSize] <> NULL");
 
                             t.HasCheckConstraint("CK_win_rules", "[WinAt] <> NULL OR ([DurationInSeconds] <> NULL AND [BreakInSeconds] <> NULL)");
                         });
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Competition");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("AmdarisProject.Domain.Models.CompetitorModels.Competitor", b =>
@@ -209,6 +220,25 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.HasIndex("TeamsId");
 
                     b.ToTable("PlayerTeam");
+                });
+
+            modelBuilder.Entity("AmdarisProject.Domain.Models.CompetitionModels.TournamentCompetition", b =>
+                {
+                    b.HasBaseType("AmdarisProject.Domain.Models.CompetitionModels.Competition");
+
+                    b.Property<int>("StageLevel")
+                        .HasColumnType("int");
+
+                    b.ToTable(t =>
+                        {
+                            t.HasCheckConstraint("CK_StageLevel", "[StageLevel] >= 0");
+
+                            t.HasCheckConstraint("CK_competitor_type", "[CompetitorType] = 'Player' AND [TeamSize] = NULL OR [CompetitorType] = 'Team' AND [TeamSize] <> NULL");
+
+                            t.HasCheckConstraint("CK_win_rules", "[WinAt] <> NULL OR ([DurationInSeconds] <> NULL AND [BreakInSeconds] <> NULL)");
+                        });
+
+                    b.HasDiscriminator().HasValue("TournamentCompetition");
                 });
 
             modelBuilder.Entity("AmdarisProject.Domain.Models.CompetitorModels.Player", b =>

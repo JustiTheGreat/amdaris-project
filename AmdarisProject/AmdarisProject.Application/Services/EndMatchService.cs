@@ -1,17 +1,17 @@
 ﻿using AmdarisProject.Application.Abstractions;
+using AmdarisProject.Application.Services.CompetitionMatchCreatorServices;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using MapsterMapper;
 
 namespace AmdarisProject.Application.Services
 {
-    public class EndMatchService(IUnitOfWork unitOfWork, ICreateCompetitionMatchesService createCompetitionMatchesService)
+    public class EndMatchService(IUnitOfWork unitOfWork, ICompetitionMatchCreatorFactoryService competitionMatchCreatorFactoryService)
         : IEndMatchService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly ICreateCompetitionMatchesService _createCompetitionMatchesService = createCompetitionMatchesService;
+        private readonly ICompetitionMatchCreatorFactoryService _competitionMatchCreatorFactoryService = competitionMatchCreatorFactoryService;
 
         public async Task<Match> End(Guid matchId, MatchStatus endStatus)
         {
@@ -40,7 +40,9 @@ namespace AmdarisProject.Application.Services
             match.Winner = GetMatchWinner(match);
             Match updated = await _unitOfWork.MatchRepository.Update(match);
 
-            await _createCompetitionMatchesService.CreateCompetitionMatches(updated.Competition.Id);
+            await _competitionMatchCreatorFactoryService
+                .GetCompetitionMatchCreatorService(updated.Competition.GetType())
+                .CreateCompetitionMatches(updated.Competition.Id);
 
             updated = await _unitOfWork.MatchRepository.GetById(updated.Id)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(updated.Id), updated.Id));

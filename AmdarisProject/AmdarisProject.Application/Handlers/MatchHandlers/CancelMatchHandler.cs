@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
-using AmdarisProject.Application.Services;
+using AmdarisProject.Application.Services.CompetitionMatchCreatorServices;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
@@ -11,12 +11,12 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
 {
     public record CancelMatch(Guid MatchId) : IRequest<MatchResponseDTO>;
     public class CancelMatchHandler(IUnitOfWork unitOfWork, IMapper mapper,
-        ICreateCompetitionMatchesService createCompetitionMatchesService)
+        ICompetitionMatchCreatorFactoryService competitionMatchCreatorFactoryService)
         : IRequestHandler<CancelMatch, MatchResponseDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
-        private readonly ICreateCompetitionMatchesService _createCompetitionMatchesService = createCompetitionMatchesService;
+        private readonly ICompetitionMatchCreatorFactoryService _competitionMatchCreatorFactoryService = competitionMatchCreatorFactoryService;
 
         public async Task<MatchResponseDTO> Handle(CancelMatch request, CancellationToken cancellationToken)
         {
@@ -34,7 +34,9 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 match.Status = MatchStatus.CANCELED;
                 updated = await _unitOfWork.MatchRepository.Update(match);
 
-                await _createCompetitionMatchesService.CreateCompetitionMatches(updated.Competition.Id);
+                await _competitionMatchCreatorFactoryService
+                    .GetCompetitionMatchCreatorService(updated.Competition.GetType())
+                    .CreateCompetitionMatches(updated.Competition.Id);
 
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();

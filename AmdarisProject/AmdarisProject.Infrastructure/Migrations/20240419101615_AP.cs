@@ -5,7 +5,7 @@
 namespace AmdarisProject.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class ap : Migration
+    public partial class AP : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,12 +24,15 @@ namespace AmdarisProject.Infrastructure.Migrations
                     BreakInSeconds = table.Column<decimal>(type: "decimal(20,0)", nullable: true),
                     GameType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CompetitorType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TeamSize = table.Column<int>(type: "int", nullable: true)
+                    TeamSize = table.Column<int>(type: "int", nullable: true),
+                    Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
+                    StageLevel = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Competitions", x => x.Id);
                     table.CheckConstraint("CK_competitor_type", "[CompetitorType] = 'Player' AND [TeamSize] = NULL OR [CompetitorType] = 'Team' AND [TeamSize] <> NULL");
+                    table.CheckConstraint("CK_StageLevel", "[StageLevel] >= 0");
                     table.CheckConstraint("CK_win_rules", "[WinAt] <> NULL OR ([DurationInSeconds] <> NULL AND [BreakInSeconds] <> NULL)");
                 });
 

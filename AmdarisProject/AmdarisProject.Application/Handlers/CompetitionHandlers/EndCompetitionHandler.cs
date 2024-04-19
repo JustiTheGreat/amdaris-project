@@ -23,9 +23,7 @@ namespace AmdarisProject.handlers.competition
             if (competition.Status is not CompetitionStatus.STARTED)
                 throw new APIllegalStatusException(competition.Status);
 
-            bool allMatchesEnded = !(await _unitOfWork.MatchRepository.GetUnfinishedByCompetition(competition.Id)).Any();
-
-            if (!allMatchesEnded)
+            if (!await _unitOfWork.MatchRepository.AllMatchesOfCompetitonAreFinished(competition.Id))
                 throw new AmdarisProjectException($"Competition {competition.Id} still has unfinished matches!");
 
             Competition updated;
@@ -34,6 +32,7 @@ namespace AmdarisProject.handlers.competition
             {
                 await _unitOfWork.BeginTransactionAsync();
                 competition.Status = CompetitionStatus.FINISHED;
+                //TODO move set winner here
                 updated = await _unitOfWork.CompetitionRepository.Update(competition);
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();

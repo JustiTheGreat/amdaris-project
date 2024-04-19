@@ -15,20 +15,19 @@ namespace AmdarisProject.Application.Services
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(competitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(competitionId), competitionId));
 
-            //if (competition.Status is not CompetitionStatus.STARTED
-            //    && competition.Status is not CompetitionStatus.FINISHED)
-            //    throw new APIllegalStatusException(competition.Status);
-
-            IEnumerable<RankingItemDTO> ranking = [.. competition.Competitors
+            List<RankingItemDTO> ranking = competition.Competitors
                 .Select(competitor => new RankingItemDTO(
                     competitor.Id,
                     competitor.Name,
-                    (uint)GetCompetitorCompetitionWins(competition,competitor.Id),
+                    (uint)GetCompetitorCompetitionWins(competition, competitor.Id),
                     (uint)GetCompetitorCompetitionPoints(competition, competitor.Id)
                 ))
                 .OrderByDescending(entry => entry.Wins)
-                    .ThenByDescending(entry => entry.Points)
-                    .ThenBy(entry => entry.CompetitorName)];
+                .ThenByDescending(entry => entry.Points)
+                .ThenBy(entry => entry.CompetitorName)
+                .ToList();
+
+            List<RankingItemDTO> competitorsWithTheSamePositionInRanking = [];
 
             return ranking;
         }
@@ -40,7 +39,8 @@ namespace AmdarisProject.Application.Services
             uint maxPointsOnCompetition = ranking.First().Points;
             IEnumerable<Guid> firstPlaceCompetitorIds = ranking
                 .Where(rankingItem => rankingItem.Wins == maxWinsOnCompetition && rankingItem.Points == maxPointsOnCompetition)
-                .Select(rankingItem => rankingItem.CompetitorId).ToList();
+                .Select(rankingItem => rankingItem.CompetitorId)
+                .ToList();
             IEnumerable<Competitor> firstPlaceCompetitors = await _unitOfWork.CompetitorRepository.GetByIds(firstPlaceCompetitorIds);
             return firstPlaceCompetitors;
         }

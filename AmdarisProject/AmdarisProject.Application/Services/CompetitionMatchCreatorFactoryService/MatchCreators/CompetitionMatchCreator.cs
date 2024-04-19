@@ -6,13 +6,31 @@ using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 
-namespace AmdarisProject.Application.Services.CompetitionMatchCreatorServices
+namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreators
 {
-    public abstract class CompetitionMatchCreator(IUnitOfWork unitOfWork)
+    public abstract class CompetitionMatchCreator<T>(IUnitOfWork unitOfWork)
+        : ICompetitionMatchCreator where T : Competition
     {
         protected readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public abstract Task<IEnumerable<Match>> CreateMatches(Competition competiton, IEnumerable<Competitor> competitors);
+        public async Task<IEnumerable<Match>> CreateCompetitionMatches(Guid competitionId)
+        {
+            Competition competition = await _unitOfWork.CompetitionRepository.GetById(competitionId)
+                ?? throw new APNotFoundException(Tuple.Create(nameof(competitionId), competitionId));
+
+            if (!await _unitOfWork.MatchRepository.AllMatchesOfCompetitonAreFinished(competition.Id))
+                return [];
+
+            if (!ShouldCreateMatches((T)competition))
+                return [];
+
+            IEnumerable<Match> createdMatches = await CreateMatches((T)competition);
+            return createdMatches;
+        }
+
+        protected abstract bool ShouldCreateMatches(T competition);
+
+        protected abstract Task<IEnumerable<Match>> CreateMatches(T competiton);
 
         protected async Task<Match> CreateMatch(string location, Guid competitorOneId,
             Guid competitorTwoId, Guid competitionId, ushort? stageLevel, ushort? stageIndex)

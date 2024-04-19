@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
-using AmdarisProject.Application.Services;
+using AmdarisProject.Application.Services.CompetitionMatchCreatorServices;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
@@ -11,12 +11,12 @@ namespace AmdarisProject.handlers.competition
 {
     public record StopCompetitionRegistration(Guid CompetitionId) : IRequest<CompetitionResponseDTO>;
     public class StopCompetitionRegistrationHandler(IUnitOfWork unitOfWork, IMapper mapper,
-        ICreateCompetitionMatchesService createCompetitionMatchesService)
+        ICompetitionMatchCreatorFactoryService competitionMatchCreatorFactoryService)
         : IRequestHandler<StopCompetitionRegistration, CompetitionResponseDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
-        private readonly ICreateCompetitionMatchesService _createCompetitionMatchesService = createCompetitionMatchesService;
+        private readonly ICompetitionMatchCreatorFactoryService _competitionMatchCreatorFactoryService = competitionMatchCreatorFactoryService;
 
         public async Task<CompetitionResponseDTO> Handle(StopCompetitionRegistration request, CancellationToken cancellationToken)
         {
@@ -36,7 +36,9 @@ namespace AmdarisProject.handlers.competition
                 competition.Status = CompetitionStatus.NOT_STARTED;
                 updated = await _unitOfWork.CompetitionRepository.Update(competition);
 
-                await _createCompetitionMatchesService.CreateCompetitionMatches(updated.Id);
+                await _competitionMatchCreatorFactoryService
+                    .GetCompetitionMatchCreatorService(competition.GetType())
+                    .CreateCompetitionMatches(updated.Id);
 
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();

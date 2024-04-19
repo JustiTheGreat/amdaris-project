@@ -2,6 +2,6 @@
 {
     public class TournamentCompetitionCreateDTO : CompetitionCreateDTO
     {
-        public IEnumerable<Guid> Stages { get; } = [];
+        public ushort StageLevel { get; set; }
     }
 }

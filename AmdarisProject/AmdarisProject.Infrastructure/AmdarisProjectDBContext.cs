@@ -34,6 +34,7 @@ namespace AmdarisProject.Infrastructure
             modelBuilder.Entity<Competition>()
                 .HasMany(competition => competition.Competitors)
                 .WithMany(competitor => competitor.Competitions);
+            modelBuilder.Entity<TournamentCompetition>().Property(tournamentCompetition => tournamentCompetition.StageLevel).IsRequired();
 
             modelBuilder.Entity<Competition>(entity => entity.ToTable(table => table.HasCheckConstraint(
                 "CK_win_rules",
@@ -41,6 +42,9 @@ namespace AmdarisProject.Infrastructure
             modelBuilder.Entity<Competition>(entity => entity.ToTable(table => table.HasCheckConstraint(
                 "CK_competitor_type",
                 "[CompetitorType] = 'Player' AND [TeamSize] = NULL OR [CompetitorType] = 'Team' AND [TeamSize] <> NULL")));
+            modelBuilder.Entity<Competition>(entity => entity.ToTable(table => table.HasCheckConstraint(
+                "CK_StageLevel",
+                "[StageLevel] >= 0")));
 
             modelBuilder.Entity<Competitor>().Property(competitor => competitor.Name).IsRequired();
             modelBuilder.Entity<Team>().Property(team => team.TeamSize).IsRequired();

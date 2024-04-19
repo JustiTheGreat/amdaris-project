@@ -1,7 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.ExtensionMethods;
 using AmdarisProject.Domain.Enums;
-using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,20 +9,32 @@ namespace AmdarisProject.Infrastructure.Repositories
     public class MatchRepository(AmdarisProjectDBContext dbContext)
         : GenericRepository<Match>(dbContext), IMatchRepository
     {
-        public async Task<bool> ContainsCompetitor(Guid matchId, Guid competitorId)
-        {
-            Match match = await GetById(matchId)
-                ?? throw new APNotFoundException(Tuple.Create(nameof(matchId), matchId));
-
-            bool containsCompetitor = match.ContainsCompetitor(competitorId);
-            return containsCompetitor;
-        }
-
-        public async Task<IEnumerable<Match>> GetUnfinishedByCompetition(Guid competitionId)
+        public async Task<Match?> GetMatchByCompetitionStageLevelAndStageIndex(Guid competitionId, ushort stageLevel, ushort stageIndex)
             => await _dbContext.Set<Match>()
-            .Where(match => match.Competition.Id.Equals(competitionId)
-                && (match.Status == MatchStatus.NOT_STARTED || match.Status == MatchStatus.STARTED))
+            .Where(match =>
+                match.Competition.Id.Equals(competitionId)
+                && match.StageLevel == stageLevel
+                && match.StageIndex == stageIndex)
+            .FirstOrDefaultAsync();
+
+        public async Task<Match?> GetMatchByCompetitionAndTheTwoCompetitors(Guid competitionId, Guid competitorId1, Guid competitorId2)
+            => await _dbContext.Set<Match>()
+            .Where(match =>
+                match.Competition.Id.Equals(competitionId)
+                && (match.CompetitorOne.Id.Equals(competitorId1) && match.CompetitorTwo.Id.Equals(competitorId2)
+                    || match.CompetitorOne.Id.Equals(competitorId2) && match.CompetitorTwo.Id.Equals(competitorId1)))
+            .FirstOrDefaultAsync();
+
+        public async Task<IEnumerable<Match>> GetAllByCompetitionAndStageLevel(Guid competitionId, ushort stageLevel)
+            => await _dbContext.Set<Match>()
+            .Where(match => match.Competition.Id.Equals(competitionId) && match.StageLevel == stageLevel)
+            .OrderBy(match => match.StageIndex)
             .ToListAsync();
+
+        public async Task<bool> AllMatchesOfCompetitonAreFinished(Guid competitionId)
+            => await _dbContext.Set<Match>()
+            .Where(match => match.Competition.Id.Equals(competitionId))
+            .AllAsync(match => match.Status != MatchStatus.NOT_STARTED && match.Status != MatchStatus.STARTED);
 
         public async Task<IEnumerable<Match>> GetAllByCompetitorAndGameType(Guid competitorId, GameType gameType)
             => (await _dbContext.Set<Match>().Where(match => match.Competition.GameType == gameType)

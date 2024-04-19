@@ -10,27 +10,19 @@ namespace AmdarisProject.Infrastructure.Repositories
         : GenericRepository<Competitor>(dbContext), ICompetitorRepository
     {
         public async Task<IEnumerable<Team>> GetAllTeams()
-            => await _dbContext.Set<Competitor>()
-            .Where(competitor => competitor is Team)
-            .Select(competitor => (Team)competitor)
-            .ToListAsync();
+            => await _dbContext.Set<Team>().ToListAsync();
 
         public async Task<IEnumerable<Player>> GetAllPlayers()
-            => await _dbContext.Set<Competitor>()
-            .Where(competitor => competitor is Player)
-            .Select(competitor => (Player)competitor)
-            .ToListAsync();
+            => await _dbContext.Set<Player>().ToListAsync();
 
-        public async Task<IEnumerable<Player>> GetTeamPlayers(Guid teamId)
-            => await _dbContext.Set<Competitor>()
-            .Where(competitor => (competitor is Player) && ((Player)competitor).Teams.Exists(team => team.Id.Equals(teamId)))
-            .Select(competitor => (Player)competitor)
+        public async Task<IEnumerable<Player>> GetPlayersInTeam(Guid teamId)
+            => await _dbContext.Set<Player>()
+            .Where(player => player.Teams.Any(team => team.Id.Equals(teamId)))
             .ToListAsync();
 
         public async Task<IEnumerable<Player>> GetPlayersNotInTeam(Guid teamId)
-            => await _dbContext.Set<Competitor>()
-            .Where(competitor => (competitor is Player) && ((Player)competitor).Teams.All(team => !team.Id.Equals(teamId)))
-            .Select(competitor => (Player)competitor)
+            => await _dbContext.Set<Player>()
+            .Where(player => player.Teams.All(team => !team.Id.Equals(teamId)))
             .ToListAsync();
 
         //TODO should be moved to handler
@@ -39,16 +31,14 @@ namespace AmdarisProject.Infrastructure.Repositories
 
         //TODO should be moved to handler
         public async Task<IEnumerable<Team>> GetTeamsThatCanBeAddedToCompetition(Guid competitionId)
-            => await _dbContext.Set<Competitor>()
-                .Where(competitor => competitor is Team
-                    && ((Team)competitor).Players.Count() == ((Team)competitor).TeamSize
-                    && !competitor.Competitions.Exists(competition => competition.Id.Equals(competitionId)))
-                .Select(competitor => (Team)competitor)
-                .Where(team => team.Competitions.FirstOrDefault(c => c.Id.Equals(competitionId)
-                    && c.CompetitorType == CompetitorType.TEAM
-                    && c.TeamSize == team.TeamSize) != null
-                    && team.Players.All(player =>
-                        !team.Competitions.FirstOrDefault(c =>
+            => await _dbContext.Set<Team>()
+                .Where(team => team.Players.Count() == team.TeamSize
+                    && !team.Competitions.Exists(competition => competition.Id.Equals(competitionId))
+                    && team.Competitions.FirstOrDefault(c => c.Id.Equals(competitionId)
+                        && c.CompetitorType == CompetitorType.TEAM
+                        && c.TeamSize == team.TeamSize) != null
+                        && team.Players.All(player =>
+                            !team.Competitions.FirstOrDefault(c =>
                                 c.Id.Equals(competitionId)
                                 && c.CompetitorType == CompetitorType.TEAM
                                 && c.TeamSize == team.TeamSize).ContainsCompetitor(player.Id)))

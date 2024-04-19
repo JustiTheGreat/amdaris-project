@@ -1,16 +1,12 @@
 ﻿using AmdarisProject.Application.Abstractions;
+using AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreators;
 using AmdarisProject.Domain.Models.CompetitionModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AmdarisProject.Application.Services.CompetitionMatchCreatorServices
 {
     public class CompetitionMatchCreatorFactoryService : ICompetitionMatchCreatorFactoryService
     {
-        private Dictionary<Type, CompetitionMatchCreator> competitionMatchCreatorServices = [];
+        private readonly Dictionary<Type, ICompetitionMatchCreator> competitionMatchCreatorServices = [];
 
         public CompetitionMatchCreatorFactoryService(IUnitOfWork unitOfWork)
         {
@@ -18,7 +14,7 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorServices
             competitionMatchCreatorServices.Add(typeof(TournamentCompetition), new TournamentCompetitionMatchCreator(unitOfWork));
         }
 
-        public CompetitionMatchCreator GetCompetitionMatchCreatorService(Type type)
+        public ICompetitionMatchCreator GetCompetitionMatchCreatorService(Type type)
             => competitionMatchCreatorServices[type];
     }
 }
