@@ -4,6 +4,7 @@
     {
         ICompetitionRepository CompetitionRepository { get; }
         ICompetitorRepository CompetitorRepository { get; }
+        IGameFormatRepository GameFormatRepository { get; }
         IMatchRepository MatchRepository { get; }
         IPointRepository PointRepository { get; }
 

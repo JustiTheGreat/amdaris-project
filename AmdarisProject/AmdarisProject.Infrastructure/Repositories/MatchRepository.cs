@@ -37,7 +37,7 @@ namespace AmdarisProject.Infrastructure.Repositories
             .AllAsync(match => match.Status != MatchStatus.NOT_STARTED && match.Status != MatchStatus.STARTED);
 
         public async Task<IEnumerable<Match>> GetAllByCompetitorAndGameType(Guid competitorId, GameType gameType)
-            => (await _dbContext.Set<Match>().Where(match => match.Competition.GameType == gameType)
+            => (await _dbContext.Set<Match>().Where(match => match.Competition.GameFormat.GameType == gameType)
             .Include(match => match.CompetitorOne).Include(match => match.CompetitorTwo).ToListAsync())
             .Where(match => match.ContainsCompetitor(competitorId)).ToList();
 
@@ -55,7 +55,7 @@ namespace AmdarisProject.Infrastructure.Repositories
         {
             int playedMatchesOfGameType = (await GetAllByCompetitorAndGameType(competitorId, gameType)).Count();
             int wonMatchedOfGameType = (await _dbContext.Set<Match>()
-                .Where(match => match.Competition.GameType == gameType && match.Winner != null)
+                .Where(match => match.Competition.GameFormat.GameType == gameType && match.Winner != null)
                 .Include(match => match.Winner)
                 .ToListAsync())
                 .Where(match => match.Winner!.IsOrContainsCompetitor(competitorId))

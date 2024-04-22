@@ -9,6 +9,7 @@ namespace AmdarisProject.Infrastructure
     {
         public DbSet<Competitor> Competitors { get; set; }
         public DbSet<Competition> Competitions { get; set; }
+        public DbSet<GameFormat> GameFormats { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<Point> Points { get; set; }
 
@@ -29,22 +30,24 @@ namespace AmdarisProject.Infrastructure
             modelBuilder.Entity<Competition>().Property(competition => competition.Location).IsRequired();
             modelBuilder.Entity<Competition>().Property(competition => competition.StartTime).IsRequired();
             modelBuilder.Entity<Competition>().Property(competition => competition.Status).IsRequired().HasConversion<string>();
-            modelBuilder.Entity<Competition>().Property(competition => competition.GameType).IsRequired().HasConversion<string>();
-            modelBuilder.Entity<Competition>().Property(competition => competition.CompetitorType).IsRequired().HasConversion<string>();
-            modelBuilder.Entity<Competition>()
-                .HasMany(competition => competition.Competitors)
-                .WithMany(competitor => competitor.Competitions);
+            modelBuilder.Entity<Competition>().HasMany(competition => competition.Competitors).WithMany(competitor => competitor.Competitions);
             modelBuilder.Entity<TournamentCompetition>().Property(tournamentCompetition => tournamentCompetition.StageLevel).IsRequired();
 
-            modelBuilder.Entity<Competition>(entity => entity.ToTable(table => table.HasCheckConstraint(
-                "CK_win_rules",
-                "[WinAt] <> NULL OR ([DurationInSeconds] <> NULL AND [BreakInSeconds] <> NULL)")));
-            modelBuilder.Entity<Competition>(entity => entity.ToTable(table => table.HasCheckConstraint(
-                "CK_competitor_type",
-                "[CompetitorType] = 'Player' AND [TeamSize] = NULL OR [CompetitorType] = 'Team' AND [TeamSize] <> NULL")));
-            modelBuilder.Entity<Competition>(entity => entity.ToTable(table => table.HasCheckConstraint(
+
+
+            modelBuilder.Entity<TournamentCompetition>(entity => entity.ToTable(table => table.HasCheckConstraint(
                 "CK_StageLevel",
                 "[StageLevel] >= 0")));
+
+            modelBuilder.Entity<GameFormat>().Property(gameFormat => gameFormat.Name).IsRequired().HasConversion<string>();
+            modelBuilder.Entity<GameFormat>().Property(gameFormat => gameFormat.GameType).IsRequired().HasConversion<string>();
+            modelBuilder.Entity<GameFormat>().Property(gameFormat => gameFormat.CompetitorType).IsRequired().HasConversion<string>();
+            modelBuilder.Entity<GameFormat>(entity => entity.ToTable(table => table.HasCheckConstraint(
+                "CK_competitor_type",
+                "[CompetitorType] = 'Player' AND [TeamSize] = NULL OR [CompetitorType] = 'Team' AND [TeamSize] <> NULL")));
+            modelBuilder.Entity<GameFormat>(entity => entity.ToTable(table => table.HasCheckConstraint(
+                "CK_win_rules",
+                "[WinAt] <> NULL OR [DurationInSeconds] <> NULL")));
 
             modelBuilder.Entity<Competitor>().Property(competitor => competitor.Name).IsRequired();
             modelBuilder.Entity<Team>().Property(team => team.TeamSize).IsRequired();

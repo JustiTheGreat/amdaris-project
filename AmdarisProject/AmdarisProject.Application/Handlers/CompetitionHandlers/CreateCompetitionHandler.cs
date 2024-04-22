@@ -22,22 +22,13 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
             if (request.CompetitionCreateDTO.Status is not CompetitionStatus.ORGANIZING)
                 throw new APIllegalStatusException(request.CompetitionCreateDTO.Status);
 
-            bool winningConditionsAreValid = (request.CompetitionCreateDTO.WinAt is null
-                    || request.CompetitionCreateDTO.DurationInSeconds is not null || request.CompetitionCreateDTO.BreakInSeconds is not null)
-                && (request.CompetitionCreateDTO.DurationInSeconds is null || request.CompetitionCreateDTO.BreakInSeconds is null);
-
-            bool competitorRequirementsAreValid =
-                request.CompetitionCreateDTO.CompetitorType is CompetitorType.PLAYER && request.CompetitionCreateDTO.TeamSize is not null
-                || request.CompetitionCreateDTO.CompetitorType is CompetitorType.TEAM
-                    && (request.CompetitionCreateDTO.TeamSize is null || request.CompetitionCreateDTO.TeamSize < 2);
-
-            if (winningConditionsAreValid || competitorRequirementsAreValid)
-                throw new APArgumentException(nameof(request.CompetitionCreateDTO));
-
             Competition mapped =
                 request.CompetitionCreateDTO is OneVSAllCompetitionCreateDTO ? _mapper.Map<OneVSAllCompetition>(request.CompetitionCreateDTO)
                 : request.CompetitionCreateDTO is TournamentCompetitionCreateDTO ? _mapper.Map<TournamentCompetition>(request.CompetitionCreateDTO)
                 : throw new AmdarisProjectException(nameof(request.CompetitionCreateDTO));
+
+            mapped.GameFormat = await _unitOfWork.GameFormatRepository.GetById(request.CompetitionCreateDTO.GameFormat)
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionCreateDTO.GameFormat), request.CompetitionCreateDTO.GameFormat));
 
             Competition competition;
 

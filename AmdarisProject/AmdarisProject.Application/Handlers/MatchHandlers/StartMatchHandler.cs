@@ -94,7 +94,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                     await CreatePoint(player);
             }
 
-            if (match.Competition.CompetitorType is CompetitorType.PLAYER)
+            if (match.Competition.GameFormat.CompetitorType is CompetitorType.PLAYER)
             {
                 await CreatePoint((Player)match.CompetitorOne);
                 await CreatePoint((Player)match.CompetitorTwo);
@@ -115,7 +115,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             foreach (Match m in matches)
             {
                 m.StartTime = ((DateTime)match.StartTime!).AddSeconds(
-                        (double)((ulong)++i * (match.Competition.DurationInSeconds! + match.Competition.BreakInSeconds!)));
+                        (ulong)++i * (match.Competition.GameFormat.DurationInSeconds! + match.Competition.BreakInSeconds ?? 0));
                 await _unitOfWork.MatchRepository.Update(m);
             }
         }

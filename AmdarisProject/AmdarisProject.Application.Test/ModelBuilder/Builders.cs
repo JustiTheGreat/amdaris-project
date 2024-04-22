@@ -15,6 +15,11 @@ namespace AmdarisProject.Application.Test.ModelBuilder
             return TeamBuilder.CreateBasic();
         }
 
+        public static GameFormatBuilder CreateBasicGameFormat()
+        {
+            return GameFormatBuilder.CreateBasic();
+        }
+
         public static OneVSAllCompetitionBuilder CreateBasicOneVSAllCompetition()
         {
             return OneVSAllCompetitionBuilder.CreateBasic();

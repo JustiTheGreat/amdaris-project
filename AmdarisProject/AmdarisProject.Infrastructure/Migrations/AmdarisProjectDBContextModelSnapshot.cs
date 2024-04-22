@@ -31,21 +31,13 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.Property<decimal?>("BreakInSeconds")
                         .HasColumnType("decimal(20,0)");
 
-                    b.Property<string>("CompetitorType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasMaxLength(21)
                         .HasColumnType("nvarchar(21)");
 
-                    b.Property<decimal?>("DurationInSeconds")
-                        .HasColumnType("decimal(20,0)");
-
-                    b.Property<string>("GameType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("GameFormatId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -62,22 +54,11 @@ namespace AmdarisProject.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TeamSize")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("WinAt")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
-                    b.ToTable("Competitions", t =>
-                        {
-                            t.HasCheckConstraint("CK_StageLevel", "[StageLevel] >= 0");
+                    b.HasIndex("GameFormatId");
 
-                            t.HasCheckConstraint("CK_competitor_type", "[CompetitorType] = 'Player' AND [TeamSize] = NULL OR [CompetitorType] = 'Team' AND [TeamSize] <> NULL");
-
-                            t.HasCheckConstraint("CK_win_rules", "[WinAt] <> NULL OR ([DurationInSeconds] <> NULL AND [BreakInSeconds] <> NULL)");
-                        });
+                    b.ToTable("Competitions");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Competition");
 
@@ -106,6 +87,43 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("Competitor");
 
                     b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("AmdarisProject.Domain.Models.GameFormat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CompetitorType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("DurationInSeconds")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.Property<string>("GameType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TeamSize")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("WinAt")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GameFormats", t =>
+                        {
+                            t.HasCheckConstraint("CK_competitor_type", "[CompetitorType] = 'Player' AND [TeamSize] = NULL OR [CompetitorType] = 'Team' AND [TeamSize] <> NULL");
+
+                            t.HasCheckConstraint("CK_win_rules", "[WinAt] <> NULL OR [DurationInSeconds] <> NULL");
+                        });
                 });
 
             modelBuilder.Entity("AmdarisProject.Domain.Models.Match", b =>
@@ -226,13 +244,9 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.Property<int>("StageLevel")
                         .HasColumnType("int");
 
-                    b.ToTable(t =>
+                    b.ToTable("Competitions", t =>
                         {
                             t.HasCheckConstraint("CK_StageLevel", "[StageLevel] >= 0");
-
-                            t.HasCheckConstraint("CK_competitor_type", "[CompetitorType] = 'Player' AND [TeamSize] = NULL OR [CompetitorType] = 'Team' AND [TeamSize] <> NULL");
-
-                            t.HasCheckConstraint("CK_win_rules", "[WinAt] <> NULL OR ([DurationInSeconds] <> NULL AND [BreakInSeconds] <> NULL)");
                         });
 
                     b.HasDiscriminator().HasValue("TournamentCompetition");
@@ -253,6 +267,17 @@ namespace AmdarisProject.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("Team");
+                });
+
+            modelBuilder.Entity("AmdarisProject.Domain.Models.CompetitionModels.Competition", b =>
+                {
+                    b.HasOne("AmdarisProject.Domain.Models.GameFormat", "GameFormat")
+                        .WithMany()
+                        .HasForeignKey("GameFormatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GameFormat");
                 });
 
             modelBuilder.Entity("AmdarisProject.Domain.Models.Match", b =>

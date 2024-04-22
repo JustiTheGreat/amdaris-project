@@ -9,11 +9,9 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
         {
         }
 
-        public OneVSAllCompetition(string name, string location, DateTime startTime, CompetitionStatus status, uint? winAt,
-            ulong? durationInSeconds, ulong? breakInSeconds, GameType gameType, CompetitorType competitorType, ushort? teamSize,
-            List<Competitor> competitors, List<Match> matches)
-            : base(name, location, startTime, status, winAt, durationInSeconds, breakInSeconds, gameType, competitorType, teamSize,
-                  competitors, matches)
+        public OneVSAllCompetition(string name, string location, DateTime startTime, CompetitionStatus status, ulong? breakInSeconds,
+            GameFormat gameFormat, List<Competitor> competitors, List<Match> matches)
+            : base(name, location, startTime, status, breakInSeconds, gameFormat, competitors, matches)
         {
         }
     }

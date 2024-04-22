@@ -1,5 +1,5 @@
-﻿using AmdarisProject.Application;
-using AmdarisProject.Application.Abstractions;
+﻿using AmdarisProject.Application.Abstractions;
+using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.CreateDTOs.CompetitionCreateDTOs;
 using AmdarisProject.Application.Dtos.CreateDTOs.CompetitorCreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
@@ -7,10 +7,12 @@ using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitionHandlers;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
+using AmdarisProject.Application.Handlers.GameFormatHandlers;
 using AmdarisProject.Application.Handlers.MatchHandlers;
 using AmdarisProject.Application.Services;
 using AmdarisProject.Application.Services.CompetitionMatchCreatorServices;
 using AmdarisProject.Domain.Enums;
+using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.handlers.competition;
 using AmdarisProject.handlers.point;
@@ -25,6 +27,7 @@ IServiceProvider serviceProvider = new ServiceCollection()
     .AddDbContext<AmdarisProjectDBContext>()
     .AddScoped<ICompetitionRepository, CompetitionRepository>()
     .AddScoped<ICompetitorRepository, CompetitorRepository>()
+    .AddScoped<IGameFormatRepository, GameFormatRepository>()
     .AddScoped<IMatchRepository, MatchRepository>()
     .AddScoped<IPointRepository, PointRepository>()
     .AddScoped<IUnitOfWork, UnitOfWork>()
@@ -41,13 +44,35 @@ IServiceProvider serviceProvider = new ServiceCollection()
     .BuildServiceProvider();
 
 IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
-IUnitOfWork unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
 
 ushort myTeamSize = 2;
 
-GameRules pingPong = new(3, null, null, GameType.PING_PONG, CompetitorType.PLAYER, null);
-GameRules pingPongTeam = new(3, null, null, GameType.PING_PONG, CompetitorType.TEAM, myTeamSize);
-GameRules pingPongTeamTimed = new(null, 5, 1, GameType.PING_PONG, CompetitorType.TEAM, myTeamSize);
+Guid pingPongPlayer = mediator.Send(new CreateGameFormat(new GameFormatCreateDTO()
+{
+    Name = "PingPongPlayerWinAt3",
+    GameType = GameType.PING_PONG,
+    CompetitorType = CompetitorType.PLAYER,
+    WinAt = 3,
+})).Result.Id;
+
+Guid pingPongTeam = mediator.Send(new CreateGameFormat(new GameFormatCreateDTO()
+{
+    Name = "PingPongTeamWinAt3",
+    GameType = GameType.PING_PONG,
+    CompetitorType = CompetitorType.TEAM,
+    TeamSize = myTeamSize,
+    WinAt = 3,
+})).Result.Id;
+
+Guid pingPongTeamTimed = mediator.Send(new CreateGameFormat(new GameFormatCreateDTO()
+{
+    Name = "PingPongTeamWinAt3Duration5",
+    GameType = GameType.PING_PONG,
+    CompetitorType = CompetitorType.TEAM,
+    TeamSize = myTeamSize,
+    WinAt = 3,
+    DurationInSeconds = 5,
+})).Result.Id;
 
 Guid player1Id = mediator.Send(new CreateCompetitor(new PlayerCreateDTO() { Name = "Player1" })).Result.Id;
 Guid player2Id = mediator.Send(new CreateCompetitor(new PlayerCreateDTO() { Name = "Player2" })).Result.Id;
@@ -74,7 +99,7 @@ await mediator.Send(new AddPlayerToTeam(player8Id, team4Id));
 
 string location = "Amdaris";
 
-OneVSAllCompetitionCreateDTO createOVAC(string name, GameRules gameRules)
+OneVSAllCompetitionCreateDTO createOVAC(string name, Guid gameFormat)
 {
     return new OneVSAllCompetitionCreateDTO()
     {
@@ -82,15 +107,11 @@ OneVSAllCompetitionCreateDTO createOVAC(string name, GameRules gameRules)
         Location = location,
         StartTime = DateTime.Now,
         Status = CompetitionStatus.ORGANIZING,
-        WinAt = gameRules.WinAt,
-        DurationInSeconds = gameRules.DurationInSeconds,
-        BreakInSeconds = gameRules.BreakInSeconds,
-        GameType = gameRules.Type,
-        CompetitorType = gameRules.CompetitorType,
-        TeamSize = gameRules.TeamSize,
+        BreakInSeconds = null,
+        GameFormat = gameFormat
     };
 }
-CompetitionCreateDTO createTC(string name, GameRules gameRules)
+CompetitionCreateDTO createTC(string name, Guid gameFormat)
 {
     return new TournamentCompetitionCreateDTO()
     {
@@ -98,19 +119,15 @@ CompetitionCreateDTO createTC(string name, GameRules gameRules)
         Location = location,
         StartTime = DateTime.Now,
         Status = CompetitionStatus.ORGANIZING,
-        WinAt = gameRules.WinAt,
-        DurationInSeconds = gameRules.DurationInSeconds,
-        BreakInSeconds = gameRules.BreakInSeconds,
-        GameType = gameRules.Type,
-        CompetitorType = gameRules.CompetitorType,
-        TeamSize = gameRules.TeamSize,
+        BreakInSeconds = null,
+        GameFormat = gameFormat,
         StageLevel = 0
     };
 };
 
-Guid competition1Id = mediator.Send(new CreateCompetition(createOVAC("c1", pingPong))).Result.Id;
+Guid competition1Id = mediator.Send(new CreateCompetition(createOVAC("c1", pingPongPlayer))).Result.Id;
 Guid competition2Id = mediator.Send(new CreateCompetition(createOVAC("c2", pingPongTeam))).Result.Id;
-Guid competition3Id = mediator.Send(new CreateCompetition(createTC("c3", pingPong))).Result.Id;
+Guid competition3Id = mediator.Send(new CreateCompetition(createTC("c3", pingPongPlayer))).Result.Id;
 Guid competition4Id = mediator.Send(new CreateCompetition(createTC("c4", pingPongTeam))).Result.Id;
 Guid competition5Id = mediator.Send(new CreateCompetition(createTC("c5", pingPongTeamTimed))).Result.Id;
 
@@ -137,7 +154,7 @@ await mediator.Send(new AddCompetitorToCompetition(team2Id, competition5Id));
 await mediator.Send(new AddCompetitorToCompetition(team3Id, competition5Id));
 await mediator.Send(new AddCompetitorToCompetition(team4Id, competition5Id));
 
-Guid competitionToTestId = competition4Id;
+Guid competitionToTestId = competition2Id;
 
 await simulateCompetition(competitionToTestId);
 
@@ -149,14 +166,12 @@ async Task simulateCompetition(Guid competitionId)
     Console.WriteLine();
 
     async Task<List<Match>> getCompetitionUnfinishedMatches()
-        => (await unitOfWork.CompetitionRepository.GetById(competitionId)).Matches
+        => (await serviceProvider.GetRequiredService<IUnitOfWork>().CompetitionRepository.GetById(competitionId)).Matches
             .Where(match => match.Status is MatchStatus.NOT_STARTED or MatchStatus.STARTED).ToList();
 
-    while ((await getCompetitionUnfinishedMatches()).Any())
-    {
+    while ((await getCompetitionUnfinishedMatches()).Count != 0)
         foreach (Match match in await getCompetitionUnfinishedMatches())
             await SimulateMatch(match.Id, competitionId);
-    }
 
     await mediator.Send(new EndCompetition(competitionId));
 
@@ -203,17 +218,17 @@ async Task SimulateMatch(Guid matchId, Guid competitionId)
         {
             CompetitorResponseDTO competitorOne = await mediator.Send(new GetCompetitorById(match.CompetitorOne));
             CompetitorResponseDTO competitorTwo = await mediator.Send(new GetCompetitorById(match.CompetitorTwo));
-            int numberOfPlayers = (int)(2 * competition.TeamSize);
+            int numberOfPlayers = 2 * competition.TeamSize ?? throw new AmdarisProjectException("");
             int random = new Random().Next(numberOfPlayers);
             scorer = random < numberOfPlayers / 2 ? ((TeamResponseDTO)competitorOne).Players[random % (numberOfPlayers / 2)]
                 : ((TeamResponseDTO)competitorTwo).Players[(random - (numberOfPlayers / 2)) % (numberOfPlayers / 2)];
         }
 
-        await mediator.Send(new AddValueToPointValue((Guid)scorer!, match.Id, 1));
+        await mediator.Send(new AddValueToPointValue(scorer ?? throw new AmdarisProjectException(""), match.Id, 1));
     }
 
     MatchResponseDTO match2 = await mediator.Send(new GetMatchById(matchId));
-    CompetitorResponseDTO winner = await mediator.Send(new GetCompetitorById((Guid)match2.Winner!));
+    CompetitorResponseDTO winner = await mediator.Send(new GetCompetitorById(match2.Winner ?? throw new AmdarisProjectException("")));
     Console.WriteLine($"Winner: {winner.Name}");
     Console.WriteLine();
 }

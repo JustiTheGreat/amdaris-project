@@ -44,9 +44,9 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(competitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(competitionId), competitionId));
 
-            if (competition.CompetitorType is CompetitorType.PLAYER
+            if (competition.GameFormat.CompetitorType is CompetitorType.PLAYER
                     && (competitorOne is not Player || competitorTwo is not Player)
-                || competition.CompetitorType is CompetitorType.TEAM
+                || competition.GameFormat.CompetitorType is CompetitorType.TEAM
                     && (competitorOne is not Team || competitorTwo is not Team))
                 throw new AmdarisProjectException("Competiors not matching the competition type!");
 
@@ -61,7 +61,7 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
 
             DateTime? matchStartTime = null;
 
-            if (competition.DurationInSeconds is not null)
+            if (competition.GameFormat.DurationInSeconds is not null)
             {
                 if (competition.Matches.Count == 0)
                 {
@@ -73,7 +73,7 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
                         ?? throw new AmdarisProjectException("Null start time for a timed match!");
 
                     matchStartTime = lastStartTime.AddSeconds(
-                        (double)(competition.DurationInSeconds! + competition.BreakInSeconds!));
+                        competition.GameFormat.DurationInSeconds! + competition.BreakInSeconds ?? 0);
                 }
             }
 

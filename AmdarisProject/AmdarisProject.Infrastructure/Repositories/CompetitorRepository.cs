@@ -1,6 +1,4 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.ExtensionMethods;
-using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,17 +29,18 @@ namespace AmdarisProject.Infrastructure.Repositories
 
         //TODO should be moved to handler
         public async Task<IEnumerable<Team>> GetTeamsThatCanBeAddedToCompetition(Guid competitionId)
-            => await _dbContext.Set<Team>()
-                .Where(team => team.Players.Count() == team.TeamSize
-                    && !team.Competitions.Exists(competition => competition.Id.Equals(competitionId))
-                    && team.Competitions.FirstOrDefault(c => c.Id.Equals(competitionId)
-                        && c.CompetitorType == CompetitorType.TEAM
-                        && c.TeamSize == team.TeamSize) != null
-                        && team.Players.All(player =>
-                            !team.Competitions.FirstOrDefault(c =>
-                                c.Id.Equals(competitionId)
-                                && c.CompetitorType == CompetitorType.TEAM
-                                && c.TeamSize == team.TeamSize).ContainsCompetitor(player.Id)))
-                .ToListAsync();
+            => throw new NotImplementedException();
+        //await _dbContext.Set<Team>()
+        //        .Where(team => team.Players.Count() == team.TeamSize
+        //            && !team.Competitions.Exists(competition => competition.Id.Equals(competitionId))
+        //            && team.Competitions.FirstOrDefault(c => c.Id.Equals(competitionId)
+        //                && c.CompetitorType == CompetitorType.TEAM
+        //                && c.TeamSize == team.TeamSize) != null
+        //                && team.Players.All(player =>
+        //                    !team.Competitions.FirstOrDefault(c =>
+        //                        c.Id.Equals(competitionId)
+        //                        && c.CompetitorType == CompetitorType.TEAM
+        //                        && c.TeamSize == team.TeamSize).ContainsCompetitor(player.Id)))
+        //        .ToListAsync();
     }
 }

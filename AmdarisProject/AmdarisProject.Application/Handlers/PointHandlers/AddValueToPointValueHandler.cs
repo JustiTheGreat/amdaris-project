@@ -26,8 +26,8 @@ namespace AmdarisProject.handlers.point
             if (match.Status is not MatchStatus.STARTED)
                 throw new APIllegalStatusException(match.Status);
 
-            bool matchHasACompetitorWithTheWinningScore = match.CompetitorOnePoints == match.Competition.WinAt
-                || match.CompetitorTwoPoints == match.Competition.WinAt;
+            bool matchHasACompetitorWithTheWinningScore = match.CompetitorOnePoints == match.Competition.GameFormat.WinAt
+                || match.CompetitorTwoPoints == match.Competition.GameFormat.WinAt;
 
             if (matchHasACompetitorWithTheWinningScore)
                 throw new AmdarisProjectException($"A competitor of match {match.Id} already has the winning number of points!");
@@ -53,8 +53,9 @@ namespace AmdarisProject.handlers.point
 
                 match = await _unitOfWork.MatchRepository.Update(match);
 
-                if (match.Competition.WinAt != null
-                    && (match.CompetitorOnePoints == match.Competition.WinAt || match.CompetitorTwoPoints == match.Competition.WinAt))
+                if (match.Competition.GameFormat.WinAt != null
+                    && (match.CompetitorOnePoints == match.Competition.GameFormat.WinAt
+                        || match.CompetitorTwoPoints == match.Competition.GameFormat.WinAt))
                     await _endMatchService.End(request.MatchId, MatchStatus.FINISHED);
 
                 await _unitOfWork.SaveAsync();

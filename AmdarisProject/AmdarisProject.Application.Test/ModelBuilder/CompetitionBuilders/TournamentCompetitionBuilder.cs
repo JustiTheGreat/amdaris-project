@@ -15,12 +15,8 @@ namespace AmdarisProject.Application.Test.ModelBuilder.CompetitionBuilders
                 Location = "Test",
                 StartTime = DateTime.Now,
                 Status = CompetitionStatus.ORGANIZING,
-                WinAt = 2,
-                DurationInSeconds = 10,
                 BreakInSeconds = 10,
-                GameType = GameType.PING_PONG,
-                CompetitorType = CompetitorType.PLAYER,
-                TeamSize = null,
+                GameFormat = Builders.CreateBasicGameFormat().Get(),
             });
     }
 }

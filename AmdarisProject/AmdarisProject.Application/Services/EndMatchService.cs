@@ -26,11 +26,11 @@ namespace AmdarisProject.Application.Services
             if (match.Status is not MatchStatus.STARTED)
                 throw new APIllegalStatusException(match.Status);
 
-            if (match.CompetitorOnePoints is null || match.CompetitorTwoPoints is null || match.Competition.WinAt is null)
+            if (match.CompetitorOnePoints is null || match.CompetitorTwoPoints is null || match.Competition.GameFormat.WinAt is null)
                 throw new AmdarisProjectException("Cannot end this type of match!");
 
-            bool matchHasACompetitorWithTheWinningScore = match.CompetitorOnePoints == match.Competition.WinAt
-                || match.CompetitorTwoPoints == match.Competition.WinAt;
+            bool matchHasACompetitorWithTheWinningScore = match.CompetitorOnePoints == match.Competition.GameFormat.WinAt
+                || match.CompetitorTwoPoints == match.Competition.GameFormat.WinAt;
 
             if (endStatus is MatchStatus.FINISHED && !matchHasACompetitorWithTheWinningScore)
                 throw new AmdarisProjectException($"Match {match.Id} doesn't have a competitor with the winning number of points!");
