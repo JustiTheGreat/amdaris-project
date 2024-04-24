@@ -42,8 +42,8 @@ namespace AmdarisProject.Infrastructure.Repositories
             .Where(match => match.ContainsCompetitor(competitorId)).ToList();
 
         public async Task<IEnumerable<Match>> GetAllByCompetitorAndCompetition(Guid competitorId, Guid competitionId)
-            => await _dbContext.Set<Match>().Where(match => match.Competition.Id.Equals(competitionId)
-            && match.ContainsCompetitor(competitorId)).ToListAsync();
+            => (await _dbContext.Set<Match>().Where(match => match.Competition.Id.Equals(competitionId)).ToListAsync())
+            .Where(match => match.ContainsCompetitor(competitorId)).ToList();
 
         public async Task<IEnumerable<Match>> GetNotStartedByCompetitionOrderedByStartTime(Guid competitionId)
             => await _dbContext.Set<Match>()
@@ -63,5 +63,12 @@ namespace AmdarisProject.Infrastructure.Repositories
             var winRating = (playedMatchesOfGameType == 0 ? 0 : wonMatchedOfGameType / (double)playedMatchesOfGameType);
             return winRating;
         }
+
+        public async Task<Match?> GetFirstStartedTimedMatchOfCompetition(Guid competitionId)
+            => await _dbContext.Set<Match>()
+                .Where(match => match.Competition.Id.Equals(competitionId)
+                    && match.Competition.GameFormat.DurationInSeconds != null
+                    && match.Status == MatchStatus.STARTED)
+                .FirstOrDefaultAsync();
     }
 }

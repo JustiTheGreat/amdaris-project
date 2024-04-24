@@ -7,7 +7,7 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
     {
         public ushort StageLevel { get; set; }
 
-        public TournamentCompetition() : base()
+        public TournamentCompetition()
         {
         }
 

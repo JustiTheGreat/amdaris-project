@@ -127,7 +127,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
 
             _unitOfWorkMock.Verify(o => o.RollbackTransactionAsync(), Times.Once);
         }
-        
+
         [Fact]
         public async Task Test_CreateCompetitionHandler_TournamentCompetition_Transaction_Throws_Exception()
         {

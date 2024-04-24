@@ -17,7 +17,7 @@ namespace AmdarisProject.Application.Handlers.GameFormatHandlers
         public async Task<IEnumerable<GameFormatResponseDTO>> Handle(GetAllGameFormats request, CancellationToken cancellationToken)
         {
             IEnumerable<GameFormat> gameFormats = await _unitOfWork.GameFormatRepository.GetAll();
-            IEnumerable<GameFormatResponseDTO> response = gameFormats.Select(_mapper.Map<GameFormatResponseDTO>).ToList();
+            IEnumerable<GameFormatResponseDTO> response = _mapper.Map<List<GameFormatResponseDTO>>(gameFormats);
             return response;
         }
     }

@@ -1,18 +1,10 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
-using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
-using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Application.Handlers.GameFormatHandlers;
 using AmdarisProject.Domain.Models;
-using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.Presentation;
 using MapsterMapper;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AmdarisProject.Application.Test.Tests.GameFormatTests
 {

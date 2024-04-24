@@ -37,7 +37,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
 
             _competitorRepositoryMock.Verify(o => o.Update(It.Is<Team>(t => t.Players.Any(p => p.Id.Equals(player.Id)))), Times.Once);
             Assert.Equal(team.Id, response.Id);
-            Assert.Equal(player.Id, response.Players[^1]);
+            Assert.Equal(player.Id, response.Players[^1].Id);
         }
 
         [Fact]

@@ -1,8 +1,10 @@
-﻿namespace AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs
+﻿using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
+
+namespace AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs
 {
     public class PlayerResponseDTO : CompetitorResponseDTO
     {
         public List<Guid> Points { get; set; } = [];
-        public List<Guid> Teams { get; set; } = [];
+        public List<TeamDisplayDTO> Teams { get; set; } = [];
     }
 }

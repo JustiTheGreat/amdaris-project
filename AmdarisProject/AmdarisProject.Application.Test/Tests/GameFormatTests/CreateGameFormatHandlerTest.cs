@@ -1,24 +1,15 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Dtos.CreateDTOs.CompetitionCreateDTOs;
-using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
-using AmdarisProject.Application.Handlers.CompetitionHandlers;
-using AmdarisProject.Application.Test.ModelBuilder;
-using AmdarisProject.Domain.Models.CompetitionModels;
-using AmdarisProject.Domain.Models;
-using AmdarisProject.Presentation;
-using MapsterMapper;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AmdarisProject.Domain.Enums;
-using AmdarisProject.Domain.Exceptions;
-using Mapster;
-using AmdarisProject.Application.Handlers.GameFormatHandlers;
 using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
+using AmdarisProject.Application.Handlers.GameFormatHandlers;
+using AmdarisProject.Application.Test.ModelBuilder;
+using AmdarisProject.Domain.Enums;
+using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Domain.Models;
+using AmdarisProject.Presentation;
+using Mapster;
+using MapsterMapper;
+using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.GameFormatTests
 {

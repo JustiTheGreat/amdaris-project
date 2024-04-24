@@ -1,4 +1,6 @@
-﻿using AmdarisProject.Domain.Enums;
+﻿using AmdarisProject.Application.Dtos.DisplayDTOs;
+using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
+using AmdarisProject.Domain.Enums;
 
 namespace AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs
 {
@@ -14,7 +16,7 @@ namespace AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs
         public ushort? TeamSize { get; set; }
         public uint? WinAt { get; set; }
         public ulong? DurationInSeconds { get; set; }
-        public List<Guid> Competitors { get; set; } = [];
-        public List<Guid> Matches { get; set; } = [];
+        public List<CompetitorDisplayDTO> Competitors { get; set; } = [];
+        public List<MatchDisplayDTO> Matches { get; set; } = [];
     }
 }

@@ -14,6 +14,6 @@ namespace AmdarisProject.Application.Abstractions
 
         Task<IEnumerable<Player>> GetPlayersNotInCompetition(Guid competitionId);
 
-        Task<IEnumerable<Team>> GetTeamsThatCanBeAddedToCompetition(Guid competitionId);
+        Task<IEnumerable<Team>> GetFullTeamsWithTeamSizeNotInCompetition(Guid competitionId, ushort teamSize);
     }
 }

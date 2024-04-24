@@ -7,7 +7,7 @@ namespace AmdarisProject.Domain.Models.CompetitorModels
         public virtual List<Point> Points { get; set; } = [];
         public virtual List<Team> Teams { get; set; } = [];
 
-        public Player() : base()
+        public Player()
         {
         }
 

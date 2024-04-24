@@ -8,25 +8,25 @@ using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.CompetitorTests
 {
-    public class GetPlayersHandlerTest
+    public class GetAllTeamsHandlerTest
     {
         private readonly Mock<ICompetitorRepository> _competitorRepositoryMock = new();
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
         private readonly Mock<IMapper> _mapperMock = new();
 
-        public GetPlayersHandlerTest() => MapsterConfiguration.ConfigureMapster();
+        public GetAllTeamsHandlerTest() => MapsterConfiguration.ConfigureMapster();
 
         [Fact]
-        public async Task Test_CreateCompetitorHandler_Player_Success()
+        public async Task Test_GetAllTeamsHandler_Success()
         {
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
-            _competitorRepositoryMock.Setup(o => o.GetAllPlayers()).Returns(Task.FromResult((IEnumerable<Player>)[]));
-            GetPlayers command = new();
-            GetPlayersHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            _competitorRepositoryMock.Setup(o => o.GetAllTeams()).Returns(Task.FromResult((IEnumerable<Team>)[]));
+            GetTeams command = new();
+            GetAllTeamsHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
-            IEnumerable<PlayerResponseDTO> response = await handler.Handle(command, default);
+            IEnumerable<TeamResponseDTO> response = await handler.Handle(command, default);
 
-            _competitorRepositoryMock.Verify(o => o.GetAllPlayers(), Times.Once);
+            _competitorRepositoryMock.Verify(o => o.GetAllTeams(), Times.Once);
         }
     }
 }

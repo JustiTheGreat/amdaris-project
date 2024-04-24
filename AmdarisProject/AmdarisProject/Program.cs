@@ -181,20 +181,19 @@ async Task simulateCompetition(Guid competitionId)
     Console.WriteLine($"The winner of competition {competitionResponseDTO.Name} is competitor {competitionWinner.Name}!");
     Console.WriteLine($"Matches played: {competitionResponseDTO.Matches.Count}");
     competitionResponseDTO.Matches
-        .Select(id => mediator.Send(new GetMatchById(id)).Result)
+        .Select(match => mediator.Send(new GetMatchById(match.Id)).Result)
         .ToList()
         .ForEach(match => Console.WriteLine($"{match.StartTime}-{match.EndTime}: " +
-        $"{mediator.Send(new GetCompetitorById(match.CompetitorOne)).Result.Name}={match.CompetitorOnePoints}-" +
-        $"{mediator.Send(new GetCompetitorById(match.CompetitorTwo)).Result.Name}={match.CompetitorTwoPoints}"));
+        $"{match.CompetitorOne.Name}={match.CompetitorOnePoints}-{match.CompetitorTwo.Name}={match.CompetitorTwoPoints}"));
 
     Console.WriteLine();
 
     Console.WriteLine("Competitor ratings:");
     competitionResponseDTO.Competitors
-        .Select(id => new
+        .Select(competitor => new
         {
-            mediator.Send(new GetCompetitorById(id)).Result.Name,
-            Rating = mediator.Send(new GetCompetitorWinRatingForGameType(id, competitionResponseDTO.GameType)).Result
+            competitor.Name,
+            Rating = mediator.Send(new GetCompetitorWinRatingForGameType(competitor.Id, competitionResponseDTO.GameType)).Result
         })
         .ToList()
         .ForEach(o => Console.WriteLine($"{o.Name}: {o.Rating}"));
@@ -212,23 +211,24 @@ async Task SimulateMatch(Guid matchId, Guid competitionId)
 
         if (competition.CompetitorType is CompetitorType.PLAYER)
         {
-            scorer = new Random().Next(2) == 0 ? match.CompetitorOne : match.CompetitorTwo;
+            scorer = new Random().Next(2) == 0 ? match.CompetitorOne.Id : match.CompetitorTwo.Id;
         }
         else if (competition.CompetitorType is CompetitorType.TEAM)
         {
-            CompetitorResponseDTO competitorOne = await mediator.Send(new GetCompetitorById(match.CompetitorOne));
-            CompetitorResponseDTO competitorTwo = await mediator.Send(new GetCompetitorById(match.CompetitorTwo));
+            CompetitorResponseDTO competitorOne = await mediator.Send(new GetCompetitorById(match.CompetitorOne.Id));
+            CompetitorResponseDTO competitorTwo = await mediator.Send(new GetCompetitorById(match.CompetitorTwo.Id));
             int numberOfPlayers = 2 * competition.TeamSize ?? throw new AmdarisProjectException("");
             int random = new Random().Next(numberOfPlayers);
-            scorer = random < numberOfPlayers / 2 ? ((TeamResponseDTO)competitorOne).Players[random % (numberOfPlayers / 2)]
-                : ((TeamResponseDTO)competitorTwo).Players[(random - (numberOfPlayers / 2)) % (numberOfPlayers / 2)];
+            scorer = random < numberOfPlayers / 2
+                ? ((TeamResponseDTO)competitorOne).Players[random % (numberOfPlayers / 2)].Id
+                : ((TeamResponseDTO)competitorTwo).Players[(random - (numberOfPlayers / 2)) % (numberOfPlayers / 2)].Id;
         }
 
         await mediator.Send(new AddValueToPointValue(scorer ?? throw new AmdarisProjectException(""), match.Id, 1));
     }
 
-    MatchResponseDTO match2 = await mediator.Send(new GetMatchById(matchId));
-    CompetitorResponseDTO winner = await mediator.Send(new GetCompetitorById(match2.Winner ?? throw new AmdarisProjectException("")));
-    Console.WriteLine($"Winner: {winner.Name}");
+    Console.WriteLine($"Winner: {(await mediator.Send(new GetMatchById(matchId))).Winner?.Name}");
     Console.WriteLine();
 }
+
+while (true) ;

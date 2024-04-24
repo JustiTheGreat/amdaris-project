@@ -23,24 +23,15 @@ namespace AmdarisProject.Infrastructure.Repositories
             .Where(player => player.Teams.All(team => !team.Id.Equals(teamId)))
             .ToListAsync();
 
-        //TODO should be moved to handler
         public async Task<IEnumerable<Player>> GetPlayersNotInCompetition(Guid competitionId)
-            => throw new NotImplementedException();
+            => await _dbContext.Set<Player>()
+            .Where(player => player.Competitions.All(competition => !competition.Id.Equals(competitionId)))
+            .ToListAsync();
 
-        //TODO should be moved to handler
-        public async Task<IEnumerable<Team>> GetTeamsThatCanBeAddedToCompetition(Guid competitionId)
-            => throw new NotImplementedException();
-        //await _dbContext.Set<Team>()
-        //        .Where(team => team.Players.Count() == team.TeamSize
-        //            && !team.Competitions.Exists(competition => competition.Id.Equals(competitionId))
-        //            && team.Competitions.FirstOrDefault(c => c.Id.Equals(competitionId)
-        //                && c.CompetitorType == CompetitorType.TEAM
-        //                && c.TeamSize == team.TeamSize) != null
-        //                && team.Players.All(player =>
-        //                    !team.Competitions.FirstOrDefault(c =>
-        //                        c.Id.Equals(competitionId)
-        //                        && c.CompetitorType == CompetitorType.TEAM
-        //                        && c.TeamSize == team.TeamSize).ContainsCompetitor(player.Id)))
-        //        .ToListAsync();
+        public async Task<IEnumerable<Team>> GetFullTeamsWithTeamSizeNotInCompetition(Guid competitionId, ushort teamSize)
+            => await _dbContext.Set<Team>()
+            .Where(team => team.Players.Count == team.TeamSize && team.TeamSize == teamSize
+                && team.Competitions.All(competition => !competition.Id.Equals(competitionId)))
+            .ToListAsync();
     }
 }
