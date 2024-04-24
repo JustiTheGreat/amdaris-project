@@ -1,5 +1,5 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
+using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.Presentation;
@@ -24,7 +24,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             GetPlayers command = new();
             GetAllPlayersHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
-            IEnumerable<PlayerResponseDTO> response = await handler.Handle(command, default);
+            IEnumerable<PlayerDisplayDTO> response = await handler.Handle(command, default);
 
             _competitorRepositoryMock.Verify(o => o.GetAllPlayers(), Times.Once);
         }

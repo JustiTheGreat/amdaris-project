@@ -230,5 +230,3 @@ async Task SimulateMatch(Guid matchId, Guid competitionId)
     Console.WriteLine($"Winner: {(await mediator.Send(new GetMatchById(matchId))).Winner?.Name}");
     Console.WriteLine();
 }
-
-while (true) ;
