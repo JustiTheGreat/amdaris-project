@@ -2,6 +2,7 @@
 using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.CreateDTOs.CompetitionCreateDTOs;
 using AmdarisProject.Application.Dtos.CreateDTOs.CompetitorCreateDTOs;
+using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
@@ -178,10 +179,8 @@ async Task simulateCompetition(Guid competitionId)
 
     await mediator.Send(new EndCompetition(competitionId));
 
-    CompetitorResponseDTO competitionWinner = await mediator.Send(new GetCompetitionWinner(competitionId));
     CompetitionResponseDTO competitionResponseDTO = await mediator.Send(new GetCompetitionById(competitionId));
 
-    Console.WriteLine($"The winner of competition {competitionResponseDTO.Name} is competitor {competitionWinner.Name}!");
     Console.WriteLine($"Matches played: {competitionResponseDTO.Matches.Count}");
     competitionResponseDTO.Matches
         .Select(match => mediator.Send(new GetMatchById(match.Id)).Result)
@@ -189,9 +188,15 @@ async Task simulateCompetition(Guid competitionId)
         .ForEach(match => Console.WriteLine($"{match.Status}: {match.StartTime}-{match.EndTime}: " +
         $"{match.CompetitorOne.Name}={match.CompetitorOnePoints}-{match.CompetitorTwo.Name}={match.CompetitorTwoPoints}"));
 
+    IEnumerable<CompetitorDisplayDTO> competitionWinners = await mediator.Send(new GetCompetitionWinner(competitionId));
+
+    if (!competitionWinners.Any()) Console.WriteLine($"Competition {competitionResponseDTO.Name} can't continue!");
+    else competitionWinners.ToList().ForEach(winner =>
+        Console.WriteLine($"The winner of competition {competitionResponseDTO.Name} is competitor {winner.Name}!"));
+
     Console.WriteLine();
 
-    Console.WriteLine("Competitor ratings:");
+    Console.WriteLine("Competitor's ratings:");
     competitionResponseDTO.Competitors
         .Select(competitor => new
         {
@@ -204,11 +209,11 @@ async Task simulateCompetition(Guid competitionId)
 
 async Task SimulateMatch(Guid matchId, Guid competitionId)
 {
-    if (i++ == 1)
-    {
-        await mediator.Send(new CancelMatch(matchId));
-        return;
-    }
+    //if (i++ == 1)
+    //{
+    await mediator.Send(new CancelMatch(matchId));
+    return;
+    //}
 
     await mediator.Send(new StartMatch(matchId));
     CompetitionResponseDTO competition = await mediator.Send(new GetCompetitionById(competitionId));
