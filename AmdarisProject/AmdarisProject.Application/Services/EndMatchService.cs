@@ -2,8 +2,8 @@
 using AmdarisProject.Application.Services.CompetitionMatchCreatorServices;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models;
-using AmdarisProject.Domain.Models.CompetitorModels;
 
 namespace AmdarisProject.Application.Services
 {
@@ -37,7 +37,7 @@ namespace AmdarisProject.Application.Services
 
             match.Status = endStatus;
             match.EndTime = DateTime.Now;
-            match.Winner = GetMatchWinner(match);
+            match.Winner = match.GetWinner();
             Match updated = await _unitOfWork.MatchRepository.Update(match);
 
             await _competitionMatchCreatorFactoryService
@@ -55,14 +55,5 @@ namespace AmdarisProject.Application.Services
 
             return updated;
         }
-
-        private static Competitor? GetMatchWinner(Match match)
-            => match.Status is MatchStatus.SPECIAL_WIN_COMPETITOR_ONE ? match.CompetitorOne
-            : match.Status is MatchStatus.SPECIAL_WIN_COMPETITOR_TWO ? match.CompetitorTwo
-            : match.Status is MatchStatus.FINISHED ?
-                (match.CompetitorOnePoints > match.CompetitorTwoPoints ? match.CompetitorOne
-                : match.CompetitorOnePoints < match.CompetitorTwoPoints ? match.CompetitorTwo
-                : null)
-            : throw new APIllegalStatusException(match.Status);
     }
 }

@@ -11,7 +11,8 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
         : CompetitionMatchCreator<TournamentCompetition>(unitOfWork)
     {
         protected override bool ShouldCreateMatches(TournamentCompetition competition)
-            => competition.StageLevel < Math.Log2(competition.Competitors.Count);
+            => competition.StageLevel < Math.Log2(competition.Competitors.Count)
+            && _unitOfWork.MatchRepository.AllMatchesOfCompetitonAreFinished(competition.Id).Result;
 
         protected override async Task<IEnumerable<Match>> CreateMatches(TournamentCompetition competition)
         {

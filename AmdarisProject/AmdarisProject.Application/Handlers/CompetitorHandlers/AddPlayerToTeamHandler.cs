@@ -1,7 +1,7 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
-using AmdarisProject.Application.ExtensionMethods;
 using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using MapsterMapper;
 using MediatR;
@@ -17,7 +17,6 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
 
         public async Task<TeamResponseDTO> Handle(AddPlayerToTeam request, CancellationToken cancellationToken)
         {
-            //TODO what kind of persistence a team should have (per competition?, or forever?)
             Team team = (Team)(await _unitOfWork.CompetitorRepository.GetById(request.TeamId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.TeamId), request.TeamId)));
 
@@ -29,6 +28,8 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
 
             if (team.ContainsPlayer(request.PlayerId))
                 throw new AmdarisProjectException($"Player {player.Id} is already a member of team {team.Id}!");
+
+            if (/*TODO player is not contained by another team for this game type */true) ;
 
             Team updated;
 

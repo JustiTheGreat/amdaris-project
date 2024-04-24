@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.ExtensionMethods;
 using AmdarisProject.Domain.Enums;
+using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 

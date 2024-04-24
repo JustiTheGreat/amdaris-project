@@ -1,7 +1,7 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
-using AmdarisProject.Application.ExtensionMethods;
 using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using MapsterMapper;

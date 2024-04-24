@@ -50,6 +50,11 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             updated = await _unitOfWork.MatchRepository.GetById(updated.Id)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(updated.Id), updated.Id));
 
+            //TODO remove
+            Console.WriteLine($"Competition {match.Competition.Name}: Match between " +
+                $"{match.CompetitorOne.Name} and {match.CompetitorTwo.Name} was cancelled!");
+            //
+
             MatchResponseDTO response = _mapper.Map<MatchResponseDTO>(updated);
             return response;
         }

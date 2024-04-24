@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Domain.Models.CompetitorModels;
 
-namespace AmdarisProject.Application.ExtensionMethods
+namespace AmdarisProject.Domain.Extensions
 {
     public static class CompetitorIsOrIsPartOfCompetitor
     {

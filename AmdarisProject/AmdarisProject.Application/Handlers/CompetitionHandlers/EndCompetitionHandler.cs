@@ -32,7 +32,7 @@ namespace AmdarisProject.handlers.competition
             {
                 await _unitOfWork.BeginTransactionAsync();
                 competition.Status = CompetitionStatus.FINISHED;
-                //TODO move set winner here
+                //TODO move set winner here?
                 updated = await _unitOfWork.CompetitionRepository.Update(competition);
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();

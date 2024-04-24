@@ -1,9 +1,9 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
-using AmdarisProject.Application.ExtensionMethods;
 using AmdarisProject.Application.Services;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;

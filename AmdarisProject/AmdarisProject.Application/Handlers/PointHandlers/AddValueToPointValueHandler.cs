@@ -1,9 +1,9 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
-using AmdarisProject.Application.ExtensionMethods;
 using AmdarisProject.Application.Services;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models;
 using MapsterMapper;
 using MediatR;

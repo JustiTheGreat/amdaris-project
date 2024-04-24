@@ -1,7 +1,7 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.ExtensionMethods;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
@@ -17,9 +17,6 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
         {
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(competitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(competitionId), competitionId));
-
-            if (!await _unitOfWork.MatchRepository.AllMatchesOfCompetitonAreFinished(competition.Id))
-                return [];
 
             if (!ShouldCreateMatches((T)competition))
                 return [];

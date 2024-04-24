@@ -49,8 +49,8 @@ namespace AmdarisProject.Application.Services
             => competition.Matches.Where(match => match.Winner != null && match.Winner.Id.Equals(competitorId)).Count();
 
         private int GetCompetitorCompetitionPoints(Competition competition, Guid competitorId)
-            => competition.Matches.Where(match =>
-                        match.CompetitorOne.Id.Equals(competitorId) || match.CompetitorTwo.Id.Equals(competitorId))
+            => competition.Matches.Where(match => match.CompetitorOnePoints is not null && match.CompetitorTwoPoints is not null
+                        && (match.CompetitorOne.Id.Equals(competitorId) || match.CompetitorTwo.Id.Equals(competitorId)))
                     .Select(match => match.CompetitorOne.Id.Equals(competitorId)
                         ? (int)match.CompetitorOnePoints! : (int)match.CompetitorTwoPoints!)
                     .Aggregate(0, (result, point) => result + point);
