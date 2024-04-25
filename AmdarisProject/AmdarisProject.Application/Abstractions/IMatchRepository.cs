@@ -13,6 +13,8 @@ namespace AmdarisProject.Application.Abstractions
 
         Task<bool> AllMatchesOfCompetitonAreFinished(Guid competitionId);
 
+        Task<bool> AtLeastTwoCompetitionMatchesFromStageHaveAWinner(Guid competitionId, ushort stageLevel);
+
         Task<IEnumerable<Match>> GetAllByCompetitorAndGameType(Guid competitorId, GameType gameType);
 
         Task<IEnumerable<Match>> GetAllByCompetitorAndCompetition(Guid competitorId, Guid competitionId);

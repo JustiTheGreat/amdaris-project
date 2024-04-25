@@ -34,7 +34,17 @@ namespace AmdarisProject.Infrastructure.Repositories
         public async Task<bool> AllMatchesOfCompetitonAreFinished(Guid competitionId)
             => await _dbContext.Set<Match>()
             .Where(match => match.Competition.Id.Equals(competitionId))
-            .AllAsync(match => match.Status != MatchStatus.NOT_STARTED && match.Status != MatchStatus.STARTED);
+            .AllAsync(match => match.Status == MatchStatus.FINISHED
+                || match.Status == MatchStatus.SPECIAL_WIN_COMPETITOR_ONE
+                || match.Status == MatchStatus.SPECIAL_WIN_COMPETITOR_TWO
+                || match.Status == MatchStatus.CANCELED);
+
+        public async Task<bool> AtLeastTwoCompetitionMatchesFromStageHaveAWinner(Guid competitionId, ushort stageLevel)
+            => await _dbContext.Set<Match>()
+            .CountAsync(match => match.Competition.Id.Equals(competitionId) && match.StageLevel == stageLevel
+                && (match.Status == MatchStatus.FINISHED
+                    || match.Status == MatchStatus.SPECIAL_WIN_COMPETITOR_ONE
+                    || match.Status == MatchStatus.SPECIAL_WIN_COMPETITOR_TWO)) >= 2;
 
         public async Task<IEnumerable<Match>> GetAllByCompetitorAndGameType(Guid competitorId, GameType gameType)
             => (await _dbContext.Set<Match>().Where(match => match.Competition.GameFormat.GameType == gameType)

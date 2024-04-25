@@ -23,7 +23,6 @@ using AmdarisProject.Presentation;
 using MapsterMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 
 IServiceProvider serviceProvider = new ServiceCollection()
     .AddDbContext<AmdarisProjectDBContext>()
@@ -188,7 +187,7 @@ async Task simulateCompetition(Guid competitionId)
         .ForEach(match => Console.WriteLine($"{match.Status}: {match.StartTime}-{match.EndTime}: " +
         $"{match.CompetitorOne.Name}={match.CompetitorOnePoints}-{match.CompetitorTwo.Name}={match.CompetitorTwoPoints}"));
 
-    IEnumerable<CompetitorDisplayDTO> competitionWinners = await mediator.Send(new GetCompetitionWinner(competitionId));
+    IEnumerable<CompetitorDisplayDTO> competitionWinners = await mediator.Send(new GetCompetitionWinners(competitionId));
 
     if (!competitionWinners.Any()) Console.WriteLine($"Competition {competitionResponseDTO.Name} can't continue!");
     else competitionWinners.ToList().ForEach(winner =>
@@ -209,10 +208,10 @@ async Task simulateCompetition(Guid competitionId)
 
 async Task SimulateMatch(Guid matchId, Guid competitionId)
 {
-    //if (i++ == 1)
+    //if (++i == 1)
     //{
-    await mediator.Send(new CancelMatch(matchId));
-    return;
+    //    await mediator.Send(new CancelMatch(matchId));
+    //    return;
     //}
 
     await mediator.Send(new StartMatch(matchId));

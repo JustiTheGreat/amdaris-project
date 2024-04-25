@@ -12,7 +12,9 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
     {
         protected override bool ShouldCreateMatches(TournamentCompetition competition)
             => competition.StageLevel < Math.Log2(competition.Competitors.Count)
-            && _unitOfWork.MatchRepository.AllMatchesOfCompetitonAreFinished(competition.Id).Result;
+            && (competition.Matches.Count == 0
+                || _unitOfWork.MatchRepository.AllMatchesOfCompetitonAreFinished(competition.Id).Result
+                        && _unitOfWork.MatchRepository.AtLeastTwoCompetitionMatchesFromStageHaveAWinner(competition.Id, competition.StageLevel).Result);
 
         protected override async Task<IEnumerable<Match>> CreateMatches(TournamentCompetition competition)
         {
