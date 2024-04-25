@@ -1,4 +1,5 @@
 ﻿using AmdarisProject.Application.Abstractions;
+using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,12 +14,8 @@ namespace AmdarisProject.Infrastructure.Repositories
         public async Task<IEnumerable<Player>> GetAllPlayers()
             => await _dbContext.Set<Player>().ToListAsync();
 
-        //TODO add GameType to team
-        //public async Task<bool> PlayerIsAlreadyInATeamForCompetition(Guid playerId, Guid competition)
-        //    => await _dbContext.Set<Team>()
-        //    .Where(team => team.Competitions.Any(team=>)team.Players.Count == team.TeamSize && team.TeamSize == teamSize
-        //        && team.Competitions.All(competition => !competition.Id.Equals(competitionId)))
-        //    .ToListAsync();
+        public async Task<bool> PlayerIsInATeam(Guid playerId)
+            => await _dbContext.Set<Team>().AnyAsync(team => team.Players.Any(player => player.Id.Equals(playerId)));
 
         public async Task<IEnumerable<Player>> GetPlayersInTeam(Guid teamId)
             => await _dbContext.Set<Player>()

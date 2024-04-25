@@ -28,10 +28,19 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
             if (competition.Status is not CompetitionStatus.ORGANIZING)
                 throw new APIllegalStatusException(competition.Status);
 
+            if (competitor is Player && competition.GameFormat.CompetitorType is not CompetitorType.PLAYER
+                || competitor is Team && competition.GameFormat.CompetitorType is not CompetitorType.TEAM)
+                throw new AmdarisProjectException($"Tried to add {competitor.GetType().Name} " +
+                    $"to competition with {competition.GameFormat.CompetitorType} competitor type!");
+
             if (competition.ContainsCompetitor(request.CompetitorId))
                 throw new AmdarisProjectException($"Competitor {competitor.Id} is already registered to {competition.Id}!");
 
-            //TODO check if competitor is team and player from team is in another team from competition
+            bool teamContainsAPlayerPartOfAnotherTeamFromCompetition = competitor is Team team
+                && team.Players.Any(player => competition.Competitors.Any(competitor => ((Team)competitor).ContainsPlayer(player.Id)));
+
+            if (teamContainsAPlayerPartOfAnotherTeamFromCompetition)
+                throw new AmdarisProjectException($"Team {competitor.Id} is contains a player part of another team from competition {competition.Id}!");
 
             Competition updated;
 

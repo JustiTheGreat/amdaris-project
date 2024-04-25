@@ -29,7 +29,8 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
             if (team.ContainsPlayer(request.PlayerId))
                 throw new AmdarisProjectException($"Player {player.Id} is already a member of team {team.Id}!");
 
-            if (/*TODO player is not contained by another team for this game type */true) ;
+            if (await _unitOfWork.CompetitorRepository.PlayerIsInATeam(player.Id))
+                throw new AmdarisProjectException($"Player {player.Id} is already a member of a team!");
 
             Team updated;
 
