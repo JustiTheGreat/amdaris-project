@@ -23,7 +23,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             Match match = await _unitOfWork.MatchRepository.GetById(request.MatchId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), request.MatchId));
 
-            if (match.Status is not MatchStatus.NOT_STARTED or MatchStatus.STARTED)
+            if (match.Status is not MatchStatus.NOT_STARTED && match.Status is not MatchStatus.STARTED)
                 throw new APIllegalStatusException(match.Status);
 
             Match updated;

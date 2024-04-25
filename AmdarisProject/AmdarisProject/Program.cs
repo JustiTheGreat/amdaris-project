@@ -155,7 +155,7 @@ await mediator.Send(new AddCompetitorToCompetition(team2Id, competition5Id));
 await mediator.Send(new AddCompetitorToCompetition(team3Id, competition5Id));
 await mediator.Send(new AddCompetitorToCompetition(team4Id, competition5Id));
 
-Guid competitionToTestId = competition3Id;
+Guid competitionToTestId = competition4Id;
 
 int i = 0;
 
@@ -208,14 +208,15 @@ async Task simulateCompetition(Guid competitionId)
 
 async Task SimulateMatch(Guid matchId, Guid competitionId)
 {
-    //if (++i == 1)
+    await mediator.Send(new StartMatch(matchId));
+    CompetitionResponseDTO competition = await mediator.Send(new GetCompetitionById(competitionId));
+
+    //if (++i == 2)
+    ////if (++i == competition.Competitors.Count / 2 + 1)
     //{
     //    await mediator.Send(new CancelMatch(matchId));
     //    return;
     //}
-
-    await mediator.Send(new StartMatch(matchId));
-    CompetitionResponseDTO competition = await mediator.Send(new GetCompetitionById(competitionId));
 
     while (mediator.Send(new GetMatchById(matchId)).Result.Status is not MatchStatus.FINISHED)
     {

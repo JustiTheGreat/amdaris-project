@@ -1,5 +1,4 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using Microsoft.EntityFrameworkCore;
 
