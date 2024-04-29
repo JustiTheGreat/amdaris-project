@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmdarisProject.Presentation", "AmdarisProject\AmdarisProject.Presentation.csproj", "{37E548B4-7703-4F86-A5C6-CDEA3E5FA2C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmdarisProject.Presentation2", "AmdarisProject\AmdarisProject.Presentation2.csproj", "{37E548B4-7703-4F86-A5C6-CDEA3E5FA2C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmdarisProject.Application", "AmdarisProject.Application\AmdarisProject.Application.csproj", "{821329AC-BCDB-4C76-AF28-E17BED5207AC}"
 EndProject
@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmdarisProject.Domain", "Am
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmdarisProject.Infrastructure", "AmdarisProject.Infrastructure\AmdarisProject.Infrastructure.csproj", "{489ABD15-6E32-4E4B-91D4-637AC9A104B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmdarisProject.Application.Test", "AmdarisProject.Application.Test\AmdarisProject.Application.Test.csproj", "{F4987DEC-A78B-4EC3-9F84-A9351CFD3B18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmdarisProject.Application.Test", "AmdarisProject.Application.Test\AmdarisProject.Application.Test.csproj", "{F4987DEC-A78B-4EC3-9F84-A9351CFD3B18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmdarisProject.Presentation", "AmdarisProject.Presentation\AmdarisProject.Presentation.csproj", "{CAA9F3B2-9106-47E1-92F9-C2C01A1FEAD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{F4987DEC-A78B-4EC3-9F84-A9351CFD3B18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4987DEC-A78B-4EC3-9F84-A9351CFD3B18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4987DEC-A78B-4EC3-9F84-A9351CFD3B18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAA9F3B2-9106-47E1-92F9-C2C01A1FEAD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAA9F3B2-9106-47E1-92F9-C2C01A1FEAD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAA9F3B2-9106-47E1-92F9-C2C01A1FEAD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAA9F3B2-9106-47E1-92F9-C2C01A1FEAD8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

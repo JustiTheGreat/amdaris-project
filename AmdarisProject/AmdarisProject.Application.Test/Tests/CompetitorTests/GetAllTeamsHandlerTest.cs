@@ -21,7 +21,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         {
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.GetAllTeams()).Returns(Task.FromResult((IEnumerable<Team>)[]));
-            GetTeams command = new();
+            GetAllTeams command = new();
             GetAllTeamsHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
             IEnumerable<TeamDisplayDTO> response = await handler.Handle(command, default);

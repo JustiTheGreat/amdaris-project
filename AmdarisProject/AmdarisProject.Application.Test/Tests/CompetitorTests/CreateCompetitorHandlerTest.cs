@@ -3,7 +3,6 @@ using AmdarisProject.Application.Dtos.CreateDTOs.CompetitorCreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Application.Test.ModelBuilder;
-using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.Presentation;
 using Mapster;

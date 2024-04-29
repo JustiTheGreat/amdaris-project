@@ -1,15 +1,4 @@
-﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
-using AmdarisProject.Application.Handlers.TeamPlayerHandlers;
-using AmdarisProject.Application.Test.ModelBuilder;
-using AmdarisProject.Domain.Exceptions;
-using AmdarisProject.Domain.Models.CompetitorModels;
-using AmdarisProject.Presentation;
-using Mapster;
-using MapsterMapper;
-using Moq;
-
-namespace AmdarisProject.Application.Test.Tests.CompetitorTests
+﻿namespace AmdarisProject.Application.Test.Tests.CompetitorTests
 {
     public class AddPlayerToTeamHandlerTest
     {
