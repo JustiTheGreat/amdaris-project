@@ -19,26 +19,5 @@ namespace AmdarisProject.Domain.Models
         public ushort? StageLevel { get; set; }
         public ushort? StageIndex { get; set; }
         public virtual List<Point> Points { get; set; } = [];
-
-        public Match() { }
-
-        public Match(string location, DateTime? startTime, DateTime? endTime, MatchStatus status, Competitor competitorOne,
-            Competitor competitorTwo, Competition competition, uint? competitorOnePoints, uint? competitorTwoPoints,
-            Competitor? winner, ushort? stageLevel, ushort? stageIndex, List<Point> points)
-        {
-            Location = location;
-            StartTime = startTime;
-            EndTime = endTime;
-            Status = status;
-            CompetitorOne = competitorOne;
-            CompetitorTwo = competitorTwo;
-            Competition = competition;
-            CompetitorOnePoints = competitorOnePoints;
-            CompetitorTwoPoints = competitorTwoPoints;
-            Winner = winner;
-            StageLevel = stageLevel;
-            StageIndex = stageIndex;
-            Points = points;
-        }
     }
 }

@@ -13,22 +13,5 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
         public GameFormat GameFormat { get; set; }
         public virtual List<Competitor> Competitors { get; set; } = [];
         public virtual List<Match> Matches { get; set; } = [];
-
-        public Competition()
-        {
-        }
-
-        protected Competition(string name, string location, DateTime startTime, CompetitionStatus status,
-            ulong? breakInSeconds, GameFormat gameFormat, List<Competitor> competitors, List<Match> matches)
-        {
-            Name = name;
-            Location = location;
-            StartTime = startTime;
-            Status = status;
-            BreakInSeconds = breakInSeconds;
-            GameFormat = gameFormat;
-            Competitors = competitors;
-            Matches = matches;
-        }
     }
 }

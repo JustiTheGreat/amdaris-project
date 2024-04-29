@@ -48,11 +48,7 @@ namespace AmdarisProject.Infrastructure.Repositories
 
         public async Task<IEnumerable<Match>> GetAllByCompetitorAndGameType(Guid competitorId, GameType gameType)
             => (await _dbContext.Set<Match>().Where(match => match.Competition.GameFormat.GameType == gameType)
-            .Include(match => match.CompetitorOne).Include(match => match.CompetitorTwo).ToListAsync())
-            .Where(match => match.ContainsCompetitor(competitorId)).ToList();
-
-        public async Task<IEnumerable<Match>> GetAllByCompetitorAndCompetition(Guid competitorId, Guid competitionId)
-            => (await _dbContext.Set<Match>().Where(match => match.Competition.Id.Equals(competitionId)).ToListAsync())
+            .AsSplitQuery().Include(match => match.CompetitorOne).Include(match => match.CompetitorTwo).ToListAsync())
             .Where(match => match.ContainsCompetitor(competitorId)).ToList();
 
         public async Task<IEnumerable<Match>> GetNotStartedByCompetitionOrderedByStartTime(Guid competitionId)
@@ -74,11 +70,8 @@ namespace AmdarisProject.Infrastructure.Repositories
             return winRating;
         }
 
-        public async Task<Match?> GetFirstStartedTimedMatchOfCompetition(Guid competitionId)
-            => await _dbContext.Set<Match>()
-                .Where(match => match.Competition.Id.Equals(competitionId)
-                    && match.Competition.GameFormat.DurationInSeconds != null
-                    && match.Status == MatchStatus.STARTED)
-                .FirstOrDefaultAsync();
+        public async Task<bool> TeamIsInAStartedMatch(Guid teamId)
+            => await _dbContext.Set<Match>().AnyAsync(match => match.Status == MatchStatus.STARTED
+                && (match.CompetitorOne.Id.Equals(teamId) || match.CompetitorTwo.Id.Equals(teamId)));
     }
 }

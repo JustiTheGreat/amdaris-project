@@ -17,12 +17,10 @@ namespace AmdarisProject.Application.Abstractions
 
         Task<IEnumerable<Match>> GetAllByCompetitorAndGameType(Guid competitorId, GameType gameType);
 
-        Task<IEnumerable<Match>> GetAllByCompetitorAndCompetition(Guid competitorId, Guid competitionId);
-
         Task<IEnumerable<Match>> GetNotStartedByCompetitionOrderedByStartTime(Guid competitionId);
 
         Task<double> GetCompetitorWinRatingForGameType(Guid competitorId, GameType gameType);
 
-        Task<Match?> GetFirstStartedTimedMatchOfCompetition(Guid competitionId);
+        Task<bool> TeamIsInAStartedMatch(Guid teamId);
     }
 }

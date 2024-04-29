@@ -7,6 +7,7 @@
         IGameFormatRepository GameFormatRepository { get; }
         IMatchRepository MatchRepository { get; }
         IPointRepository PointRepository { get; }
+        ITeamPlayerRepository TeamPlayerRepository { get; }
 
         Task SaveAsync();
         Task BeginTransactionAsync();

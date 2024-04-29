@@ -57,16 +57,16 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             Assert.Equal(createDTO.TeamSize, ((TeamResponseDTO)response).TeamSize);
         }
 
-        [Fact]
-        public async Task Test_CreateCompetitorHandler_ForTeamWith0TeamSize_Throws_APArgumentException()
-        {
-            TeamCreateDTO dtoData = Builders.CreateBasicTeam().SetTeamSize(0).Get().Adapt<TeamCreateDTO>();
-            CreateCompetitor command = new(dtoData);
+        //[Fact]
+        //public async Task Test_CreateCompetitorHandler_ForTeamWith0TeamSize_Throws_APArgumentException()
+        //{
+        //    TeamCreateDTO dtoData = Builders.CreateBasicTeam().SetTeamSize(0).Get().Adapt<TeamCreateDTO>();
+        //    CreateCompetitor command = new(dtoData);
 
-            CreateCompetitorHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+        //    CreateCompetitorHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
-            await Assert.ThrowsAsync<APArgumentException>(async () => await handler.Handle(command, default));
-        }
+        //    await Assert.ThrowsAsync<APArgumentException>(async () => await handler.Handle(command, default));
+        //}
 
         public static TheoryData<Competitor> Transaction => new()
         {

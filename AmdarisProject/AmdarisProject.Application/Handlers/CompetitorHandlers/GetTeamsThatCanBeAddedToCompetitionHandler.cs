@@ -22,9 +22,10 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
 
             IEnumerable<Team> teams = (await _unitOfWork.CompetitorRepository
-                .GetFullTeamsWithTeamSizeNotInCompetition(request.CompetitionId, (ushort)competition.GameFormat.TeamSize!))
-                .Where(team => team.Players.All(player =>
-                    competition.Competitors.All(competitor => !competitor.IsOrContainsCompetitor(player.Id))))
+                .GetTeamsNotInCompetition(request.CompetitionId))
+                .Where(team =>
+                    _unitOfWork.TeamPlayerRepository.TeamHasTheRequiredNumberOfActivePlayers(team.Id, (ushort)competition.GameFormat.TeamSize!).Result
+                    && team.Players.All(player => competition.Competitors.All(competitor => !competitor.IsOrContainsCompetitor(player.Id))))
                 .ToList();
             IEnumerable<TeamDisplayDTO> response = _mapper.Map<List<TeamDisplayDTO>>(teams);
             return response;

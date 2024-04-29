@@ -10,6 +10,7 @@ using AmdarisProject.Application.Handlers.CompetitionHandlers;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Application.Handlers.GameFormatHandlers;
 using AmdarisProject.Application.Handlers.MatchHandlers;
+using AmdarisProject.Application.Handlers.TeamPlayerHandlers;
 using AmdarisProject.Application.Services;
 using AmdarisProject.Application.Services.CompetitionMatchCreatorServices;
 using AmdarisProject.Domain.Enums;
@@ -31,6 +32,7 @@ IServiceProvider serviceProvider = new ServiceCollection()
     .AddScoped<IGameFormatRepository, GameFormatRepository>()
     .AddScoped<IMatchRepository, MatchRepository>()
     .AddScoped<IPointRepository, PointRepository>()
+    .AddScoped<ITeamPlayerRepository, TeamPlayerRepository>()
     .AddScoped<IUnitOfWork, UnitOfWork>()
     .AddScoped<IMapper, Mapper>(sp => new Mapper(MapsterConfiguration.GetMapsterConfiguration()))
     .AddScoped<ICompetitionMatchCreatorFactoryService, CompetitionMatchCreatorFactoryService>()
@@ -45,6 +47,9 @@ IServiceProvider serviceProvider = new ServiceCollection()
     .BuildServiceProvider();
 
 IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
+
+serviceProvider.GetService<AmdarisProjectDBContext>().Database.EnsureDeleted();
+serviceProvider.GetService<AmdarisProjectDBContext>().Database.EnsureCreated();
 
 ushort myTeamSize = 2;
 
@@ -97,6 +102,15 @@ await mediator.Send(new AddPlayerToTeam(player5Id, team3Id));
 await mediator.Send(new AddPlayerToTeam(player6Id, team3Id));
 await mediator.Send(new AddPlayerToTeam(player7Id, team4Id));
 await mediator.Send(new AddPlayerToTeam(player8Id, team4Id));
+
+await mediator.Send(new ChangeTeamPlayerStatus(team1Id, player1Id, true));
+await mediator.Send(new ChangeTeamPlayerStatus(team1Id, player2Id, true));
+await mediator.Send(new ChangeTeamPlayerStatus(team2Id, player3Id, true));
+await mediator.Send(new ChangeTeamPlayerStatus(team2Id, player4Id, true));
+await mediator.Send(new ChangeTeamPlayerStatus(team3Id, player5Id, true));
+await mediator.Send(new ChangeTeamPlayerStatus(team3Id, player6Id, true));
+await mediator.Send(new ChangeTeamPlayerStatus(team4Id, player7Id, true));
+await mediator.Send(new ChangeTeamPlayerStatus(team4Id, player8Id, true));
 
 string location = "Amdaris";
 
@@ -157,6 +171,9 @@ await mediator.Send(new AddCompetitorToCompetition(team4Id, competition5Id));
 
 Guid competitionToTestId = competition4Id;
 
+await mediator.Send(new ChangeTeamPlayerStatus(team3Id, player6Id, false));
+await mediator.Send(new RemovePlayerFromTeam(player6Id, team3Id));
+
 int i = 0;
 
 await simulateCompetition(competitionToTestId);
@@ -208,7 +225,10 @@ async Task simulateCompetition(Guid competitionId)
 
 async Task SimulateMatch(Guid matchId, Guid competitionId)
 {
-    await mediator.Send(new StartMatch(matchId));
+    MatchResponseDTO match = await mediator.Send(new StartMatch(matchId));
+
+    if (match.Status is not MatchStatus.STARTED) return;
+
     CompetitionResponseDTO competition = await mediator.Send(new GetCompetitionById(competitionId));
 
     //if (++i == 2)
@@ -220,7 +240,7 @@ async Task SimulateMatch(Guid matchId, Guid competitionId)
 
     while (mediator.Send(new GetMatchById(matchId)).Result.Status is not MatchStatus.FINISHED)
     {
-        MatchResponseDTO match = await mediator.Send(new GetMatchById(matchId));
+        match = await mediator.Send(new GetMatchById(matchId));
         Guid? scorer = null;
 
         if (competition.CompetitorType is CompetitorType.PLAYER)

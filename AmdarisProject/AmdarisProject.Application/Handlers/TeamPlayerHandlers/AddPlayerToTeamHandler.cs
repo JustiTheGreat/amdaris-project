@@ -1,21 +1,18 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using MapsterMapper;
 using MediatR;
 
-namespace AmdarisProject.Application.Handlers.CompetitorHandlers
+namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
 {
-    public record AddPlayerToTeam(Guid PlayerId, Guid TeamId) : IRequest<TeamResponseDTO>;
-    public class AddPlayerToTeamHandler(IUnitOfWork unitOfWork, IMapper mapper)
-        : IRequestHandler<AddPlayerToTeam, TeamResponseDTO>
+    public record AddPlayerToTeam(Guid PlayerId, Guid TeamId) : IRequest<TeamPlayer>;
+    public class AddPlayerToTeamHandler(IUnitOfWork unitOfWork)
+        : IRequestHandler<AddPlayerToTeam, TeamPlayer>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IMapper _mapper = mapper;
 
-        public async Task<TeamResponseDTO> Handle(AddPlayerToTeam request, CancellationToken cancellationToken)
+        public async Task<TeamPlayer> Handle(AddPlayerToTeam request, CancellationToken cancellationToken)
         {
             Team team = (Team)(await _unitOfWork.CompetitorRepository.GetById(request.TeamId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.TeamId), request.TeamId)));
@@ -23,22 +20,19 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
             Player player = (Player)(await _unitOfWork.CompetitorRepository.GetById(request.PlayerId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.PlayerId), request.PlayerId)));
 
-            if (team.Players.Count == team.TeamSize)
-                throw new AmdarisProjectException($"Team {team.Id} is full!");
-
             if (team.ContainsPlayer(request.PlayerId))
                 throw new AmdarisProjectException($"Player {player.Id} is already a member of team {team.Id}!");
 
             if (await _unitOfWork.CompetitorRepository.PlayerIsInATeam(player.Id))
                 throw new AmdarisProjectException($"Player {player.Id} is already a member of a team!");
 
-            Team updated;
+            TeamPlayer created;
 
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-                team.Players = [.. team.Players, player];
-                updated = (Team)await _unitOfWork.CompetitorRepository.Update(team);
+                TeamPlayer teamPlayer = new() { Team = team, Player = player, IsActive = false };
+                created = await _unitOfWork.TeamPlayerRepository.Create(teamPlayer);
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();
             }
@@ -48,8 +42,7 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
                 throw;
             }
 
-            TeamResponseDTO response = _mapper.Map<TeamResponseDTO>(team);
-            return response;
+            return created;
         }
     }
 }

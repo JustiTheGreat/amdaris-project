@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -16,8 +17,7 @@ namespace AmdarisProject.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
-                    TeamSize = table.Column<int>(type: "int", nullable: true)
+                    Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,23 +44,25 @@ namespace AmdarisProject.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PlayerTeam",
+                name: "TeamPlayers",
                 columns: table => new
                 {
-                    PlayersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TeamsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TeamId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PlayerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PlayerTeam", x => new { x.PlayersId, x.TeamsId });
+                    table.PrimaryKey("PK_TeamPlayers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PlayerTeam_Competitors_PlayersId",
-                        column: x => x.PlayersId,
+                        name: "FK_TeamPlayers_Competitors_PlayerId",
+                        column: x => x.PlayerId,
                         principalTable: "Competitors",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_PlayerTeam_Competitors_TeamsId",
-                        column: x => x.TeamsId,
+                        name: "FK_TeamPlayers_Competitors_TeamId",
+                        column: x => x.TeamId,
                         principalTable: "Competitors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -217,11 +219,6 @@ namespace AmdarisProject.Infrastructure.Migrations
                 column: "WinnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PlayerTeam_TeamsId",
-                table: "PlayerTeam",
-                column: "TeamsId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Points_MatchId",
                 table: "Points",
                 column: "MatchId");
@@ -230,6 +227,16 @@ namespace AmdarisProject.Infrastructure.Migrations
                 name: "IX_Points_PlayerId",
                 table: "Points",
                 column: "PlayerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamPlayers_PlayerId",
+                table: "TeamPlayers",
+                column: "PlayerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamPlayers_TeamId",
+                table: "TeamPlayers",
+                column: "TeamId");
         }
 
         /// <inheritdoc />
@@ -239,10 +246,10 @@ namespace AmdarisProject.Infrastructure.Migrations
                 name: "CompetitionCompetitor");
 
             migrationBuilder.DropTable(
-                name: "PlayerTeam");
+                name: "Points");
 
             migrationBuilder.DropTable(
-                name: "Points");
+                name: "TeamPlayers");
 
             migrationBuilder.DropTable(
                 name: "Matches");

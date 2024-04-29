@@ -12,6 +12,7 @@ namespace AmdarisProject.Infrastructure
         public DbSet<GameFormat> GameFormats { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<Point> Points { get; set; }
+        public DbSet<TeamPlayer> TeamPlayers { get; set; }
 
         public AmdarisProjectDBContext() { }
 
@@ -21,7 +22,7 @@ namespace AmdarisProject.Infrastructure
         {
             //TODO move to appsettings
             if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseSqlServer("Server=ROMOB41072;Database=AmdarisProject;Trusted_Connection=True;TrustServerCertificate=True;");
+                optionsBuilder.UseSqlServer("Server=ROMOB41072;Database=AmdarisProject2;Trusted_Connection=True;TrustServerCertificate=True;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,9 +33,6 @@ namespace AmdarisProject.Infrastructure
             modelBuilder.Entity<Competition>().Property(competition => competition.Status).IsRequired().HasConversion<string>();
             modelBuilder.Entity<Competition>().HasMany(competition => competition.Competitors).WithMany(competitor => competitor.Competitions);
             modelBuilder.Entity<TournamentCompetition>().Property(tournamentCompetition => tournamentCompetition.StageLevel).IsRequired();
-
-
-
             modelBuilder.Entity<TournamentCompetition>(entity => entity.ToTable(table => table.HasCheckConstraint(
                 "CK_StageLevel",
                 "[StageLevel] >= 0")));
@@ -50,7 +48,7 @@ namespace AmdarisProject.Infrastructure
                 "[WinAt] <> NULL OR [DurationInSeconds] <> NULL")));
 
             modelBuilder.Entity<Competitor>().Property(competitor => competitor.Name).IsRequired();
-            modelBuilder.Entity<Team>().Property(team => team.TeamSize).IsRequired();
+            modelBuilder.Entity<Team>().HasMany(team => team.Players).WithMany(player => player.Teams).UsingEntity<TeamPlayer>();
 
             modelBuilder.Entity<Match>().Property(match => match.Location).IsRequired();
             modelBuilder.Entity<Match>().Property(match => match.Status).IsRequired().HasConversion<string>();

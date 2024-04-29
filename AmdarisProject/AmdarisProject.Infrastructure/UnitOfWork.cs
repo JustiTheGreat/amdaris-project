@@ -4,7 +4,7 @@ namespace AmdarisProject.Infrastructure
 {
     public class UnitOfWork(AmdarisProjectDBContext dbContext, ICompetitionRepository competitionRepository,
         ICompetitorRepository competitorRepository, IGameFormatRepository gameFormatRepository,
-        IMatchRepository matchRepository, IPointRepository pointRepository)
+        IMatchRepository matchRepository, IPointRepository pointRepository, ITeamPlayerRepository TeamPlayerRepository)
         : IUnitOfWork
     {
         private readonly AmdarisProjectDBContext _dbContext = dbContext;
@@ -13,6 +13,7 @@ namespace AmdarisProject.Infrastructure
         public IGameFormatRepository GameFormatRepository { get; private set; } = gameFormatRepository;
         public IMatchRepository MatchRepository { get; private set; } = matchRepository;
         public IPointRepository PointRepository { get; private set; } = pointRepository;
+        public ITeamPlayerRepository TeamPlayerRepository { get; private set; } = TeamPlayerRepository;
 
         public async Task SaveAsync()
         {

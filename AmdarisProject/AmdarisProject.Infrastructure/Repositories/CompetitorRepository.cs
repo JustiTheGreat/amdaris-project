@@ -31,10 +31,9 @@ namespace AmdarisProject.Infrastructure.Repositories
             .Where(player => player.Competitions.All(competition => !competition.Id.Equals(competitionId)))
             .ToListAsync();
 
-        public async Task<IEnumerable<Team>> GetFullTeamsWithTeamSizeNotInCompetition(Guid competitionId, ushort teamSize)
+        public async Task<IEnumerable<Team>> GetTeamsNotInCompetition(Guid competitionId)
             => await _dbContext.Set<Team>()
-            .Where(team => team.Players.Count == team.TeamSize && team.TeamSize == teamSize
-                && team.Competitions.All(competition => !competition.Id.Equals(competitionId)))
+            .Where(team => team.Competitions.All(competition => !competition.Id.Equals(competitionId)))
             .ToListAsync();
     }
 }
