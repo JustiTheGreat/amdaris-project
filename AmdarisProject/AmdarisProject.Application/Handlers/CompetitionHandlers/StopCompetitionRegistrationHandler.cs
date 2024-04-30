@@ -9,16 +9,16 @@ using MediatR;
 
 namespace AmdarisProject.handlers.competition
 {
-    public record StopCompetitionRegistration(Guid CompetitionId) : IRequest<CompetitionResponseDTO>;
+    public record StopCompetitionRegistration(Guid CompetitionId) : IRequest<CompetitionGetDTO>;
     public class StopCompetitionRegistrationHandler(IUnitOfWork unitOfWork, IMapper mapper,
         ICompetitionMatchCreatorFactoryService competitionMatchCreatorFactoryService)
-        : IRequestHandler<StopCompetitionRegistration, CompetitionResponseDTO>
+        : IRequestHandler<StopCompetitionRegistration, CompetitionGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly ICompetitionMatchCreatorFactoryService _competitionMatchCreatorFactoryService = competitionMatchCreatorFactoryService;
 
-        public async Task<CompetitionResponseDTO> Handle(StopCompetitionRegistration request, CancellationToken cancellationToken)
+        public async Task<CompetitionGetDTO> Handle(StopCompetitionRegistration request, CancellationToken cancellationToken)
         {
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
@@ -56,7 +56,7 @@ namespace AmdarisProject.handlers.competition
             Console.WriteLine($"Registrations for competition {updated.Name} have stopped!");
             //
 
-            CompetitionResponseDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(updated)
+            CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(updated)
                 : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionResponseDTO>(updated)
                 : throw new AmdarisProjectException("Unexpected competition type!");
             return response;

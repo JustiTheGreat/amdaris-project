@@ -2,6 +2,6 @@
 {
     public class TeamDisplayDTO : CompetitorDisplayDTO
     {
-        public List<string> PlayerNames { get; set; } = [];
+        public required List<string> PlayerNames { get; set; } = [];
     }
 }

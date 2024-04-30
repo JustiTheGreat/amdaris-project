@@ -7,19 +7,19 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.MatchHandlers
 {
-    public record GetMatchById(Guid MatchId) : IRequest<MatchResponseDTO>;
+    public record GetMatchById(Guid MatchId) : IRequest<MatchGetDTO>;
     public class GetMatchByIdHandler(IUnitOfWork unitOfWork, IMapper mapper)
-        : IRequestHandler<GetMatchById, MatchResponseDTO>
+        : IRequestHandler<GetMatchById, MatchGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<MatchResponseDTO> Handle(GetMatchById request, CancellationToken cancellationToken)
+        public async Task<MatchGetDTO> Handle(GetMatchById request, CancellationToken cancellationToken)
         {
             Match match = await _unitOfWork.MatchRepository.GetById(request.MatchId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), request.MatchId));
 
-            MatchResponseDTO response = _mapper.Map<MatchResponseDTO>(match);
+            MatchGetDTO response = _mapper.Map<MatchGetDTO>(match);
             return response;
         }
     }

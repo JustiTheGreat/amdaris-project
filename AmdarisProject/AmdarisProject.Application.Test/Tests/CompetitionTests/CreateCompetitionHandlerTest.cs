@@ -39,13 +39,13 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
             CreateCompetition command = new(createDTO);
             CreateCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
-            CompetitionResponseDTO response = await handler.Handle(command, default);
+            CompetitionGetDTO response = await handler.Handle(command, default);
 
             Assert.True(response is OneVSAllCompetitionResponseDTO);
             Assert.Equal(createDTO.Name, response.Name);
             Assert.Equal(createDTO.Location, response.Location);
             Assert.Equal(createDTO.StartTime, response.StartTime);
-            Assert.Equal(createDTO.Status, response.Status);
+            Assert.Equal(CompetitionStatus.ORGANIZING, response.Status);
             Assert.Equal(createDTO.BreakInSeconds, response.BreakInSeconds);
             Assert.Equal(model.GameFormat.GameType, response.GameType);
             Assert.Equal(model.GameFormat.CompetitorType, response.CompetitorType);
@@ -69,13 +69,13 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
             CreateCompetition command = new(createDTO);
             CreateCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
-            CompetitionResponseDTO response = await handler.Handle(command, default);
+            CompetitionGetDTO response = await handler.Handle(command, default);
 
             Assert.True(response is TournamentCompetitionResponseDTO);
             Assert.Equal(createDTO.Name, response.Name);
             Assert.Equal(createDTO.Location, response.Location);
             Assert.Equal(createDTO.StartTime, response.StartTime);
-            Assert.Equal(createDTO.Status, response.Status);
+            Assert.Equal(CompetitionStatus.ORGANIZING, response.Status);
             Assert.Equal(createDTO.BreakInSeconds, response.BreakInSeconds);
             Assert.Equal(model.GameFormat.GameType, response.GameType);
             Assert.Equal(model.GameFormat.CompetitorType, response.CompetitorType);

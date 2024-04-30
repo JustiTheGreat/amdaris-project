@@ -10,15 +10,15 @@ using MediatR;
 
 namespace AmdarisProject.handlers.point
 {
-    public record AddValueToPointValue(Guid PlayerId, Guid MatchId, ushort PointsToBeAdded) : IRequest<PointResponseDTO>;
+    public record AddValueToPointValue(Guid PlayerId, Guid MatchId, ushort PointsToBeAdded) : IRequest<PointGetDTO>;
     public class AddValueToPointValueHandler(IUnitOfWork unitOfWork, IMapper mapper, IEndMatchService endMatchService)
-        : IRequestHandler<AddValueToPointValue, PointResponseDTO>
+        : IRequestHandler<AddValueToPointValue, PointGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly IEndMatchService _endMatchService = endMatchService;
 
-        public async Task<PointResponseDTO> Handle(AddValueToPointValue request, CancellationToken cancellationToken)
+        public async Task<PointGetDTO> Handle(AddValueToPointValue request, CancellationToken cancellationToken)
         {
             Match match = await _unitOfWork.MatchRepository.GetById(request.MatchId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), request.MatchId));
@@ -67,7 +67,7 @@ namespace AmdarisProject.handlers.point
                 throw;
             }
 
-            PointResponseDTO response = _mapper.Map<PointResponseDTO>(updated);
+            PointGetDTO response = _mapper.Map<PointGetDTO>(updated);
             return response;
         }
     }

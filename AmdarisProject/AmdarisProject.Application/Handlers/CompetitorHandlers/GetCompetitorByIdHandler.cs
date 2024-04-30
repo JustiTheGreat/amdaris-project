@@ -7,20 +7,20 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.CompetitorHandlers
 {
-    public record GetCompetitorById(Guid CompetitorId) : IRequest<CompetitorResponseDTO>;
+    public record GetCompetitorById(Guid CompetitorId) : IRequest<CompetitorGetDTO>;
     public class GetCompetitorByIdHandler(IUnitOfWork unitOfWork, IMapper mapper)
-        : IRequestHandler<GetCompetitorById, CompetitorResponseDTO>
+        : IRequestHandler<GetCompetitorById, CompetitorGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<CompetitorResponseDTO> Handle(GetCompetitorById request, CancellationToken cancellationToken)
+        public async Task<CompetitorGetDTO> Handle(GetCompetitorById request, CancellationToken cancellationToken)
         {
             Competitor competitor = await _unitOfWork.CompetitorRepository.GetById(request.CompetitorId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitorId), request.CompetitorId));
 
-            CompetitorResponseDTO response = competitor is Player ? _mapper.Map<PlayerResponseDTO>(competitor)
-                : competitor is Team ? _mapper.Map<TeamResponseDTO>(competitor)
+            CompetitorGetDTO response = competitor is Player ? _mapper.Map<PlayerGetDTO>(competitor)
+                : competitor is Team ? _mapper.Map<TeamGetDTO>(competitor)
                 : throw new AmdarisProjectException(nameof(competitor));
             return response;
         }

@@ -9,16 +9,16 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.MatchHandlers
 {
-    public record CancelMatch(Guid MatchId) : IRequest<MatchResponseDTO>;
+    public record CancelMatch(Guid MatchId) : IRequest<MatchGetDTO>;
     public class CancelMatchHandler(IUnitOfWork unitOfWork, IMapper mapper,
         ICompetitionMatchCreatorFactoryService competitionMatchCreatorFactoryService)
-        : IRequestHandler<CancelMatch, MatchResponseDTO>
+        : IRequestHandler<CancelMatch, MatchGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly ICompetitionMatchCreatorFactoryService _competitionMatchCreatorFactoryService = competitionMatchCreatorFactoryService;
 
-        public async Task<MatchResponseDTO> Handle(CancelMatch request, CancellationToken cancellationToken)
+        public async Task<MatchGetDTO> Handle(CancelMatch request, CancellationToken cancellationToken)
         {
             Match match = await _unitOfWork.MatchRepository.GetById(request.MatchId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), request.MatchId));
@@ -55,7 +55,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 $"{match.CompetitorOne.Name} and {match.CompetitorTwo.Name} was cancelled!");
             //
 
-            MatchResponseDTO response = _mapper.Map<MatchResponseDTO>(updated);
+            MatchGetDTO response = _mapper.Map<MatchGetDTO>(updated);
             return response;
         }
     }

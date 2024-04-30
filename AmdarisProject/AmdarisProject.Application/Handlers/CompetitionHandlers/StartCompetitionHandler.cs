@@ -8,14 +8,14 @@ using MediatR;
 
 namespace AmdarisProject.handlers.competition
 {
-    public record StartCompetition(Guid CompetitionId) : IRequest<CompetitionResponseDTO>;
+    public record StartCompetition(Guid CompetitionId) : IRequest<CompetitionGetDTO>;
     public class StartCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
-        : IRequestHandler<StartCompetition, CompetitionResponseDTO>
+        : IRequestHandler<StartCompetition, CompetitionGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<CompetitionResponseDTO> Handle(StartCompetition request, CancellationToken cancellationToken)
+        public async Task<CompetitionGetDTO> Handle(StartCompetition request, CancellationToken cancellationToken)
         {
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
@@ -43,7 +43,7 @@ namespace AmdarisProject.handlers.competition
             Console.WriteLine($"Competition {updated.Name} started!");
             //
 
-            CompetitionResponseDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(updated)
+            CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(updated)
                 : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionResponseDTO>(updated)
                 : throw new AmdarisProjectException("Unexpected competition type!");
             return response;

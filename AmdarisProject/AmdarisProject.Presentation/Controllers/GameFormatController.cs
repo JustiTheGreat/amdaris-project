@@ -18,9 +18,11 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> AddPlayerToTeam([FromBody] GameFormatCreateDTO create)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             try
             {
-                GameFormatResponseDTO response = await _mediator.Send(new CreateGameFormat(create));
+                GameFormatGetDTO response = await _mediator.Send(new CreateGameFormat(create));
                 return Ok(response);
             }
             catch (Exception)
@@ -36,7 +38,7 @@ namespace AmdarisProject.Presentation.Controllers
         {
             try
             {
-                IEnumerable<GameFormatResponseDTO> response = await _mediator.Send(new GetAllGameFormats());
+                IEnumerable<GameFormatGetDTO> response = await _mediator.Send(new GetAllGameFormats());
                 return Ok(response);
             }
             catch (Exception)

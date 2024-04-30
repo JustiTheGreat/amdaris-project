@@ -2,7 +2,7 @@
 {
     public class PointDisplayDTO : DisplayDTO
     {
-        public uint Value { get; set; }
-        public string PlayerName { get; set; }
+        public required uint Value { get; set; }
+        public required string PlayerName { get; set; }
     }
 }

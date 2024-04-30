@@ -10,14 +10,14 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 {
-    public record RemoveCompetitorFromCompetition(Guid CompetitorId, Guid CompetitionId) : IRequest<CompetitionResponseDTO>;
+    public record RemoveCompetitorFromCompetition(Guid CompetitorId, Guid CompetitionId) : IRequest<CompetitionGetDTO>;
     public class RemoveCompetitorFromCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
-        : IRequestHandler<RemoveCompetitorFromCompetition, CompetitionResponseDTO>
+        : IRequestHandler<RemoveCompetitorFromCompetition, CompetitionGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<CompetitionResponseDTO> Handle(RemoveCompetitorFromCompetition request, CancellationToken cancellationToken)
+        public async Task<CompetitionGetDTO> Handle(RemoveCompetitorFromCompetition request, CancellationToken cancellationToken)
         {
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
@@ -52,7 +52,7 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
                 throw;
             }
 
-            CompetitionResponseDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(updated)
+            CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(updated)
                 : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionResponseDTO>(updated)
                 : throw new AmdarisProjectException(nameof(updated));
 

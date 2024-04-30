@@ -1,7 +1,10 @@
-﻿namespace AmdarisProject.Application.Dtos.CreateDTOs.CompetitionCreateDTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AmdarisProject.Application.Dtos.CreateDTOs.CompetitionCreateDTOs
 {
     public class TournamentCompetitionCreateDTO : CompetitionCreateDTO
     {
-        public ushort StageLevel { get; set; }
+        [Required]
+        public required ushort StageLevel { get; set; }
     }
 }

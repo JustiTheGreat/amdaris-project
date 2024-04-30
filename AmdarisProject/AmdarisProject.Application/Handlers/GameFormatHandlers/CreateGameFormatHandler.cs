@@ -10,14 +10,14 @@ using MediatR;
 namespace AmdarisProject.Application.Handlers.GameFormatHandlers
 {
     public record CreateGameFormat(GameFormatCreateDTO GameFormatCreateDTO)
-        : IRequest<GameFormatResponseDTO>;
+        : IRequest<GameFormatGetDTO>;
     public class CreateGameFormatHandler(IUnitOfWork unitOfWork, IMapper mapper)
-        : IRequestHandler<CreateGameFormat, GameFormatResponseDTO>
+        : IRequestHandler<CreateGameFormat, GameFormatGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<GameFormatResponseDTO> Handle(CreateGameFormat request, CancellationToken cancellationToken)
+        public async Task<GameFormatGetDTO> Handle(CreateGameFormat request, CancellationToken cancellationToken)
         {
             bool validWinningConditions = request.GameFormatCreateDTO.WinAt is not null
                 || request.GameFormatCreateDTO.DurationInSeconds is not null;
@@ -48,7 +48,7 @@ namespace AmdarisProject.Application.Handlers.GameFormatHandlers
                 throw;
             }
 
-            GameFormatResponseDTO response = _mapper.Map<GameFormatResponseDTO>(created);
+            GameFormatGetDTO response = _mapper.Map<GameFormatGetDTO>(created);
             return response;
         }
     }

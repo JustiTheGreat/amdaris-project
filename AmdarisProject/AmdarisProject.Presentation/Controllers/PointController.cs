@@ -14,11 +14,11 @@ namespace AmdarisProject.Presentation.Controllers
         [HttpPut("{playerId}/{matchId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> AddPlayerToTeam([FromRoute] Guid playerId, [FromRoute] Guid matchId, [FromBody] ushort points)
+        public async Task<ActionResult> AddValueToPointValue([FromRoute] Guid playerId, [FromRoute] Guid matchId, [FromBody] ushort points)
         {
             try
             {
-                PointResponseDTO response = await _mediator.Send(new AddValueToPointValue(playerId, matchId, points));
+                PointGetDTO response = await _mediator.Send(new AddValueToPointValue(playerId, matchId, points));
                 return Ok(response);
             }
             catch (Exception)

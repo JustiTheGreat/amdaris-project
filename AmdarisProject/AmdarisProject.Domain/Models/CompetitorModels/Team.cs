@@ -2,7 +2,7 @@
 {
     public class Team : Competitor
     {
-        public virtual List<Player> Players { get; set; } = [];
-        public virtual List<TeamPlayer> TeamPlayers { get; set; } = [];
+        public required virtual List<Player> Players { get; set; } = [];
+        public required virtual List<TeamPlayer> TeamPlayers { get; set; } = [];
     }
 }

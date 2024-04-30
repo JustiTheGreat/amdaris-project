@@ -6,18 +6,18 @@ namespace AmdarisProject.Domain.Models
 {
     public class Match : Model
     {
-        public string Location { get; set; }
-        public DateTime? StartTime { get; set; }
-        public DateTime? EndTime { get; set; }
-        public MatchStatus Status { get; set; }
-        public Competitor CompetitorOne { get; set; }
-        public Competitor CompetitorTwo { get; set; }
-        public Competition Competition { get; set; }
-        public uint? CompetitorOnePoints { get; set; }
-        public uint? CompetitorTwoPoints { get; set; }
-        public Competitor? Winner { get; set; }
-        public ushort? StageLevel { get; set; }
-        public ushort? StageIndex { get; set; }
-        public virtual List<Point> Points { get; set; } = [];
+        public required string Location { get; set; }
+        public required DateTime? StartTime { get; set; }
+        public required DateTime? EndTime { get; set; }
+        public required MatchStatus Status { get; set; }
+        public required Competitor CompetitorOne { get; set; }
+        public required Competitor CompetitorTwo { get; set; }
+        public required Competition Competition { get; set; }
+        public required uint? CompetitorOnePoints { get; set; }
+        public required uint? CompetitorTwoPoints { get; set; }
+        public required Competitor? Winner { get; set; }
+        public required ushort? StageLevel { get; set; }
+        public required ushort? StageIndex { get; set; }
+        public required virtual List<Point> Points { get; set; } = [];
     }
 }

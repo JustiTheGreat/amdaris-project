@@ -9,14 +9,14 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.MatchHandlers
 {
-    public record StartMatch(Guid MatchId) : IRequest<MatchResponseDTO>;
+    public record StartMatch(Guid MatchId) : IRequest<MatchGetDTO>;
     public class StartMatchHandler(IUnitOfWork unitOfWork, IMapper mapper)
-        : IRequestHandler<StartMatch, MatchResponseDTO>
+        : IRequestHandler<StartMatch, MatchGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<MatchResponseDTO> Handle(StartMatch request, CancellationToken cancellationToken)
+        public async Task<MatchGetDTO> Handle(StartMatch request, CancellationToken cancellationToken)
         {
             Match match = await _unitOfWork.MatchRepository.GetById(request.MatchId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), request.MatchId));
@@ -86,7 +86,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 $"Match between {match.CompetitorOne.Name} and {match.CompetitorTwo.Name} has started!");
             //
 
-            MatchResponseDTO response = _mapper.Map<MatchResponseDTO>(updated);
+            MatchGetDTO response = _mapper.Map<MatchGetDTO>(updated);
             return response;
         }
 

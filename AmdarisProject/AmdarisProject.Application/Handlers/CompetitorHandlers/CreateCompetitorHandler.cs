@@ -8,18 +8,15 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.CompetitorHandlers
 {
-    public record CreateCompetitor(CompetitorCreateDTO CompetitorCreateDTO) : IRequest<CompetitorResponseDTO>;
+    public record CreateCompetitor(CompetitorCreateDTO CompetitorCreateDTO) : IRequest<CompetitorGetDTO>;
     public class CreateCompetitorHandler(IUnitOfWork unitOfWork, IMapper mapper)
-        : IRequestHandler<CreateCompetitor, CompetitorResponseDTO>
+        : IRequestHandler<CreateCompetitor, CompetitorGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<CompetitorResponseDTO> Handle(CreateCompetitor request, CancellationToken cancellationToken)
+        public async Task<CompetitorGetDTO> Handle(CreateCompetitor request, CancellationToken cancellationToken)
         {
-            if (request.CompetitorCreateDTO is TeamCreateDTO teamCreateDTO && teamCreateDTO.TeamSize < 2)
-                throw new APArgumentException(nameof(teamCreateDTO.TeamSize));
-
             Competitor mapped = request.CompetitorCreateDTO is PlayerCreateDTO ? _mapper.Map<Player>(request.CompetitorCreateDTO)
                 : request.CompetitorCreateDTO is TeamCreateDTO ? _mapper.Map<Team>(request.CompetitorCreateDTO)
                 : throw new APArgumentException(nameof(request.CompetitorCreateDTO));
@@ -39,8 +36,8 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
                 throw;
             }
 
-            CompetitorResponseDTO response = created is Player ? _mapper.Map<PlayerResponseDTO>(created)
-                : created is Team ? _mapper.Map<TeamResponseDTO>(created)
+            CompetitorGetDTO response = created is Player ? _mapper.Map<PlayerGetDTO>(created)
+                : created is Team ? _mapper.Map<TeamGetDTO>(created)
                 : throw new AmdarisProjectException(nameof(created));
 
             return response;

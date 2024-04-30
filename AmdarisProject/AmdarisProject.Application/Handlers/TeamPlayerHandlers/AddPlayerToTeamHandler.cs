@@ -31,6 +31,7 @@ namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
+                //TODO use create DTO to respect convention?
                 TeamPlayer teamPlayer = new() { Team = team, Player = player, IsActive = false };
                 created = await _unitOfWork.TeamPlayerRepository.Create(teamPlayer);
                 await _unitOfWork.SaveAsync();

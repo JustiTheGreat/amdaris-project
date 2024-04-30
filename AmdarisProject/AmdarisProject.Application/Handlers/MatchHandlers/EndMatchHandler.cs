@@ -8,15 +8,15 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.MatchHandlers
 {
-    public record EndMatch(Guid MatchId, MatchStatus Status) : IRequest<MatchResponseDTO>;
+    public record EndMatch(Guid MatchId, MatchStatus Status) : IRequest<MatchGetDTO>;
     public class EndMatchHandler(IUnitOfWork unitOfWork, IMapper mapper, IEndMatchService endMatchService)
-        : IRequestHandler<EndMatch, MatchResponseDTO>
+        : IRequestHandler<EndMatch, MatchGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly IEndMatchService _endMatchService = endMatchService;
 
-        public async Task<MatchResponseDTO> Handle(EndMatch request, CancellationToken cancellationToken)
+        public async Task<MatchGetDTO> Handle(EndMatch request, CancellationToken cancellationToken)
         {
             Match updated;
 
@@ -33,7 +33,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 throw;
             }
 
-            MatchResponseDTO response = _mapper.Map<MatchResponseDTO>(updated);
+            MatchGetDTO response = _mapper.Map<MatchGetDTO>(updated);
             return response;
         }
     }

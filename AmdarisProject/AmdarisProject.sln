@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmdarisProject.Presentation2", "AmdarisProject\AmdarisProject.Presentation2.csproj", "{37E548B4-7703-4F86-A5C6-CDEA3E5FA2C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmdarisProject.Presentation.Old", "AmdarisProject\AmdarisProject.Presentation.Old.csproj", "{37E548B4-7703-4F86-A5C6-CDEA3E5FA2C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmdarisProject.Application", "AmdarisProject.Application\AmdarisProject.Application.csproj", "{821329AC-BCDB-4C76-AF28-E17BED5207AC}"
 EndProject

@@ -18,9 +18,11 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CreateCompetitor([FromBody] CompetitorCreateDTO create)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             try
             {
-                CompetitorResponseDTO response = await _mediator.Send(new CreateCompetitor(create));
+                CompetitorGetDTO response = await _mediator.Send(new CreateCompetitor(create));
                 return Ok(response);
             }
             catch (Exception)
@@ -36,7 +38,7 @@ namespace AmdarisProject.Presentation.Controllers
         {
             try
             {
-                CompetitorResponseDTO response = await _mediator.Send(new GetCompetitorById(competitorId));
+                CompetitorGetDTO response = await _mediator.Send(new GetCompetitorById(competitorId));
                 return Ok(response);
             }
             catch (Exception)

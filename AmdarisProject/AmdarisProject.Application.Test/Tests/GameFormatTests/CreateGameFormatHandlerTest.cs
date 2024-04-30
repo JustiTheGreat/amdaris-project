@@ -28,12 +28,12 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.Create(It.IsAny<GameFormat>())).Returns(Task.FromResult(model));
             _mapperMock.Setup(o => o.Map<GameFormat>(It.IsAny<GameFormatCreateDTO>())).Returns(model);
-            _mapperMock.Setup(o => o.Map<GameFormatResponseDTO>(It.IsAny<GameFormat>())).Returns(model.Adapt<GameFormatResponseDTO>());
+            _mapperMock.Setup(o => o.Map<GameFormatGetDTO>(It.IsAny<GameFormat>())).Returns(model.Adapt<GameFormatGetDTO>());
             GameFormatCreateDTO createDTO = model.Adapt<GameFormatCreateDTO>();
             CreateGameFormat command = new(createDTO);
             CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
-            GameFormatResponseDTO response = await handler.Handle(command, default);
+            GameFormatGetDTO response = await handler.Handle(command, default);
 
             Assert.Equal(createDTO.Name, response.Name);
             Assert.Equal(createDTO.GameType, response.GameType);

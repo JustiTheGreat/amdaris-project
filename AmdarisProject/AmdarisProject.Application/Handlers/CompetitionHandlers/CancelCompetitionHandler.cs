@@ -8,14 +8,14 @@ using MediatR;
 
 namespace AmdarisProject.handlers.competition
 {
-    public record CancelCompetition(Guid CompetitionId) : IRequest<CompetitionResponseDTO>;
+    public record CancelCompetition(Guid CompetitionId) : IRequest<CompetitionGetDTO>;
     public class CancelCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
-        : IRequestHandler<CancelCompetition, CompetitionResponseDTO>
+        : IRequestHandler<CancelCompetition, CompetitionGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<CompetitionResponseDTO> Handle(CancelCompetition request, CancellationToken cancellationToken)
+        public async Task<CompetitionGetDTO> Handle(CancelCompetition request, CancellationToken cancellationToken)
         {
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
@@ -44,7 +44,8 @@ namespace AmdarisProject.handlers.competition
             //TODO remove
             Console.WriteLine($"Competition {updated.Name} ended!");
             //
-            CompetitionResponseDTO response = _mapper.Map<CompetitionResponseDTO>(updated);
+
+            CompetitionGetDTO response = _mapper.Map<CompetitionGetDTO>(updated);
             return response;
         }
     }

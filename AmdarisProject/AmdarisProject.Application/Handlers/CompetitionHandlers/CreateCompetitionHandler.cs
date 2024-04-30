@@ -10,18 +10,15 @@ using MediatR;
 namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 {
     public record CreateCompetition(CompetitionCreateDTO CompetitionCreateDTO)
-        : IRequest<CompetitionResponseDTO>;
+        : IRequest<CompetitionGetDTO>;
     public class CreateCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
-        : IRequestHandler<CreateCompetition, CompetitionResponseDTO>
+        : IRequestHandler<CreateCompetition, CompetitionGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<CompetitionResponseDTO> Handle(CreateCompetition request, CancellationToken cancellationToken)
+        public async Task<CompetitionGetDTO> Handle(CreateCompetition request, CancellationToken cancellationToken)
         {
-            if (request.CompetitionCreateDTO.Status is not CompetitionStatus.ORGANIZING)
-                throw new APIllegalStatusException(request.CompetitionCreateDTO.Status);
-
             Competition mapped =
                 request.CompetitionCreateDTO is OneVSAllCompetitionCreateDTO ? _mapper.Map<OneVSAllCompetition>(request.CompetitionCreateDTO)
                 : request.CompetitionCreateDTO is TournamentCompetitionCreateDTO ? _mapper.Map<TournamentCompetition>(request.CompetitionCreateDTO)
@@ -45,7 +42,7 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
                 throw;
             }
 
-            CompetitionResponseDTO response =
+            CompetitionGetDTO response =
                 competition is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(competition)
                 : competition is TournamentCompetition ? _mapper.Map<TournamentCompetitionResponseDTO>(competition)
                 : throw new AmdarisProjectException(nameof(competition));

@@ -11,6 +11,11 @@ namespace AmdarisProject.Application.Test.ModelBuilder.CompetitorBuilders
             {
                 Id = Guid.NewGuid(),
                 Name = "Test",
+                Matches = [],
+                WonMatches = [],
+                Competitions = [],
+                Players = [],
+                TeamPlayers = []
             });
 
         public TeamBuilder AddPlayer(Player player)

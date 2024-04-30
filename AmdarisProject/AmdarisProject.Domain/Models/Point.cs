@@ -4,8 +4,8 @@ namespace AmdarisProject.Domain.Models
 {
     public class Point : Model
     {
-        public uint Value { get; set; }
-        public Match Match { get; set; }
-        public Player Player { get; set; }
+        public required uint Value { get; set; }
+        public required Match Match { get; set; }
+        public required Player Player { get; set; }
     }
 }

@@ -2,9 +2,8 @@
 
 namespace AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs
 {
-    public class TeamResponseDTO : CompetitorResponseDTO
+    public class TeamGetDTO : CompetitorGetDTO
     {
-        public ushort TeamSize { get; set; }
-        public List<PlayerDisplayDTO> Players { get; set; } = [];
+        public required List<PlayerDisplayDTO> Players { get; set; } = [];
     }
 }

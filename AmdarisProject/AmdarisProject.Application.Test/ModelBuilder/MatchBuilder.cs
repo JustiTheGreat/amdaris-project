@@ -20,6 +20,11 @@ namespace AmdarisProject.Application.Test.ModelBuilder
                 CompetitorOne = Builders.CreateBasicPlayer().Get(),
                 CompetitorTwo = Builders.CreateBasicPlayer().Get(),
                 Competition = Builders.CreateBasicOneVSAllCompetition().Get(),
+                CompetitorOnePoints = null,
+                CompetitorTwoPoints = null,
+                Winner = null,
+                StageLevel = null,
+                StageIndex = null,
                 Points = []
             });
 

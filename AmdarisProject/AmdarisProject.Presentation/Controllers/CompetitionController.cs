@@ -22,7 +22,7 @@ namespace AmdarisProject.Presentation.Controllers
         {
             try
             {
-                CompetitionResponseDTO response = await _mediator.Send(new CreateCompetition(create));
+                CompetitionGetDTO response = await _mediator.Send(new CreateCompetition(create));
                 return Ok(response);
             }
             catch (Exception)
@@ -38,7 +38,7 @@ namespace AmdarisProject.Presentation.Controllers
         {
             try
             {
-                CompetitionResponseDTO response = await _mediator.Send(new GetCompetitionById(competitionId));
+                CompetitionGetDTO response = await _mediator.Send(new GetCompetitionById(competitionId));
                 return Ok(response);
             }
             catch (Exception)
@@ -86,7 +86,7 @@ namespace AmdarisProject.Presentation.Controllers
         {
             try
             {
-                CompetitionResponseDTO response = await _mediator.Send(new StopCompetitionRegistration(competitionId));
+                CompetitionGetDTO response = await _mediator.Send(new StopCompetitionRegistration(competitionId));
                 return Ok(response);
             }
             catch (Exception)
@@ -102,7 +102,7 @@ namespace AmdarisProject.Presentation.Controllers
         {
             try
             {
-                CompetitionResponseDTO response = await _mediator.Send(new StartCompetition(competitionId));
+                CompetitionGetDTO response = await _mediator.Send(new StartCompetition(competitionId));
                 return Ok(response);
             }
             catch (Exception)
@@ -118,7 +118,7 @@ namespace AmdarisProject.Presentation.Controllers
         {
             try
             {
-                CompetitionResponseDTO response = await _mediator.Send(new EndCompetition(competitionId));
+                CompetitionGetDTO response = await _mediator.Send(new EndCompetition(competitionId));
                 return Ok(response);
             }
             catch (Exception)
@@ -135,7 +135,7 @@ namespace AmdarisProject.Presentation.Controllers
         {
             try
             {
-                CompetitionResponseDTO response = await _mediator.Send(new CancelCompetition(competitionId));
+                CompetitionGetDTO response = await _mediator.Send(new CancelCompetition(competitionId));
                 return Ok(response);
             }
             catch (Exception)
@@ -151,7 +151,7 @@ namespace AmdarisProject.Presentation.Controllers
         {
             try
             {
-                CompetitionResponseDTO response = await _mediator.Send(new AddCompetitorToCompetition(competitorId, competitionId));
+                CompetitionGetDTO response = await _mediator.Send(new AddCompetitorToCompetition(competitorId, competitionId));
                 return Ok(response);
             }
             catch (Exception)
@@ -167,7 +167,7 @@ namespace AmdarisProject.Presentation.Controllers
         {
             try
             {
-                CompetitionResponseDTO response = await _mediator.Send(new RemoveCompetitorFromCompetition(competitorId, competitionId));
+                CompetitionGetDTO response = await _mediator.Send(new RemoveCompetitorFromCompetition(competitorId, competitionId));
                 return Ok(response);
             }
             catch (Exception)

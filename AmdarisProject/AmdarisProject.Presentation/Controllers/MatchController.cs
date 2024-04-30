@@ -19,7 +19,7 @@ namespace AmdarisProject.Presentation.Controllers
         {
             try
             {
-                MatchResponseDTO response = await _mediator.Send(new GetMatchById(matchId));
+                MatchGetDTO response = await _mediator.Send(new GetMatchById(matchId));
                 return Ok(response);
             }
             catch (Exception)
@@ -35,7 +35,7 @@ namespace AmdarisProject.Presentation.Controllers
         {
             try
             {
-                MatchResponseDTO response = await _mediator.Send(new StartMatch(matchId));
+                MatchGetDTO response = await _mediator.Send(new StartMatch(matchId));
                 return Ok(response);
             }
             catch (Exception)
@@ -51,7 +51,7 @@ namespace AmdarisProject.Presentation.Controllers
         {
             try
             {
-                MatchResponseDTO response = await _mediator.Send(new EndMatch(matchId, matchStatus));
+                MatchGetDTO response = await _mediator.Send(new EndMatch(matchId, matchStatus));
                 return Ok(response);
             }
             catch (Exception)
@@ -67,7 +67,7 @@ namespace AmdarisProject.Presentation.Controllers
         {
             try
             {
-                MatchResponseDTO response = await _mediator.Send(new CancelMatch(matchId));
+                MatchGetDTO response = await _mediator.Send(new CancelMatch(matchId));
                 return Ok(response);
             }
             catch (Exception)

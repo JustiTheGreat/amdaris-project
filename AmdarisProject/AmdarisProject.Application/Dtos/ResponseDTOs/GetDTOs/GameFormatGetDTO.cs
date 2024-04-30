@@ -1,13 +1,13 @@
 ﻿using AmdarisProject.Domain.Enums;
 
-namespace AmdarisProject.Domain.Models
+namespace AmdarisProject.Application.Dtos.ResponseDTOs
 {
-    public class GameFormat : Model
+    public class GameFormatGetDTO : GetDTO
     {
         public required string Name { get; set; }
         public required GameType GameType { get; set; }
         public required CompetitorType CompetitorType { get; set; }
-        public required ushort? TeamSize { get; set; }
+        public ushort? TeamSize { get; set; }
         public required uint? WinAt { get; set; }
         public required ulong? DurationInSeconds { get; set; }
     }

@@ -2,6 +2,6 @@
 {
     public class TournamentCompetition : Competition
     {
-        public ushort StageLevel { get; set; }
+        public required ushort StageLevel { get; set; }
     }
 }

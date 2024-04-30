@@ -24,7 +24,7 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
             GetAllGameFormats command = new();
             GetAllGameFormatsHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
-            IEnumerable<GameFormatResponseDTO> response = await handler.Handle(command, default);
+            IEnumerable<GameFormatGetDTO> response = await handler.Handle(command, default);
 
             _gameFormatRepository.Verify(o => o.GetAll(), Times.Once);
         }

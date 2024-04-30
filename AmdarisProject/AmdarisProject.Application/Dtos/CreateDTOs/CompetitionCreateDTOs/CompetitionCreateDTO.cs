@@ -1,16 +1,19 @@
 ﻿using AmdarisProject.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace AmdarisProject.Application.Dtos.CreateDTOs.CompetitionCreateDTOs
 {
     public class CompetitionCreateDTO : CreateDTO
     {
+        [Required]
         public required string Name { get; set; }
+        [Required]
         public required string Location { get; set; }
+        [Required]
         public required DateTime StartTime { get; set; }
-        public required CompetitionStatus Status { get; set; }
+        [Required]
+        public required Guid GameFormat { get; set; }
+        [Required]
         public ulong? BreakInSeconds { get; set; }
-        public Guid GameFormat { get; set; }
-        public List<Guid> Competitors { get; set; } = [];
-        public List<Guid> Matches { get; set; } = [];
     }
 }

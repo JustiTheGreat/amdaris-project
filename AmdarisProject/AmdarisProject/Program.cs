@@ -48,8 +48,8 @@ IServiceProvider serviceProvider = new ServiceCollection()
 
 IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
 
-serviceProvider.GetService<AmdarisProjectDBContext>().Database.EnsureDeleted();
-serviceProvider.GetService<AmdarisProjectDBContext>().Database.EnsureCreated();
+serviceProvider.GetService<AmdarisProjectDBContext>()!.Database.EnsureDeleted();
+serviceProvider.GetService<AmdarisProjectDBContext>()!.Database.EnsureCreated();
 
 ushort myTeamSize = 2;
 
@@ -89,10 +89,10 @@ Guid player6Id = mediator.Send(new CreateCompetitor(new PlayerCreateDTO() { Name
 Guid player7Id = mediator.Send(new CreateCompetitor(new PlayerCreateDTO() { Name = "Player7" })).Result.Id;
 Guid player8Id = mediator.Send(new CreateCompetitor(new PlayerCreateDTO() { Name = "Player8" })).Result.Id;
 
-Guid team1Id = mediator.Send(new CreateCompetitor(new TeamCreateDTO() { Name = "Team1", TeamSize = myTeamSize })).Result.Id;
-Guid team2Id = mediator.Send(new CreateCompetitor(new TeamCreateDTO() { Name = "Team2", TeamSize = myTeamSize })).Result.Id;
-Guid team3Id = mediator.Send(new CreateCompetitor(new TeamCreateDTO() { Name = "Team3", TeamSize = myTeamSize })).Result.Id;
-Guid team4Id = mediator.Send(new CreateCompetitor(new TeamCreateDTO() { Name = "Team4", TeamSize = myTeamSize })).Result.Id;
+Guid team1Id = mediator.Send(new CreateCompetitor(new TeamCreateDTO() { Name = "Team1" })).Result.Id;
+Guid team2Id = mediator.Send(new CreateCompetitor(new TeamCreateDTO() { Name = "Team2" })).Result.Id;
+Guid team3Id = mediator.Send(new CreateCompetitor(new TeamCreateDTO() { Name = "Team3" })).Result.Id;
+Guid team4Id = mediator.Send(new CreateCompetitor(new TeamCreateDTO() { Name = "Team4" })).Result.Id;
 
 await mediator.Send(new AddPlayerToTeam(player1Id, team1Id));
 await mediator.Send(new AddPlayerToTeam(player2Id, team1Id));
@@ -121,9 +121,8 @@ OneVSAllCompetitionCreateDTO createOVAC(string name, Guid gameFormat)
         Name = name,
         Location = location,
         StartTime = DateTime.Now,
-        Status = CompetitionStatus.ORGANIZING,
-        BreakInSeconds = null,
-        GameFormat = gameFormat
+        GameFormat = gameFormat,
+        BreakInSeconds = null
     };
 }
 CompetitionCreateDTO createTC(string name, Guid gameFormat)
@@ -133,9 +132,8 @@ CompetitionCreateDTO createTC(string name, Guid gameFormat)
         Name = name,
         Location = location,
         StartTime = DateTime.Now,
-        Status = CompetitionStatus.ORGANIZING,
-        BreakInSeconds = null,
         GameFormat = gameFormat,
+        BreakInSeconds = null,
         StageLevel = 0
     };
 };
@@ -171,8 +169,8 @@ await mediator.Send(new AddCompetitorToCompetition(team4Id, competition5Id));
 
 Guid competitionToTestId = competition4Id;
 
-await mediator.Send(new ChangeTeamPlayerStatus(team3Id, player6Id, false));
-await mediator.Send(new RemovePlayerFromTeam(player6Id, team3Id));
+//await mediator.Send(new ChangeTeamPlayerStatus(team3Id, player6Id, false));
+//await mediator.Send(new RemovePlayerFromTeam(player6Id, team3Id));
 
 int i = 0;
 
@@ -186,7 +184,7 @@ async Task simulateCompetition(Guid competitionId)
     Console.WriteLine();
 
     async Task<List<Match>> getCompetitionUnfinishedMatches()
-        => (await serviceProvider.GetRequiredService<IUnitOfWork>().CompetitionRepository.GetById(competitionId)).Matches
+        => (await serviceProvider.GetRequiredService<IUnitOfWork>().CompetitionRepository.GetById(competitionId))!.Matches
             .Where(match => match.Status is MatchStatus.NOT_STARTED or MatchStatus.STARTED).ToList();
 
     while ((await getCompetitionUnfinishedMatches()).Count != 0)
@@ -195,7 +193,7 @@ async Task simulateCompetition(Guid competitionId)
 
     await mediator.Send(new EndCompetition(competitionId));
 
-    CompetitionResponseDTO competitionResponseDTO = await mediator.Send(new GetCompetitionById(competitionId));
+    CompetitionGetDTO competitionResponseDTO = await mediator.Send(new GetCompetitionById(competitionId));
 
     Console.WriteLine($"Matches played: {competitionResponseDTO.Matches.Count}");
     competitionResponseDTO.Matches
@@ -225,11 +223,11 @@ async Task simulateCompetition(Guid competitionId)
 
 async Task SimulateMatch(Guid matchId, Guid competitionId)
 {
-    MatchResponseDTO match = await mediator.Send(new StartMatch(matchId));
+    MatchGetDTO match = await mediator.Send(new StartMatch(matchId));
 
     if (match.Status is not MatchStatus.STARTED) return;
 
-    CompetitionResponseDTO competition = await mediator.Send(new GetCompetitionById(competitionId));
+    CompetitionGetDTO competition = await mediator.Send(new GetCompetitionById(competitionId));
 
     //if (++i == 2)
     ////if (++i == competition.Competitors.Count / 2 + 1)
@@ -249,13 +247,13 @@ async Task SimulateMatch(Guid matchId, Guid competitionId)
         }
         else if (competition.CompetitorType is CompetitorType.TEAM)
         {
-            CompetitorResponseDTO competitorOne = await mediator.Send(new GetCompetitorById(match.CompetitorOne.Id));
-            CompetitorResponseDTO competitorTwo = await mediator.Send(new GetCompetitorById(match.CompetitorTwo.Id));
+            CompetitorGetDTO competitorOne = await mediator.Send(new GetCompetitorById(match.CompetitorOne.Id));
+            CompetitorGetDTO competitorTwo = await mediator.Send(new GetCompetitorById(match.CompetitorTwo.Id));
             int numberOfPlayers = 2 * competition.TeamSize ?? throw new AmdarisProjectException("");
             int random = new Random().Next(numberOfPlayers);
             scorer = random < numberOfPlayers / 2
-                ? ((TeamResponseDTO)competitorOne).Players[random % (numberOfPlayers / 2)].Id
-                : ((TeamResponseDTO)competitorTwo).Players[(random - (numberOfPlayers / 2)) % (numberOfPlayers / 2)].Id;
+                ? ((TeamGetDTO)competitorOne).Players[random % (numberOfPlayers / 2)].Id
+                : ((TeamGetDTO)competitorTwo).Players[(random - (numberOfPlayers / 2)) % (numberOfPlayers / 2)].Id;
         }
 
         await mediator.Send(new AddValueToPointValue(scorer ?? throw new AmdarisProjectException(""), match.Id, 1));

@@ -1,6 +1,6 @@
 ﻿namespace AmdarisProject.Application.Dtos.ResponseDTOs
 {
-    public abstract class ResponseDTO : IdDTO
+    public abstract class GetDTO : IdDTO
     {
     }
 }

@@ -17,6 +17,8 @@ namespace AmdarisProject.Application.Test.ModelBuilder.CompetitionBuilders
                 Status = CompetitionStatus.ORGANIZING,
                 BreakInSeconds = 10,
                 GameFormat = Builders.CreateBasicGameFormat().Get(),
+                Competitors = [],
+                Matches = [],
             });
     }
 }

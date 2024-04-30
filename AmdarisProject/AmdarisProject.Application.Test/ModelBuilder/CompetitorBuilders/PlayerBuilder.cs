@@ -11,6 +11,12 @@ namespace AmdarisProject.Application.Test.ModelBuilder.CompetitorBuilders
             {
                 Id = Guid.NewGuid(),
                 Name = "Test",
+                Matches = [],
+                WonMatches = [],
+                Competitions = [],
+                Points = [],
+                Teams = [],
+                TeamPlayers = []
             });
     }
 }

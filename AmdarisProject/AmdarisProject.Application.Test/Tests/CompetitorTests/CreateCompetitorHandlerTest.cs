@@ -27,13 +27,13 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.Create(It.IsAny<Player>())).Returns(Task.FromResult((Competitor)model));
             _mapperMock.Setup(o => o.Map<Player>(It.IsAny<PlayerCreateDTO>())).Returns(model);
-            _mapperMock.Setup(o => o.Map<PlayerResponseDTO>(It.IsAny<Player>())).Returns(model.Adapt<PlayerResponseDTO>());
+            _mapperMock.Setup(o => o.Map<PlayerGetDTO>(It.IsAny<Player>())).Returns(model.Adapt<PlayerGetDTO>());
             CreateCompetitor command = new(createDTO);
             CreateCompetitorHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
-            CompetitorResponseDTO response = await handler.Handle(command, default);
+            CompetitorGetDTO response = await handler.Handle(command, default);
 
-            Assert.True(response is PlayerResponseDTO);
+            Assert.True(response is PlayerGetDTO);
             Assert.Equal(createDTO.Name, response.Name);
         }
 
@@ -45,15 +45,14 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.Create(It.IsAny<Team>())).Returns(Task.FromResult((Competitor)model));
             _mapperMock.Setup(o => o.Map<Team>(It.IsAny<TeamCreateDTO>())).Returns(model);
-            _mapperMock.Setup(o => o.Map<TeamResponseDTO>(It.IsAny<Team>())).Returns(model.Adapt<TeamResponseDTO>());
+            _mapperMock.Setup(o => o.Map<TeamGetDTO>(It.IsAny<Team>())).Returns(model.Adapt<TeamGetDTO>());
             CreateCompetitor command = new(createDTO);
             CreateCompetitorHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
-            CompetitorResponseDTO response = await handler.Handle(command, default);
+            CompetitorGetDTO response = await handler.Handle(command, default);
 
-            Assert.True(response is TeamResponseDTO);
+            Assert.True(response is TeamGetDTO);
             Assert.Equal(createDTO.Name, response.Name);
-            Assert.Equal(createDTO.TeamSize, ((TeamResponseDTO)response).TeamSize);
         }
 
         //[Fact]

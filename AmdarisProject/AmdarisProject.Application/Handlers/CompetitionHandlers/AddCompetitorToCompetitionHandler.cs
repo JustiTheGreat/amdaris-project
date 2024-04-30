@@ -10,14 +10,14 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 {
-    public record AddCompetitorToCompetition(Guid CompetitorId, Guid CompetitionId) : IRequest<CompetitionResponseDTO>;
+    public record AddCompetitorToCompetition(Guid CompetitorId, Guid CompetitionId) : IRequest<CompetitionGetDTO>;
     public class AddCompetitorToCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
-        : IRequestHandler<AddCompetitorToCompetition, CompetitionResponseDTO>
+        : IRequestHandler<AddCompetitorToCompetition, CompetitionGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<CompetitionResponseDTO> Handle(AddCompetitorToCompetition request, CancellationToken cancellationToken)
+        public async Task<CompetitionGetDTO> Handle(AddCompetitorToCompetition request, CancellationToken cancellationToken)
         {
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
@@ -67,7 +67,7 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
             Console.WriteLine($"Competitor {competitor.Name} has registered to competition {competition.Name}!");
             //
 
-            CompetitionResponseDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(updated)
+            CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(updated)
                 : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionResponseDTO>(updated)
                 : throw new AmdarisProjectException(nameof(updated));
 
