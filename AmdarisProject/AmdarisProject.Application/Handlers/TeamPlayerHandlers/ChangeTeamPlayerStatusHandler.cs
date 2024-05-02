@@ -1,17 +1,20 @@
 ﻿using AmdarisProject.Application.Abstractions;
+using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
+using MapsterMapper;
 using MediatR;
 
 namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
 {
-    public record ChangeTeamPlayerStatus(Guid TeamId, Guid PlayerId, bool Active) : IRequest<TeamPlayer>;
-    public class ChangeTeamPlayerStatusHandler(IUnitOfWork unitOfWork)
-        : IRequestHandler<ChangeTeamPlayerStatus, TeamPlayer>
+    public record ChangeTeamPlayerStatus(Guid TeamId, Guid PlayerId, bool Active) : IRequest<TeamPlayerGetDTO>;
+    public class ChangeTeamPlayerStatusHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        : IRequestHandler<ChangeTeamPlayerStatus, TeamPlayerGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
-        public async Task<TeamPlayer> Handle(ChangeTeamPlayerStatus request, CancellationToken cancellationToken)
+        public async Task<TeamPlayerGetDTO> Handle(ChangeTeamPlayerStatus request, CancellationToken cancellationToken)
         {
             TeamPlayer teamPlayer = await _unitOfWork.TeamPlayerRepository.GetByTeamAndPlayer(request.TeamId, request.PlayerId)
                 ?? throw new APNotFoundException(
@@ -36,7 +39,8 @@ namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
                 throw;
             }
 
-            return updated;
+            TeamPlayerGetDTO response = _mapper.Map<TeamPlayerGetDTO>(updated);
+            return response;
         }
     }
 }

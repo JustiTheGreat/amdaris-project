@@ -22,7 +22,7 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
 
-            if (competition.Status is not CompetitionStatus.STARTED)
+            if (competition.Status is not CompetitionStatus.ORGANIZING)
                 throw new APIllegalStatusException(competition.Status);
 
             Competitor competitor = await _unitOfWork.CompetitorRepository.GetById(request.CompetitorId)

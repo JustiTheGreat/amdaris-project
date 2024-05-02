@@ -1,12 +1,16 @@
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
+using AmdarisProject.Presentation.Options;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace AmdarisProject.Infrastructure
 {
     public class AmdarisProjectDBContext : DbContext
     {
+        private readonly IOptions<IConnectionStrings> _options;
+        private readonly IConnectionStrings _connectionStrings;
         public DbSet<Competitor> Competitors { get; set; }
         public DbSet<Competition> Competitions { get; set; }
         public DbSet<GameFormat> GameFormats { get; set; }
@@ -14,15 +18,20 @@ namespace AmdarisProject.Infrastructure
         public DbSet<Point> Points { get; set; }
         public DbSet<TeamPlayer> TeamPlayers { get; set; }
 
-        public AmdarisProjectDBContext() { }
-
-        public AmdarisProjectDBContext(DbContextOptions<AmdarisProjectDBContext> options) : base(options) { }
+        //public AmdarisProjectDBContext(IOptions<IConnectionStrings> options)
+        //{
+        //    _options = options;
+        //}
+        public AmdarisProjectDBContext(IConnectionStrings connectionStrings)
+        {
+            _connectionStrings = connectionStrings;
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //TODO move to appsettings
             if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseSqlServer("Server=ROMOB41072;Database=AmdarisProject2;Trusted_Connection=True;TrustServerCertificate=True;");
+                //optionsBuilder.UseSqlServer(_options.Value.DatabaseConnection);
+                optionsBuilder.UseSqlServer(_connectionStrings.DatabaseConnection);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

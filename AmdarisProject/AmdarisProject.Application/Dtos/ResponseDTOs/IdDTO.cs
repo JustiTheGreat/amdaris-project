@@ -1,4 +1,4 @@
-﻿namespace AmdarisProject.Application.Dtos
+﻿namespace AmdarisProject.Application.Dtos.ResponseDTOs
 {
     public abstract class IdDTO
     {

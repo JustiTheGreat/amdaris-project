@@ -2,7 +2,7 @@
 
 namespace AmdarisProject.Application.Dtos.DisplayDTOs
 {
-    public class CompetitionDisplayDTO
+    public class CompetitionDisplayDTO : DisplayDTO
     {
         public required string Name { get; set; }
         public required CompetitionStatus Status { get; set; }

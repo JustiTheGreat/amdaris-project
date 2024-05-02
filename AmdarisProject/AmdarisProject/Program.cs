@@ -23,10 +23,12 @@ using AmdarisProject.Infrastructure.Repositories;
 using AmdarisProject.Presentation;
 using MapsterMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 IServiceProvider serviceProvider = new ServiceCollection()
-    .AddDbContext<AmdarisProjectDBContext>()
+    .AddDbContext<AmdarisProjectDBContext>(ob =>
+        ob.UseSqlServer("Server=ROMOB41072;Database=AmdarisProject;Trusted_Connection=True;TrustServerCertificate=True;"))
     .AddScoped<ICompetitionRepository, CompetitionRepository>()
     .AddScoped<ICompetitorRepository, CompetitorRepository>()
     .AddScoped<IGameFormatRepository, GameFormatRepository>()
@@ -34,16 +36,11 @@ IServiceProvider serviceProvider = new ServiceCollection()
     .AddScoped<IPointRepository, PointRepository>()
     .AddScoped<ITeamPlayerRepository, TeamPlayerRepository>()
     .AddScoped<IUnitOfWork, UnitOfWork>()
-    .AddScoped<IMapper, Mapper>(sp => new Mapper(MapsterConfiguration.GetMapsterConfiguration()))
+    .AddScoped<IMapper>(sp => new Mapper(MapsterConfiguration.GetMapsterConfiguration()))
     .AddScoped<ICompetitionMatchCreatorFactoryService, CompetitionMatchCreatorFactoryService>()
     .AddScoped<ICompetitionRankingService, CompetionRankingService>()
     .AddScoped<IEndMatchService, EndMatchService>()
-    .AddMediatR(configuration => configuration.RegisterServicesFromAssemblies(
-        typeof(ICompetitionRepository).Assembly,
-        typeof(ICompetitorRepository).Assembly,
-        typeof(IMatchRepository).Assembly,
-        typeof(IPointRepository).Assembly
-    ))
+    .AddMediatR(configuration => configuration.RegisterServicesFromAssemblies(typeof(CreateCompetitionHandler).Assembly))
     .BuildServiceProvider();
 
 IMediator mediator = serviceProvider.GetRequiredService<IMediator>();

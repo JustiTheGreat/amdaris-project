@@ -2,6 +2,7 @@
 using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
+using AmdarisProject.Presentation.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,117 +15,76 @@ namespace AmdarisProject.Presentation.Controllers
         private readonly IMediator _mediator = mediator;
 
         [HttpPut]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ValidateModelState]
+        [ProducesResponseType(typeof(CompetitorGetDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CreateCompetitor([FromBody] CompetitorCreateDTO create)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            try
-            {
-                CompetitorGetDTO response = await _mediator.Send(new CreateCompetitor(create));
-                return Ok(response);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
+            CompetitorGetDTO response = await _mediator.Send(new CreateCompetitor(create));
+            return Ok(response);
         }
 
         [HttpGet("{competitorId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ValidateGuid]
+        [ProducesResponseType(typeof(CompetitorGetDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetCompetitorById([FromRoute] Guid competitorId)
         {
-            try
-            {
-                CompetitorGetDTO response = await _mediator.Send(new GetCompetitorById(competitorId));
-                return Ok(response);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
+            CompetitorGetDTO response = await _mediator.Send(new GetCompetitorById(competitorId));
+            return Ok(response);
         }
 
         [HttpGet("player")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<PlayerDisplayDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetAllPlayers()
         {
-            try
-            {
-                IEnumerable<PlayerDisplayDTO> response = await _mediator.Send(new GetAllPlayers());
-                return Ok(response);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
+            IEnumerable<PlayerDisplayDTO> response = await _mediator.Send(new GetAllPlayers());
+            return Ok(response);
         }
 
         [HttpGet("player/not_in_team/{teamId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ValidateGuid]
+        [ProducesResponseType(typeof(IEnumerable<PlayerDisplayDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> CreateCompGetPlayersNotInTeametitor([FromRoute] Guid teamId)
+        public async Task<ActionResult> GetPlayersNotInTeam([FromRoute] Guid teamId)
         {
-            try
-            {
-                IEnumerable<PlayerDisplayDTO> response = await _mediator.Send(new GetPlayersNotInTeam(teamId));
-                return Ok(response);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
+            IEnumerable<PlayerDisplayDTO> response = await _mediator.Send(new GetPlayersNotInTeam(teamId));
+            return Ok(response);
         }
 
         [HttpGet("player/not_in_competition/{competitionId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ValidateGuid]
+        [ProducesResponseType(typeof(IEnumerable<PlayerDisplayDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetPlayersNotInCompetition([FromRoute] Guid competitionId)
         {
-            try
-            {
-                IEnumerable<PlayerDisplayDTO> response = await _mediator.Send(new GetPlayersNotInCompetition(competitionId));
-                return Ok(response);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
+            IEnumerable<PlayerDisplayDTO> response = await _mediator.Send(new GetPlayersNotInCompetition(competitionId));
+            return Ok(response);
         }
 
         [HttpGet("team")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<TeamDisplayDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetAllTeams()
         {
-            try
-            {
-                IEnumerable<TeamDisplayDTO> response = await _mediator.Send(new GetAllTeams());
-                return Ok(response);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
+            IEnumerable<TeamDisplayDTO> response = await _mediator.Send(new GetAllTeams());
+            return Ok(response);
         }
 
         [HttpGet("team/can_add_to_competition/{competitionId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ValidateGuid]
+        [ProducesResponseType(typeof(IEnumerable<TeamDisplayDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetTeamsThatCanBeAddedToCompetition([FromRoute] Guid competitionId)
         {
-            try
-            {
-                IEnumerable<TeamDisplayDTO> response = await _mediator.Send(new GetTeamsThatCanBeAddedToCompetition(competitionId));
-                return Ok(response);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
+            IEnumerable<TeamDisplayDTO> response = await _mediator.Send(new GetTeamsThatCanBeAddedToCompetition(competitionId));
+            return Ok(response);
         }
     }
 }

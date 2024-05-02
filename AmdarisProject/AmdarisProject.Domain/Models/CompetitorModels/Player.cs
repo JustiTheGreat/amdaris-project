@@ -2,8 +2,8 @@
 {
     public class Player : Competitor
     {
-        public required virtual List<Point> Points { get; set; } = [];
-        public required virtual List<Team> Teams { get; set; } = [];
-        public required virtual List<TeamPlayer> TeamPlayers { get; set; } = [];
+        public virtual required List<Point> Points { get; set; } = [];
+        public virtual required List<Team> Teams { get; set; } = [];
+        public virtual required List<TeamPlayer> TeamPlayers { get; set; } = [];
     }
 }

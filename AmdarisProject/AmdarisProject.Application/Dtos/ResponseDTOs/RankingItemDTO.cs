@@ -1,4 +1,4 @@
-﻿namespace AmdarisProject.Application.Dtos
+﻿namespace AmdarisProject.Application.Dtos.ResponseDTOs
 {
     public class RankingItemDTO(Guid competitorId, string competitorName, uint wins, uint points)
     {

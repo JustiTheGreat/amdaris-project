@@ -1,9 +1,9 @@
 ﻿using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Handlers.GameFormatHandlers;
+using AmdarisProject.Presentation.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace AmdarisProject.Presentation.Controllers
 {
@@ -14,37 +14,25 @@ namespace AmdarisProject.Presentation.Controllers
         private readonly IMediator _mediator = mediator;
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ValidateModelState]
+        [ProducesResponseType(typeof(GameFormatGetDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> AddPlayerToTeam([FromBody] GameFormatCreateDTO create)
+        public async Task<ActionResult> CreateGameFormat([FromBody] GameFormatCreateDTO create)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            try
-            {
-                GameFormatGetDTO response = await _mediator.Send(new CreateGameFormat(create));
-                return Ok(response);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
+            GameFormatGetDTO response = await _mediator.Send(new CreateGameFormat(create));
+            return Ok(response);
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<GameFormatGetDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetAllGameFormats()
         {
-            try
-            {
-                IEnumerable<GameFormatGetDTO> response = await _mediator.Send(new GetAllGameFormats());
-                return Ok(response);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
+            IEnumerable<GameFormatGetDTO> response = await _mediator.Send(new GetAllGameFormats());
+            return Ok(response);
         }
     }
 }

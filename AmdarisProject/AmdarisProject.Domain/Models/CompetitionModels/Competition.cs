@@ -11,7 +11,7 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
         public required CompetitionStatus Status { get; set; }
         public required ulong? BreakInSeconds { get; set; }
         public required GameFormat GameFormat { get; set; }
-        public required virtual List<Competitor> Competitors { get; set; } = [];
-        public required virtual List<Match> Matches { get; set; } = [];
+        public virtual required List<Competitor> Competitors { get; set; } = [];
+        public virtual required List<Match> Matches { get; set; } = [];
     }
 }

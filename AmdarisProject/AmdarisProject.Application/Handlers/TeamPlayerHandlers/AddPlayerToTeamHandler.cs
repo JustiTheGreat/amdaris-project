@@ -1,18 +1,21 @@
 ﻿using AmdarisProject.Application.Abstractions;
+using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models.CompetitorModels;
+using MapsterMapper;
 using MediatR;
 
 namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
 {
-    public record AddPlayerToTeam(Guid PlayerId, Guid TeamId) : IRequest<TeamPlayer>;
-    public class AddPlayerToTeamHandler(IUnitOfWork unitOfWork)
-        : IRequestHandler<AddPlayerToTeam, TeamPlayer>
+    public record AddPlayerToTeam(Guid PlayerId, Guid TeamId) : IRequest<TeamPlayerGetDTO>;
+    public class AddPlayerToTeamHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        : IRequestHandler<AddPlayerToTeam, TeamPlayerGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
-        public async Task<TeamPlayer> Handle(AddPlayerToTeam request, CancellationToken cancellationToken)
+        public async Task<TeamPlayerGetDTO> Handle(AddPlayerToTeam request, CancellationToken cancellationToken)
         {
             Team team = (Team)(await _unitOfWork.CompetitorRepository.GetById(request.TeamId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.TeamId), request.TeamId)));
@@ -43,7 +46,8 @@ namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
                 throw;
             }
 
-            return created;
+            TeamPlayerGetDTO response = _mapper.Map<TeamPlayerGetDTO>(created);
+            return response;
         }
     }
 }

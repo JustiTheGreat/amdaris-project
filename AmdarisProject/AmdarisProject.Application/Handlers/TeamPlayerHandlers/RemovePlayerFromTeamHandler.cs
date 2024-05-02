@@ -17,6 +17,7 @@ namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
                 ?? throw new APNotFoundException(
                     [Tuple.Create(nameof(request.TeamId), request.TeamId), Tuple.Create(nameof(request.PlayerId), request.PlayerId)]);
 
+            //TODO call the repository or use the team player object?
             if (await _unitOfWork.MatchRepository.TeamIsInAStartedMatch(request.TeamId))
                 throw new AmdarisProjectException($"Team {request.TeamId} is in a started match!");
 

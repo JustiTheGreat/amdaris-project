@@ -4,9 +4,14 @@ using AmdarisProject.Application.Services.CompetitionMatchCreatorServices;
 using AmdarisProject.Infrastructure;
 using AmdarisProject.Infrastructure.Repositories;
 using AmdarisProject.Presentation;
+using AmdarisProject.Presentation.Middleware;
+using AmdarisProject.Presentation.Options;
 using MapsterMapper;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+string handlerAssemblyName = (string)builder.Configuration.GetValue(typeof(string), "HandlerAssembly")!;
+Assembly handlerAssembly = Assembly.Load(handlerAssemblyName);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -19,16 +24,14 @@ builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 builder.Services.AddScoped<IPointRepository, PointRepository>();
 builder.Services.AddScoped<ITeamPlayerRepository, TeamPlayerRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IMapper, Mapper>(sp => new Mapper(MapsterConfiguration.GetMapsterConfiguration()));
 builder.Services.AddScoped<ICompetitionMatchCreatorFactoryService, CompetitionMatchCreatorFactoryService>();
 builder.Services.AddScoped<ICompetitionRankingService, CompetionRankingService>();
 builder.Services.AddScoped<IEndMatchService, EndMatchService>();
-builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblies(
-    typeof(ICompetitionRepository).Assembly,
-    typeof(ICompetitorRepository).Assembly,
-    typeof(IMatchRepository).Assembly,
-    typeof(IPointRepository).Assembly
-));
+builder.Services.AddScoped<IMapper>(sp => new Mapper(MapsterConfiguration.GetMapsterConfiguration()));
+builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblies(handlerAssembly));
+builder.Services.AddScoped<IConnectionStrings>(sp =>
+    (ConnectionStrings)builder.Configuration.GetRequiredSection(nameof(ConnectionStrings)).Get(typeof(ConnectionStrings))!);
+//builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection(nameof(ConnectionStrings)));
 
 var app = builder.Build();
 
@@ -38,10 +41,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<RequestCompletionTimeLoggingMiddleware>();
+app.UseExceptionHandler("/Error");
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

@@ -1,11 +1,10 @@
-﻿using AmdarisProject.Application.Dtos.CreateDTOs;
-using AmdarisProject.Application.Dtos.CreateDTOs.CompetitionCreateDTOs;
-using AmdarisProject.Application.Dtos.CreateDTOs.CompetitorCreateDTOs;
+﻿using AmdarisProject.Application.Dtos.CreateDTOs.CompetitionCreateDTOs;
 using AmdarisProject.Application.Dtos.DisplayDTOs;
 using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
 using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
@@ -78,6 +77,10 @@ namespace AmdarisProject.Presentation
                 .Map(dest => dest.Player, src => src.Player.Adapt<PlayerDisplayDTO>())
                 .Map(dest => dest.Match, src => src.Match.Id);
 
+            config.ForType<TeamPlayer, TeamPlayerGetDTO>()
+                .Map(dest => dest.TeamId, src => src.Team.Id)
+                .Map(dest => dest.PlayerId, src => src.Player.Id);
+
             return config;
         }
 
@@ -141,6 +144,10 @@ namespace AmdarisProject.Presentation
             TypeAdapterConfig<Point, PointGetDTO>.NewConfig()
                 .Map(dest => dest.Player, src => src.Player.Adapt<PlayerDisplayDTO>())
                 .Map(dest => dest.Match, src => src.Match.Id);
+
+            TypeAdapterConfig<TeamPlayer, TeamPlayerGetDTO>.NewConfig()
+                .Map(dest => dest.TeamId, src => src.Team.Id)
+                .Map(dest => dest.PlayerId, src => src.Player.Id);
 
             //HACK added for tests
 

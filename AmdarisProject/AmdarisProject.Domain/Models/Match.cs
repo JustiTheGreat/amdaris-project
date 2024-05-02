@@ -18,6 +18,6 @@ namespace AmdarisProject.Domain.Models
         public required Competitor? Winner { get; set; }
         public required ushort? StageLevel { get; set; }
         public required ushort? StageIndex { get; set; }
-        public required virtual List<Point> Points { get; set; } = [];
+        public virtual required List<Point> Points { get; set; } = [];
     }
 }

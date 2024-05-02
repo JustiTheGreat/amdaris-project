@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmdarisProject.Infrastructure.Migrations
 {
     [DbContext(typeof(AmdarisProjectDBContext))]
-    [Migration("20240426103548_AP")]
+    [Migration("20240430085854_AP")]
     partial class AP
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace AmdarisProject.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

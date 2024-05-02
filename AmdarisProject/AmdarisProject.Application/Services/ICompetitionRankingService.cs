@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Application.Dtos;
+﻿using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Domain.Models.CompetitorModels;
 
 namespace AmdarisProject.Application.Services
