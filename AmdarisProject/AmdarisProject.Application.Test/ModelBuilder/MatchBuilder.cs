@@ -14,8 +14,8 @@ namespace AmdarisProject.Application.Test.ModelBuilder
             {
                 Id = Guid.NewGuid(),
                 Location = "Test",
-                StartTime = DateTime.Now,
-                EndTime = DateTime.Now,
+                StartTime = DateTime.UtcNow,
+                EndTime = null,
                 Status = MatchStatus.FINISHED,
                 CompetitorOne = Builders.CreateBasicPlayer().Get(),
                 CompetitorTwo = Builders.CreateBasicPlayer().Get(),

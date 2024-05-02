@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Application.Dtos.CreateDTOs.CompetitionCreateDTOs;
+﻿using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.DisplayDTOs;
 using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
@@ -31,23 +31,23 @@ namespace AmdarisProject.Presentation
             config.ForType<Point, PointDisplayDTO>()
                 .Map(dest => dest.PlayerName, src => src.Player.Name);
 
-            config.ForType<OneVSAllCompetition, OneVSAllCompetitionResponseDTO>()
+            config.ForType<OneVSAllCompetition, OneVSAllCompetitionGetDTO>()
                 .Map(dest => dest.GameType, src => src.GameFormat.GameType)
                 .Map(dest => dest.CompetitorType, src => src.GameFormat.CompetitorType)
                 .Map(dest => dest.TeamSize, src => src.GameFormat.TeamSize)
                 .Map(dest => dest.WinAt, src => src.GameFormat.WinAt)
-                .Map(dest => dest.DurationInSeconds, src => src.GameFormat.DurationInSeconds)
+                .Map(dest => dest.DurationInMinutes, src => src.GameFormat.DurationInMinutes)
                 .Map(dest => dest.Competitors, src => src.Competitors.Adapt<List<CompetitorDisplayDTO>>())
                 .Map(dest => dest.Matches, src => src.Matches.Adapt<List<MatchDisplayDTO>>());
-            config.ForType<OneVSAllCompetitionCreateDTO, OneVSAllCompetition>()
+            config.ForType<CompetitionCreateDTO, OneVSAllCompetition>()
                 .Map(dest => dest.GameFormat, src => (GameFormat)null!);
 
-            config.ForType<TournamentCompetition, TournamentCompetitionResponseDTO>()
+            config.ForType<TournamentCompetition, TournamentCompetitionGetDTO>()
                 .Map(dest => dest.GameType, src => src.GameFormat.GameType)
                 .Map(dest => dest.CompetitorType, src => src.GameFormat.CompetitorType)
                 .Map(dest => dest.TeamSize, src => src.GameFormat.TeamSize)
                 .Map(dest => dest.WinAt, src => src.GameFormat.WinAt)
-                .Map(dest => dest.DurationInSeconds, src => src.GameFormat.DurationInSeconds)
+                .Map(dest => dest.DurationInMinutes, src => src.GameFormat.DurationInMinutes)
                 .Map(dest => dest.Competitors, src => src.Competitors.Adapt<List<CompetitorDisplayDTO>>())
                 .Map(dest => dest.Matches, src => src.Matches.Adapt<List<MatchDisplayDTO>>());
             config.ForType<CompetitionCreateDTO, TournamentCompetition>()
@@ -99,23 +99,23 @@ namespace AmdarisProject.Presentation
             TypeAdapterConfig<Point, PointDisplayDTO>.NewConfig()
                 .Map(dest => dest.PlayerName, src => src.Player.Name);
 
-            TypeAdapterConfig<OneVSAllCompetition, OneVSAllCompetitionResponseDTO>.NewConfig()
+            TypeAdapterConfig<OneVSAllCompetition, OneVSAllCompetitionGetDTO>.NewConfig()
                 .Map(dest => dest.GameType, src => src.GameFormat.GameType)
                 .Map(dest => dest.CompetitorType, src => src.GameFormat.CompetitorType)
                 .Map(dest => dest.TeamSize, src => src.GameFormat.TeamSize)
                 .Map(dest => dest.WinAt, src => src.GameFormat.WinAt)
-                .Map(dest => dest.DurationInSeconds, src => src.GameFormat.DurationInSeconds)
+                .Map(dest => dest.DurationInMinutes, src => src.GameFormat.DurationInMinutes)
                 .Map(dest => dest.Competitors, src => src.Competitors.Adapt<List<CompetitorDisplayDTO>>())
                 .Map(dest => dest.Matches, src => src.Matches.Adapt<List<MatchDisplayDTO>>());
-            TypeAdapterConfig<OneVSAllCompetitionCreateDTO, OneVSAllCompetition>.NewConfig()
+            TypeAdapterConfig<CompetitionCreateDTO, OneVSAllCompetition>.NewConfig()
                 .Map(dest => dest.GameFormat, src => (GameFormat)null!);
 
-            TypeAdapterConfig<TournamentCompetition, TournamentCompetitionResponseDTO>.NewConfig()
+            TypeAdapterConfig<TournamentCompetition, TournamentCompetitionGetDTO>.NewConfig()
                 .Map(dest => dest.GameType, src => src.GameFormat.GameType)
                 .Map(dest => dest.CompetitorType, src => src.GameFormat.CompetitorType)
                 .Map(dest => dest.TeamSize, src => src.GameFormat.TeamSize)
                 .Map(dest => dest.WinAt, src => src.GameFormat.WinAt)
-                .Map(dest => dest.DurationInSeconds, src => src.GameFormat.DurationInSeconds)
+                .Map(dest => dest.DurationInMinutes, src => src.GameFormat.DurationInMinutes)
                 .Map(dest => dest.Competitors, src => src.Competitors.Adapt<List<CompetitorDisplayDTO>>())
                 .Map(dest => dest.Matches, src => src.Matches.Adapt<List<MatchDisplayDTO>>());
             TypeAdapterConfig<CompetitionCreateDTO, TournamentCompetition>.NewConfig()
@@ -151,10 +151,10 @@ namespace AmdarisProject.Presentation
 
             //HACK added for tests
 
-            TypeAdapterConfig<OneVSAllCompetition, OneVSAllCompetitionCreateDTO>.NewConfig()
+            TypeAdapterConfig<OneVSAllCompetition, CompetitionCreateDTO>.NewConfig()
                 .Map(dest => dest.GameFormat, src => src.GameFormat.Id);
 
-            TypeAdapterConfig<TournamentCompetition, TournamentCompetitionCreateDTO>.NewConfig()
+            TypeAdapterConfig<TournamentCompetition, CompetitionCreateDTO>.NewConfig()
                 .Map(dest => dest.GameFormat, src => src.GameFormat.Id);
         }
     }

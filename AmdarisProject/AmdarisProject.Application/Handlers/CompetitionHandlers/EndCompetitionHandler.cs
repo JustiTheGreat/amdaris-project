@@ -47,8 +47,8 @@ namespace AmdarisProject.handlers.competition
             Console.WriteLine($"Competition {competition.Name} ended!");
             //
 
-            CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(updated)
-                : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionResponseDTO>(updated)
+            CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionGetDTO>(updated)
+                : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionGetDTO>(updated)
                 : throw new AmdarisProjectException(nameof(updated));
             return response;
         }

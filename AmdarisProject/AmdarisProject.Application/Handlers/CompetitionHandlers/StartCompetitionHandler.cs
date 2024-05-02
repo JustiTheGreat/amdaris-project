@@ -43,8 +43,8 @@ namespace AmdarisProject.handlers.competition
             Console.WriteLine($"Competition {updated.Name} started!");
             //
 
-            CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(updated)
-                : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionResponseDTO>(updated)
+            CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionGetDTO>(updated)
+                : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionGetDTO>(updated)
                 : throw new AmdarisProjectException("Unexpected competition type!");
             return response;
         }

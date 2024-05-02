@@ -28,7 +28,7 @@ namespace AmdarisProject.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal?>("BreakInSeconds")
+                    b.Property<decimal?>("BreakInMinutes")
                         .HasColumnType("decimal(20,0)");
 
                     b.Property<string>("Discriminator")
@@ -123,7 +123,7 @@ namespace AmdarisProject.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("DurationInSeconds")
+                    b.Property<decimal?>("DurationInMinutes")
                         .HasColumnType("decimal(20,0)");
 
                     b.Property<string>("GameType")
@@ -144,9 +144,9 @@ namespace AmdarisProject.Infrastructure.Migrations
 
                     b.ToTable("GameFormats", t =>
                         {
-                            t.HasCheckConstraint("CK_competitor_type", "[CompetitorType] = 'Player' AND [TeamSize] = NULL OR [CompetitorType] = 'Team' AND [TeamSize] <> NULL");
+                            t.HasCheckConstraint("CK_CompetitorType", "[CompetitorType] = 'PLAYER' AND [TeamSize] = NULL OR [CompetitorType] = 'TEAM' AND [TeamSize] <> NULL");
 
-                            t.HasCheckConstraint("CK_win_rules", "[WinAt] <> NULL OR [DurationInSeconds] <> NULL");
+                            t.HasCheckConstraint("CK_WinRules", "[WinAt] <> NULL OR [DurationInMinutes] <> NULL");
                         });
                 });
 
@@ -244,6 +244,13 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.HasIndex("CompetitorsId");
 
                     b.ToTable("CompetitionCompetitor");
+                });
+
+            modelBuilder.Entity("AmdarisProject.Domain.Models.CompetitionModels.OneVSAllCompetition", b =>
+                {
+                    b.HasBaseType("AmdarisProject.Domain.Models.CompetitionModels.Competition");
+
+                    b.HasDiscriminator().HasValue("OneVSAllCompetition");
                 });
 
             modelBuilder.Entity("AmdarisProject.Domain.Models.CompetitionModels.TournamentCompetition", b =>

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AmdarisProject.Application.Dtos.CreateDTOs.CompetitionCreateDTOs
+namespace AmdarisProject.Application.Dtos.CreateDTOs
 {
     public class CompetitionCreateDTO : CreateDTO
     {
@@ -12,7 +12,6 @@ namespace AmdarisProject.Application.Dtos.CreateDTOs.CompetitionCreateDTOs
         public required DateTime StartTime { get; set; }
         [Required]
         public required Guid GameFormat { get; set; }
-        [Required]
-        public ulong? BreakInSeconds { get; set; }
+        public ulong? BreakInMinutes { get; set; }
     }
 }

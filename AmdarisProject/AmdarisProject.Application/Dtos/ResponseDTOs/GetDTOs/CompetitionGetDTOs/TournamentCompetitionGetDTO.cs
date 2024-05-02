@@ -1,6 +1,6 @@
 ﻿namespace AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs
 {
-    public class TournamentCompetitionResponseDTO : CompetitionGetDTO
+    public class TournamentCompetitionGetDTO : CompetitionGetDTO
     {
         public required ushort StageLevel { get; set; }
     }

@@ -13,9 +13,9 @@ namespace AmdarisProject.Application.Test.ModelBuilder.CompetitionBuilders
             return (Y)this;
         }
 
-        public Y SetBreakInSeconds(ulong? breakInSeconds)
+        public Y SetBreakInMinutes(ulong? breakInMinutes)
         {
-            _model.BreakInSeconds = breakInSeconds;
+            _model.BreakInMinutes = breakInMinutes;
             return (Y)this;
         }
     }

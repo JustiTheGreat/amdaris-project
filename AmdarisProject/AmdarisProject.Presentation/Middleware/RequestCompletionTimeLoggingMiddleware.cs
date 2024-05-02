@@ -9,7 +9,7 @@
         {
             DateTimeOffset start = DateTimeOffset.UtcNow;
             await _next.Invoke(httpContext);
-            _logger.LogError("{Method} {Path}: {Duration}",
+            _logger.LogInformation("{Method} {Path}: {Duration}",
                 [httpContext.Request.Method, httpContext.Request.Path, DateTimeOffset.UtcNow - start]);
         }
     }

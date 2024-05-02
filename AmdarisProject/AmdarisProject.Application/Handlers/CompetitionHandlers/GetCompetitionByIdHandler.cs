@@ -19,8 +19,8 @@ namespace AmdarisProject.handlers.competition
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
 
-            CompetitionGetDTO response = competition is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(competition)
-                : competition is TournamentCompetition ? _mapper.Map<TournamentCompetitionResponseDTO>(competition)
+            CompetitionGetDTO response = competition is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionGetDTO>(competition)
+                : competition is TournamentCompetition ? _mapper.Map<TournamentCompetitionGetDTO>(competition)
                 : throw new AmdarisProjectException("Unexpected competition type!");
             return response;
         }

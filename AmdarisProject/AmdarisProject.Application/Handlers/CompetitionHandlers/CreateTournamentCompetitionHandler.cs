@@ -1,5 +1,5 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Dtos.CreateDTOs.CompetitionCreateDTOs;
+using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
@@ -8,23 +8,22 @@ using MediatR;
 
 namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 {
-    public record CreateCompetition(CompetitionCreateDTO CompetitionCreateDTO)
-        : IRequest<CompetitionGetDTO>;
-    public class CreateCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
-        : IRequestHandler<CreateCompetition, CompetitionGetDTO>
+    public record CreateTournamentCompetition(CompetitionCreateDTO CompetitionCreateDTO)
+        : IRequest<TournamentCompetitionGetDTO>;
+    public class CreateTournamentCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        : IRequestHandler<CreateTournamentCompetition, TournamentCompetitionGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<CompetitionGetDTO> Handle(CreateCompetition request, CancellationToken cancellationToken)
+        public async Task<TournamentCompetitionGetDTO> Handle(CreateTournamentCompetition request, CancellationToken cancellationToken)
         {
-            Competition mapped =
-                request.CompetitionCreateDTO is OneVSAllCompetitionCreateDTO ? _mapper.Map<OneVSAllCompetition>(request.CompetitionCreateDTO)
-                : request.CompetitionCreateDTO is TournamentCompetitionCreateDTO ? _mapper.Map<TournamentCompetition>(request.CompetitionCreateDTO)
-                : throw new AmdarisProjectException(nameof(request.CompetitionCreateDTO));
-
+            TournamentCompetition mapped = _mapper.Map<TournamentCompetition>(request.CompetitionCreateDTO);
             mapped.GameFormat = await _unitOfWork.GameFormatRepository.GetById(request.CompetitionCreateDTO.GameFormat)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionCreateDTO.GameFormat), request.CompetitionCreateDTO.GameFormat));
+
+            if (mapped.BreakInMinutes is null && mapped.GameFormat.DurationInMinutes is not null)
+                throw new APArgumentException(nameof(mapped.BreakInMinutes));
 
             Competition competition;
 
@@ -41,11 +40,7 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
                 throw;
             }
 
-            CompetitionGetDTO response =
-                competition is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionResponseDTO>(competition)
-                : competition is TournamentCompetition ? _mapper.Map<TournamentCompetitionResponseDTO>(competition)
-                : throw new AmdarisProjectException(nameof(competition));
-
+            TournamentCompetitionGetDTO response = _mapper.Map<TournamentCompetitionGetDTO>(competition);
             return response;
         }
     }

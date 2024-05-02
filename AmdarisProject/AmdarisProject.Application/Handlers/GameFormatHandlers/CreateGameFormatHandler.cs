@@ -19,8 +19,8 @@ namespace AmdarisProject.Application.Handlers.GameFormatHandlers
 
         public async Task<GameFormatGetDTO> Handle(CreateGameFormat request, CancellationToken cancellationToken)
         {
-            bool validWinningConditions = request.GameFormatCreateDTO.WinAt is not null
-                || request.GameFormatCreateDTO.DurationInSeconds is not null;
+            bool validWinningConditions = request.GameFormatCreateDTO.WinAt is not null && request.GameFormatCreateDTO.WinAt > 0
+                || request.GameFormatCreateDTO.DurationInMinutes is not null && request.GameFormatCreateDTO.DurationInMinutes > 0;
 
             bool validCompetitorRequirements =
                 request.GameFormatCreateDTO.CompetitorType is CompetitorType.PLAYER

@@ -36,7 +36,7 @@ namespace AmdarisProject.Application.Services
                 throw new AmdarisProjectException($"Match {match.Id} doesn't have a competitor with the winning number of points!");
 
             match.Status = endStatus;
-            match.EndTime = DateTime.Now;
+            match.EndTime = DateTime.UtcNow;
             match.Winner = match.GetWinner();
             Match updated = await _unitOfWork.MatchRepository.Update(match);
 

@@ -40,12 +40,12 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
             Assert.Equal(createDTO.CompetitorType, response.CompetitorType);
             Assert.Equal(createDTO.TeamSize, response.TeamSize);
             Assert.Equal(createDTO.WinAt, response.WinAt);
-            Assert.Equal(createDTO.DurationInSeconds, response.DurationInSeconds);
+            Assert.Equal(createDTO.DurationInMinutes, response.DurationInMinutes);
         }
 
         public static TheoryData<GameFormat> WinConditions => new()
         {
-            Builders.CreateBasicGameFormat().SetWinAt(null).SetDurationInSeconds(null).Get(),
+            Builders.CreateBasicGameFormat().SetWinAt(null).SetDurationInMinutes(null).Get(),
         };
 
         public static TheoryData<GameFormat> CompetitorTypeAndTeamSize => new()

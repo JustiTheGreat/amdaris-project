@@ -58,7 +58,7 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
 
             DateTime? matchStartTime = null;
 
-            if (competition.GameFormat.DurationInSeconds is not null)
+            if (competition.GameFormat.DurationInMinutes is not null)
             {
                 if (competition.Matches.Count == 0)
                 {
@@ -70,7 +70,7 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
                         ?? throw new AmdarisProjectException("Null start time for a timed match!");
 
                     matchStartTime = lastStartTime.AddSeconds(
-                        competition.GameFormat.DurationInSeconds! + competition.BreakInSeconds ?? 0);
+                        competition.GameFormat.DurationInMinutes! + competition.BreakInMinutes ?? 0);
                 }
             }
 

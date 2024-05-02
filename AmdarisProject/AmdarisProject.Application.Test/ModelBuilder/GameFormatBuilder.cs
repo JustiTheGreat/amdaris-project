@@ -17,7 +17,7 @@ namespace AmdarisProject.Application.Test.ModelBuilder
                 CompetitorType = CompetitorType.PLAYER,
                 TeamSize = null,
                 WinAt = 11,
-                DurationInSeconds = null,
+                DurationInMinutes = null,
             });
 
         public GameFormatBuilder SetCompetitorType(CompetitorType competitorType)
@@ -38,9 +38,9 @@ namespace AmdarisProject.Application.Test.ModelBuilder
             return this;
         }
 
-        public GameFormatBuilder SetDurationInSeconds(ulong? durationInSeconds)
+        public GameFormatBuilder SetDurationInMinutes(ulong? durationInMinutes)
         {
-            _model.DurationInSeconds = durationInSeconds;
+            _model.DurationInMinutes = durationInMinutes;
             return this;
         }
     }

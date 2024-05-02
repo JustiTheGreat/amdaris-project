@@ -1,5 +1,5 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Dtos.CreateDTOs.CompetitionCreateDTOs;
+using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitionHandlers;
 using AmdarisProject.Application.Test.ModelBuilder;
@@ -31,27 +31,27 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((GameFormat?)model.GameFormat));
             _competitionRepositoryMock.Setup(o => o.Create(It.IsAny<OneVSAllCompetition>())).Returns(Task.FromResult((Competition)model));
-            _mapperMock.Setup(o => o.Map<OneVSAllCompetition>(It.IsAny<OneVSAllCompetitionCreateDTO>()))
+            _mapperMock.Setup(o => o.Map<OneVSAllCompetition>(It.IsAny<CompetitionCreateDTO>()))
                 .Returns(model);
-            _mapperMock.Setup(o => o.Map<OneVSAllCompetitionResponseDTO>(It.IsAny<OneVSAllCompetition>()))
-                .Returns(model.Adapt<OneVSAllCompetitionResponseDTO>());
-            OneVSAllCompetitionCreateDTO createDTO = model.Adapt<OneVSAllCompetitionCreateDTO>();
-            CreateCompetition command = new(createDTO);
-            CreateCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            _mapperMock.Setup(o => o.Map<OneVSAllCompetitionGetDTO>(It.IsAny<OneVSAllCompetition>()))
+                .Returns(model.Adapt<OneVSAllCompetitionGetDTO>());
+            CompetitionCreateDTO createDTO = model.Adapt<CompetitionCreateDTO>();
+            CreateOneVSAllCompetition command = new(createDTO);
+            CreateOneVSAllCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
             CompetitionGetDTO response = await handler.Handle(command, default);
 
-            Assert.True(response is OneVSAllCompetitionResponseDTO);
+            Assert.True(response is OneVSAllCompetitionGetDTO);
             Assert.Equal(createDTO.Name, response.Name);
             Assert.Equal(createDTO.Location, response.Location);
             Assert.Equal(createDTO.StartTime, response.StartTime);
             Assert.Equal(CompetitionStatus.ORGANIZING, response.Status);
-            Assert.Equal(createDTO.BreakInSeconds, response.BreakInSeconds);
+            Assert.Equal(createDTO.BreakInMinutes, response.BreakInMinutes);
             Assert.Equal(model.GameFormat.GameType, response.GameType);
             Assert.Equal(model.GameFormat.CompetitorType, response.CompetitorType);
             Assert.Equal(model.GameFormat.TeamSize, response.TeamSize);
             Assert.Equal(model.GameFormat.WinAt, response.WinAt);
-            Assert.Equal(model.GameFormat.DurationInSeconds, response.DurationInSeconds);
+            Assert.Equal(model.GameFormat.DurationInMinutes, response.DurationInMinutes);
         }
 
         [Fact]
@@ -62,27 +62,27 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((GameFormat?)model.GameFormat));
             _competitionRepositoryMock.Setup(o => o.Create(It.IsAny<TournamentCompetition>())).Returns(Task.FromResult((Competition)model));
-            _mapperMock.Setup(o => o.Map<TournamentCompetition>(It.IsAny<TournamentCompetitionCreateDTO>())).Returns(model);
-            _mapperMock.Setup(o => o.Map<TournamentCompetitionResponseDTO>(It.IsAny<TournamentCompetition>()))
-                .Returns(model.Adapt<TournamentCompetitionResponseDTO>());
-            TournamentCompetitionCreateDTO createDTO = model.Adapt<TournamentCompetitionCreateDTO>();
-            CreateCompetition command = new(createDTO);
-            CreateCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            _mapperMock.Setup(o => o.Map<TournamentCompetition>(It.IsAny<CompetitionCreateDTO>())).Returns(model);
+            _mapperMock.Setup(o => o.Map<TournamentCompetitionGetDTO>(It.IsAny<TournamentCompetition>()))
+                .Returns(model.Adapt<TournamentCompetitionGetDTO>());
+            CompetitionCreateDTO createDTO = model.Adapt<CompetitionCreateDTO>();
+            CreateOneVSAllCompetition command = new(createDTO);
+            CreateOneVSAllCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
             CompetitionGetDTO response = await handler.Handle(command, default);
 
-            Assert.True(response is TournamentCompetitionResponseDTO);
+            Assert.True(response is TournamentCompetitionGetDTO);
             Assert.Equal(createDTO.Name, response.Name);
             Assert.Equal(createDTO.Location, response.Location);
             Assert.Equal(createDTO.StartTime, response.StartTime);
             Assert.Equal(CompetitionStatus.ORGANIZING, response.Status);
-            Assert.Equal(createDTO.BreakInSeconds, response.BreakInSeconds);
+            Assert.Equal(createDTO.BreakInMinutes, response.BreakInMinutes);
             Assert.Equal(model.GameFormat.GameType, response.GameType);
             Assert.Equal(model.GameFormat.CompetitorType, response.CompetitorType);
             Assert.Equal(model.GameFormat.TeamSize, response.TeamSize);
             Assert.Equal(model.GameFormat.WinAt, response.WinAt);
-            Assert.Equal(model.GameFormat.DurationInSeconds, response.DurationInSeconds);
-            Assert.Equal(createDTO.StageLevel, ((TournamentCompetitionResponseDTO)response).StageLevel);
+            Assert.Equal(model.GameFormat.DurationInMinutes, response.DurationInMinutes);
+            Assert.Equal(0, ((TournamentCompetitionGetDTO)response).StageLevel);
         }
 
         public static TheoryData<Competition> Status => new()
@@ -101,11 +101,9 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
         [MemberData(nameof(Status))]
         public async Task Test_CreateCompetitionHandler_IllegalStatus_Throws_APIllegalStatusException(Competition model)
         {
-            CompetitionCreateDTO createDTO = model is OneVSAllCompetition
-                ? model.Adapt<OneVSAllCompetitionCreateDTO>()
-                : model.Adapt<TournamentCompetitionCreateDTO>();
-            CreateCompetition command = new(createDTO);
-            CreateCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            CompetitionCreateDTO createDTO = model.Adapt<CompetitionCreateDTO>();
+            CreateOneVSAllCompetition command = new(createDTO);
+            CreateOneVSAllCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
             await Assert.ThrowsAsync<APIllegalStatusException>(async () => await handler.Handle(command, default));
         }
@@ -118,10 +116,10 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((GameFormat?)model.GameFormat));
             _competitionRepositoryMock.Setup(o => o.Create(It.IsAny<OneVSAllCompetition>())).Throws<Exception>();
-            _mapperMock.Setup(o => o.Map<OneVSAllCompetition>(It.IsAny<OneVSAllCompetitionCreateDTO>())).Returns(model);
-            CompetitionCreateDTO createDTO = model.Adapt<OneVSAllCompetitionCreateDTO>();
-            CreateCompetition command = new(createDTO);
-            CreateCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            _mapperMock.Setup(o => o.Map<OneVSAllCompetition>(It.IsAny<CompetitionCreateDTO>())).Returns(model);
+            CompetitionCreateDTO createDTO = model.Adapt<CompetitionCreateDTO>();
+            CreateOneVSAllCompetition command = new(createDTO);
+            CreateOneVSAllCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
             await Assert.ThrowsAsync<Exception>(async () => await handler.Handle(command, default));
 
@@ -136,10 +134,10 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((GameFormat?)model.GameFormat));
             _competitionRepositoryMock.Setup(o => o.Create(It.IsAny<TournamentCompetition>())).Throws<Exception>();
-            _mapperMock.Setup(o => o.Map<TournamentCompetition>(It.IsAny<TournamentCompetitionCreateDTO>())).Returns(model);
-            CompetitionCreateDTO createDTO = model.Adapt<TournamentCompetitionCreateDTO>();
-            CreateCompetition command = new(createDTO);
-            CreateCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            _mapperMock.Setup(o => o.Map<TournamentCompetition>(It.IsAny<CompetitionCreateDTO>())).Returns(model);
+            CompetitionCreateDTO createDTO = model.Adapt<CompetitionCreateDTO>();
+            CreateOneVSAllCompetition command = new(createDTO);
+            CreateOneVSAllCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
             await Assert.ThrowsAsync<Exception>(async () => await handler.Handle(command, default));
 

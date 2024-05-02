@@ -9,6 +9,6 @@ namespace AmdarisProject.Domain.Models
         public required CompetitorType CompetitorType { get; set; }
         public required ushort? TeamSize { get; set; }
         public required uint? WinAt { get; set; }
-        public required ulong? DurationInSeconds { get; set; }
+        public required ulong? DurationInMinutes { get; set; }
     }
 }

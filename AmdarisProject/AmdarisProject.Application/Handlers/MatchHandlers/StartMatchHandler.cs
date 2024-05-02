@@ -55,7 +55,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
 
                 if (match.Status is MatchStatus.STARTED)
                 {
-                    DateTime now = DateTime.Now;
+                    DateTime now = DateTime.UtcNow;
                     bool lateStart = match.StartTime is not null && now > match.StartTime;
                     match.StartTime = now;
                     match.CompetitorOnePoints = 0;
@@ -132,7 +132,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             foreach (Match m in matches)
             {
                 m.StartTime = ((DateTime)match.StartTime!).AddSeconds(
-                        (ulong)++i * (match.Competition.GameFormat.DurationInSeconds! + match.Competition.BreakInSeconds ?? 0));
+                        (ulong)++i * (match.Competition.GameFormat.DurationInMinutes! + match.Competition.BreakInMinutes ?? 0));
                 await _unitOfWork.MatchRepository.Update(m);
             }
         }

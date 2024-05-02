@@ -1,5 +1,5 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Dtos.CreateDTOs.CompetitorCreateDTOs;
+using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Application.Test.ModelBuilder;
@@ -23,13 +23,13 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         public async Task Test_CreateCompetitorHandler_Player_Success()
         {
             Player model = Builders.CreateBasicPlayer().Get();
-            PlayerCreateDTO createDTO = model.Adapt<PlayerCreateDTO>();
+            CompetitorCreateDTO createDTO = model.Adapt<CompetitorCreateDTO>();
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.Create(It.IsAny<Player>())).Returns(Task.FromResult((Competitor)model));
-            _mapperMock.Setup(o => o.Map<Player>(It.IsAny<PlayerCreateDTO>())).Returns(model);
+            _mapperMock.Setup(o => o.Map<Player>(It.IsAny<CompetitorCreateDTO>())).Returns(model);
             _mapperMock.Setup(o => o.Map<PlayerGetDTO>(It.IsAny<Player>())).Returns(model.Adapt<PlayerGetDTO>());
-            CreateCompetitor command = new(createDTO);
-            CreateCompetitorHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            CreateTeam command = new(createDTO);
+            CreateTeamHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
             CompetitorGetDTO response = await handler.Handle(command, default);
 
@@ -41,13 +41,13 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         public async Task Test_CreateCompetitorHandler_Team_Success()
         {
             Team model = Builders.CreateBasicTeam().Get();
-            TeamCreateDTO createDTO = Builders.CreateBasicTeam().Get().Adapt<TeamCreateDTO>();
+            CompetitorCreateDTO createDTO = Builders.CreateBasicTeam().Get().Adapt<CompetitorCreateDTO>();
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.Create(It.IsAny<Team>())).Returns(Task.FromResult((Competitor)model));
-            _mapperMock.Setup(o => o.Map<Team>(It.IsAny<TeamCreateDTO>())).Returns(model);
+            _mapperMock.Setup(o => o.Map<Team>(It.IsAny<CompetitorCreateDTO>())).Returns(model);
             _mapperMock.Setup(o => o.Map<TeamGetDTO>(It.IsAny<Team>())).Returns(model.Adapt<TeamGetDTO>());
-            CreateCompetitor command = new(createDTO);
-            CreateCompetitorHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            CreateTeam command = new(createDTO);
+            CreateTeamHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
             CompetitorGetDTO response = await handler.Handle(command, default);
 
@@ -79,11 +79,9 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         {
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.Create(It.IsAny<Competitor>())).Throws<Exception>();
-            CompetitorCreateDTO createDTO = model is Player
-                ? model.Adapt<PlayerCreateDTO>()
-                : model.Adapt<TeamCreateDTO>();
-            CreateCompetitor command = new(createDTO);
-            CreateCompetitorHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            CompetitorCreateDTO createDTO = model.Adapt<CompetitorCreateDTO>();
+            CreateTeam command = new(createDTO);
+            CreateTeamHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
 
             await Assert.ThrowsAsync<Exception>(async () => await handler.Handle(command, default));
 

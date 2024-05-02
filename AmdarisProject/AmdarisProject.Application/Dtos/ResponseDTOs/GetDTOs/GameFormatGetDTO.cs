@@ -9,6 +9,6 @@ namespace AmdarisProject.Application.Dtos.ResponseDTOs
         public required CompetitorType CompetitorType { get; set; }
         public ushort? TeamSize { get; set; }
         public required uint? WinAt { get; set; }
-        public required ulong? DurationInSeconds { get; set; }
+        public required ulong? DurationInMinutes { get; set; }
     }
 }

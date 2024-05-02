@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -33,13 +34,13 @@ namespace AmdarisProject.Infrastructure.Migrations
                     CompetitorType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TeamSize = table.Column<int>(type: "int", nullable: true),
                     WinAt = table.Column<long>(type: "bigint", nullable: true),
-                    DurationInSeconds = table.Column<decimal>(type: "decimal(20,0)", nullable: true)
+                    DurationInMinutes = table.Column<decimal>(type: "decimal(20,0)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GameFormats", x => x.Id);
-                    table.CheckConstraint("CK_competitor_type", "[CompetitorType] = 'Player' AND [TeamSize] = NULL OR [CompetitorType] = 'Team' AND [TeamSize] <> NULL");
-                    table.CheckConstraint("CK_win_rules", "[WinAt] <> NULL OR [DurationInSeconds] <> NULL");
+                    table.CheckConstraint("CK_CompetitorType", "[CompetitorType] = 'PLAYER' AND [TeamSize] = NULL OR [CompetitorType] = 'TEAM' AND [TeamSize] <> NULL");
+                    table.CheckConstraint("CK_WinRules", "[WinAt] <> NULL OR [DurationInMinutes] <> NULL");
                 });
 
             migrationBuilder.CreateTable(
@@ -76,7 +77,7 @@ namespace AmdarisProject.Infrastructure.Migrations
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BreakInSeconds = table.Column<decimal>(type: "decimal(20,0)", nullable: true),
+                    BreakInMinutes = table.Column<decimal>(type: "decimal(20,0)", nullable: true),
                     GameFormatId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
                     StageLevel = table.Column<int>(type: "int", nullable: true)

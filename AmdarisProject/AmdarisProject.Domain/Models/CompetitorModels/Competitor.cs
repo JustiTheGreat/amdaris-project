@@ -2,7 +2,7 @@
 
 namespace AmdarisProject.Domain.Models.CompetitorModels
 {
-    public class Competitor : Model
+    public abstract class Competitor : Model
     {
         public required string Name { get; set; }
         public virtual required List<Match> Matches { get; set; } = [];

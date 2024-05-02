@@ -1,6 +1,4 @@
 ﻿using AmdarisProject.Application.Dtos.CreateDTOs;
-using AmdarisProject.Application.Dtos.CreateDTOs.CompetitionCreateDTOs;
-using AmdarisProject.Application.Dtos.CreateDTOs.CompetitorCreateDTOs;
 using AmdarisProject.Application.Dtos.DisplayDTOs;
 using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
@@ -62,22 +60,22 @@ namespace AmdarisProject.Presentation.Controllers
                 CompetitorType = CompetitorType.TEAM,
                 TeamSize = myTeamSize,
                 WinAt = 3,
-                DurationInSeconds = 5,
+                DurationInMinutes = 5,
             })).Result.Id;
 
-            Guid player1Id = _mediator.Send(new CreateCompetitor(new PlayerCreateDTO() { Name = "Player1" })).Result.Id;
-            Guid player2Id = _mediator.Send(new CreateCompetitor(new PlayerCreateDTO() { Name = "Player2" })).Result.Id;
-            Guid player3Id = _mediator.Send(new CreateCompetitor(new PlayerCreateDTO() { Name = "Player3" })).Result.Id;
-            Guid player4Id = _mediator.Send(new CreateCompetitor(new PlayerCreateDTO() { Name = "Player4" })).Result.Id;
-            Guid player5Id = _mediator.Send(new CreateCompetitor(new PlayerCreateDTO() { Name = "Player5" })).Result.Id;
-            Guid player6Id = _mediator.Send(new CreateCompetitor(new PlayerCreateDTO() { Name = "Player6" })).Result.Id;
-            Guid player7Id = _mediator.Send(new CreateCompetitor(new PlayerCreateDTO() { Name = "Player7" })).Result.Id;
-            Guid player8Id = _mediator.Send(new CreateCompetitor(new PlayerCreateDTO() { Name = "Player8" })).Result.Id;
+            Guid player1Id = _mediator.Send(new CreatePlayer(new CompetitorCreateDTO() { Name = "Player1" })).Result.Id;
+            Guid player2Id = _mediator.Send(new CreatePlayer(new CompetitorCreateDTO() { Name = "Player2" })).Result.Id;
+            Guid player3Id = _mediator.Send(new CreatePlayer(new CompetitorCreateDTO() { Name = "Player3" })).Result.Id;
+            Guid player4Id = _mediator.Send(new CreatePlayer(new CompetitorCreateDTO() { Name = "Player4" })).Result.Id;
+            Guid player5Id = _mediator.Send(new CreatePlayer(new CompetitorCreateDTO() { Name = "Player5" })).Result.Id;
+            Guid player6Id = _mediator.Send(new CreatePlayer(new CompetitorCreateDTO() { Name = "Player6" })).Result.Id;
+            Guid player7Id = _mediator.Send(new CreatePlayer(new CompetitorCreateDTO() { Name = "Player7" })).Result.Id;
+            Guid player8Id = _mediator.Send(new CreatePlayer(new CompetitorCreateDTO() { Name = "Player8" })).Result.Id;
 
-            Guid team1Id = _mediator.Send(new CreateCompetitor(new TeamCreateDTO() { Name = "Team1" })).Result.Id;
-            Guid team2Id = _mediator.Send(new CreateCompetitor(new TeamCreateDTO() { Name = "Team2" })).Result.Id;
-            Guid team3Id = _mediator.Send(new CreateCompetitor(new TeamCreateDTO() { Name = "Team3" })).Result.Id;
-            Guid team4Id = _mediator.Send(new CreateCompetitor(new TeamCreateDTO() { Name = "Team4" })).Result.Id;
+            Guid team1Id = _mediator.Send(new CreateTeam(new CompetitorCreateDTO() { Name = "Team1" })).Result.Id;
+            Guid team2Id = _mediator.Send(new CreateTeam(new CompetitorCreateDTO() { Name = "Team2" })).Result.Id;
+            Guid team3Id = _mediator.Send(new CreateTeam(new CompetitorCreateDTO() { Name = "Team3" })).Result.Id;
+            Guid team4Id = _mediator.Send(new CreateTeam(new CompetitorCreateDTO() { Name = "Team4" })).Result.Id;
 
             await _mediator.Send(new AddPlayerToTeam(player1Id, team1Id));
             await _mediator.Send(new AddPlayerToTeam(player2Id, team1Id));
@@ -99,35 +97,23 @@ namespace AmdarisProject.Presentation.Controllers
 
             string location = "Amdaris";
 
-            OneVSAllCompetitionCreateDTO createOVAC(string name, Guid gameFormat)
+            CompetitionCreateDTO createCompetition(string name, Guid gameFormat, ulong? breakInMinutes = null)
             {
-                return new OneVSAllCompetitionCreateDTO()
+                return new CompetitionCreateDTO()
                 {
                     Name = name,
                     Location = location,
-                    StartTime = DateTime.Now,
+                    StartTime = DateTime.UtcNow,
                     GameFormat = gameFormat,
-                    BreakInSeconds = null
+                    BreakInMinutes = breakInMinutes
                 };
             }
-            CompetitionCreateDTO createTC(string name, Guid gameFormat)
-            {
-                return new TournamentCompetitionCreateDTO()
-                {
-                    Name = name,
-                    Location = location,
-                    StartTime = DateTime.Now,
-                    GameFormat = gameFormat,
-                    BreakInSeconds = null,
-                    StageLevel = 0
-                };
-            };
 
-            Guid competition1Id = _mediator.Send(new CreateCompetition(createOVAC("c1", pingPongPlayer))).Result.Id;
-            Guid competition2Id = _mediator.Send(new CreateCompetition(createOVAC("c2", pingPongTeam))).Result.Id;
-            Guid competition3Id = _mediator.Send(new CreateCompetition(createTC("c3", pingPongPlayer))).Result.Id;
-            Guid competition4Id = _mediator.Send(new CreateCompetition(createTC("c4", pingPongTeam))).Result.Id;
-            Guid competition5Id = _mediator.Send(new CreateCompetition(createTC("c5", pingPongTeamTimed))).Result.Id;
+            Guid competition1Id = _mediator.Send(new CreateOneVSAllCompetition(createCompetition("c1", pingPongPlayer))).Result.Id;
+            Guid competition2Id = _mediator.Send(new CreateOneVSAllCompetition(createCompetition("c2", pingPongTeam))).Result.Id;
+            Guid competition3Id = _mediator.Send(new CreateTournamentCompetition(createCompetition("c3", pingPongPlayer))).Result.Id;
+            Guid competition4Id = _mediator.Send(new CreateTournamentCompetition(createCompetition("c4", pingPongTeam))).Result.Id;
+            Guid competition5Id = _mediator.Send(new CreateTournamentCompetition(createCompetition("c5", pingPongTeamTimed, 5))).Result.Id;
 
             await _mediator.Send(new AddCompetitorToCompetition(player1Id, competition1Id));
             await _mediator.Send(new AddCompetitorToCompetition(player2Id, competition1Id));

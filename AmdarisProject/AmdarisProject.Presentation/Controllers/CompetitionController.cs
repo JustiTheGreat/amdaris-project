@@ -1,9 +1,10 @@
-﻿using AmdarisProject.Application.Dtos.CreateDTOs.CompetitionCreateDTOs;
+﻿using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.DisplayDTOs;
 using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitionHandlers;
+using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.handlers.competition;
 using AmdarisProject.Presentation.Filters;
 using MediatR;
@@ -17,14 +18,25 @@ namespace AmdarisProject.Presentation.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
-        [HttpPost]
+        [HttpPost(nameof(OneVSAllCompetition))]
         [ValidateModelState]
-        [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(OneVSAllCompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> CreateCompetition([FromBody] CompetitionCreateDTO create)
+        public async Task<ActionResult> CreateOneVSAllCompetition([FromBody] CompetitionCreateDTO create)
         {
-            CompetitionGetDTO response = await _mediator.Send(new CreateCompetition(create));
+            OneVSAllCompetitionGetDTO response = await _mediator.Send(new CreateOneVSAllCompetition(create));
+            return Ok(response);
+        }
+
+        [HttpPost(nameof(TournamentCompetition))]
+        [ValidateModelState]
+        [ProducesResponseType(typeof(TournamentCompetitionGetDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> CreateTournamentCompetition([FromBody] CompetitionCreateDTO create)
+        {
+            TournamentCompetitionGetDTO response = await _mediator.Send(new CreateTournamentCompetition(create));
             return Ok(response);
         }
 
