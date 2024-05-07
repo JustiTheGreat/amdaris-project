@@ -1,24 +1,16 @@
-﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Handlers.CompetitorHandlers;
+﻿using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Application.Test.ModelBuilder;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using AmdarisProject.Presentation;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.CompetitorTests
 {
-    public class GetCompetitorWinRatingForGameTypeHandlerTest
+    public class GetCompetitorWinRatingForGameTypeHandlerTest : MockObjectUser
     {
-        private readonly Mock<ICompetitorRepository> _competitorRepositoryMock = new();
-        private readonly Mock<IMatchRepository> _matchRepositoryMock = new();
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
-
-        public GetCompetitorWinRatingForGameTypeHandlerTest() => MapsterConfiguration.ConfigureMapster();
-
         [Fact]
-        public async Task Test_GetCompetitorByIdHandlerTest_Success()
+        public async Task Test_GetCompetitorWinRatingForGameTypeHandler_Success()
         {
             Player model = Builders.CreateBasicPlayer().Get();
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
@@ -37,7 +29,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         }
 
         [Fact]
-        public async Task Test_GetCompetitorByIdHandlerTest_CompetitorNotFound_Throws_APNotFoundException()
+        public async Task Test_GetCompetitorWinRatingForGameTypeHandler_CompetitorNotFound_throws_APNotFoundException()
         {
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competitor?)null));

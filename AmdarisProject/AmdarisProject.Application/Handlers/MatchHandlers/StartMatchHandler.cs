@@ -79,7 +79,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             }
 
             updated = await _unitOfWork.MatchRepository.GetById(match.Id)
-                        ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), match.Id));
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), match.Id));
 
             //TODO remove
             Console.WriteLine($"Competition {match.Competition.Name}: " +
@@ -93,21 +93,16 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
         private async Task InitializePointsForMatchPlayers(Match match)
         {
             async Task CreatePoint(Player player)
-            {
-                Point point = new()
+                => await _unitOfWork.PointRepository.Create(new()
                 {
                     Value = 0,
                     Player = player,
                     Match = match,
-                };
-
-                Point created = await _unitOfWork.PointRepository.Create(point);
-            }
+                });
 
             async Task CreatePointsForTeamPlayers(Team team)
             {
-                IEnumerable<Player> players = await _unitOfWork.CompetitorRepository.GetPlayersInTeam(team.Id);
-                foreach (Player player in players)
+                foreach (Player player in team.Players)
                     await CreatePoint(player);
             }
 

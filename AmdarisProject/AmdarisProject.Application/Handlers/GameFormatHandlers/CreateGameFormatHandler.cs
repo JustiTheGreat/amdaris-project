@@ -22,6 +22,10 @@ namespace AmdarisProject.Application.Handlers.GameFormatHandlers
             bool validWinningConditions = request.GameFormatCreateDTO.WinAt is not null && request.GameFormatCreateDTO.WinAt > 0
                 || request.GameFormatCreateDTO.DurationInMinutes is not null && request.GameFormatCreateDTO.DurationInMinutes > 0;
 
+            if (!validWinningConditions)
+                throw new APArgumentException(
+                    [nameof(request.GameFormatCreateDTO.WinAt), nameof(request.GameFormatCreateDTO.DurationInMinutes)]);
+
             bool validCompetitorRequirements =
                 request.GameFormatCreateDTO.CompetitorType is CompetitorType.PLAYER
                     && request.GameFormatCreateDTO.TeamSize is null
@@ -29,8 +33,9 @@ namespace AmdarisProject.Application.Handlers.GameFormatHandlers
                     && request.GameFormatCreateDTO.TeamSize is not null
                     && request.GameFormatCreateDTO.TeamSize >= 2;
 
-            if (!validWinningConditions || !validCompetitorRequirements)
-                throw new APArgumentException(nameof(request.GameFormatCreateDTO));
+            if (!validCompetitorRequirements)
+                throw new APArgumentException(
+                    [nameof(request.GameFormatCreateDTO.CompetitorType), nameof(request.GameFormatCreateDTO.TeamSize)]);
 
             GameFormat mapped = _mapper.Map<GameFormat>(request.GameFormatCreateDTO);
             GameFormat created;

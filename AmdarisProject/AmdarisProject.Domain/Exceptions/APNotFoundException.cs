@@ -10,7 +10,7 @@ namespace AmdarisProject.Domain.Exceptions
 
         public APNotFoundException(List<Tuple<string, Guid>> ids) : base(FormatIds(ids)) { }
 
-        private static string FormatId(Tuple<string, Guid> id) => $"{id.Item1}={id.Item2};";
+        private static string FormatId(Tuple<string, Guid> id) => $"{id.Item1}={id.Item2}; ";
 
         private static string FormatIds(List<Tuple<string, Guid>> ids)
         {

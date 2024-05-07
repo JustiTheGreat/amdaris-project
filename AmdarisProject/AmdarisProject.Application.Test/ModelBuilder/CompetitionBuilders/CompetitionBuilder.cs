@@ -1,5 +1,6 @@
 ﻿using AmdarisProject.Application.Test.ModelBuilder.ModelBuilder;
 using AmdarisProject.Domain.Enums;
+using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 
 namespace AmdarisProject.Application.Test.ModelBuilder.CompetitionBuilders
@@ -16,6 +17,12 @@ namespace AmdarisProject.Application.Test.ModelBuilder.CompetitionBuilders
         public Y SetBreakInMinutes(ulong? breakInMinutes)
         {
             _model.BreakInMinutes = breakInMinutes;
+            return (Y)this;
+        }
+
+        public Y SetGameFormat(GameFormat gameFormat)
+        {
+            _model.GameFormat = gameFormat;
             return (Y)this;
         }
     }

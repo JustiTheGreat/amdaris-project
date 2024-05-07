@@ -1,6 +1,7 @@
 ﻿using AmdarisProject.Application.Test.ModelBuilder.ModelBuilder;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Models;
+using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 
 namespace AmdarisProject.Application.Test.ModelBuilder
@@ -14,9 +15,9 @@ namespace AmdarisProject.Application.Test.ModelBuilder
             {
                 Id = Guid.NewGuid(),
                 Location = "Test",
-                StartTime = DateTime.UtcNow,
+                StartTime = null,
                 EndTime = null,
-                Status = MatchStatus.FINISHED,
+                Status = MatchStatus.NOT_STARTED,
                 CompetitorOne = Builders.CreateBasicPlayer().Get(),
                 CompetitorTwo = Builders.CreateBasicPlayer().Get(),
                 Competition = Builders.CreateBasicOneVSAllCompetition().Get(),
@@ -28,6 +29,25 @@ namespace AmdarisProject.Application.Test.ModelBuilder
                 Points = []
             });
 
+        public MatchBuilder Clone()
+            => new(new Match()
+            {
+                Id = _model.Id,
+                Location = _model.Location,
+                StartTime = _model.StartTime,
+                EndTime = _model.EndTime,
+                Status = _model.Status,
+                CompetitorOne = _model.CompetitorOne,
+                CompetitorTwo = _model.CompetitorTwo,
+                Competition = _model.Competition,
+                CompetitorOnePoints = _model.CompetitorOnePoints,
+                CompetitorTwoPoints = _model.CompetitorTwoPoints,
+                Winner = _model.Winner,
+                StageLevel = _model.StageLevel,
+                StageIndex = _model.StageIndex,
+                Points = _model.Points
+            });
+
         public MatchBuilder SetStatus(MatchStatus status)
         {
             _model.Status = status;
@@ -37,6 +57,24 @@ namespace AmdarisProject.Application.Test.ModelBuilder
         public MatchBuilder SetCompetitorOne(Competitor competitor)
         {
             _model.CompetitorOne = competitor;
+            return this;
+        }
+
+        public MatchBuilder SetCompetition(Competition competition)
+        {
+            _model.Competition = competition;
+            return this;
+        }
+
+        public MatchBuilder SetCompetitorOnePoints(uint? points)
+        {
+            _model.CompetitorOnePoints = points;
+            return this;
+        }
+
+        public MatchBuilder SetCompetitorTwoPoints(uint? points)
+        {
+            _model.CompetitorTwoPoints = points;
             return this;
         }
     }

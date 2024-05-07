@@ -99,7 +99,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
 
         [Theory]
         [MemberData(nameof(Status))]
-        public async Task Test_CreateCompetitionHandler_IllegalStatus_Throws_APIllegalStatusException(Competition model)
+        public async Task Test_CreateCompetitionHandler_IllegalStatus_throws_APIllegalStatusException(Competition model)
         {
             CompetitionCreateDTO createDTO = model.Adapt<CompetitionCreateDTO>();
             CreateOneVSAllCompetition command = new(createDTO);
@@ -109,7 +109,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
         }
 
         [Fact]
-        public async Task Test_CreateCompetitionHandler_OneVSAllCompetition_Transaction_Throws_Exception()
+        public async Task Test_CreateCompetitionHandler_OneVSAllCompetition_RollbackIsCalled_throws_Exception()
         {
             OneVSAllCompetition model = Builders.CreateBasicOneVSAllCompetition().Get();
             _unitOfWorkMock.Setup(o => o.CompetitionRepository).Returns(_competitionRepositoryMock.Object);
@@ -127,7 +127,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
         }
 
         [Fact]
-        public async Task Test_CreateCompetitionHandler_TournamentCompetition_Transaction_Throws_Exception()
+        public async Task Test_CreateCompetitionHandler_TournamentCompetition_RollbackIsCalled_throws_Exception()
         {
             TournamentCompetition model = Builders.CreateBasicTournamentCompetition().Get();
             _unitOfWorkMock.Setup(o => o.CompetitionRepository).Returns(_competitionRepositoryMock.Object);

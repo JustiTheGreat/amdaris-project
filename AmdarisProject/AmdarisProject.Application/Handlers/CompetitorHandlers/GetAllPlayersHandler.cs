@@ -16,7 +16,7 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
         public async Task<IEnumerable<PlayerDisplayDTO>> Handle(GetAllPlayers request, CancellationToken cancellationToken)
         {
             IEnumerable<Player> players = await _unitOfWork.CompetitorRepository.GetAllPlayers();
-            IEnumerable<PlayerDisplayDTO> response = _mapper.Map<List<PlayerDisplayDTO>>(players);
+            IEnumerable<PlayerDisplayDTO> response = _mapper.Map<IEnumerable<PlayerDisplayDTO>>(players);
             return response;
         }
     }

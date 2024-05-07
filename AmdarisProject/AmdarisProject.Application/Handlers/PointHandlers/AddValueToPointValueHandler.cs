@@ -10,7 +10,7 @@ using MediatR;
 
 namespace AmdarisProject.handlers.point
 {
-    public record AddValueToPointValue(Guid PlayerId, Guid MatchId, ushort PointsToBeAdded) : IRequest<PointGetDTO>;
+    public record AddValueToPointValue(Guid PlayerId, Guid MatchId, uint PointsToBeAdded) : IRequest<PointGetDTO>;
     public class AddValueToPointValueHandler(IUnitOfWork unitOfWork, IMapper mapper, IEndMatchService endMatchService)
         : IRequestHandler<AddValueToPointValue, PointGetDTO>
     {

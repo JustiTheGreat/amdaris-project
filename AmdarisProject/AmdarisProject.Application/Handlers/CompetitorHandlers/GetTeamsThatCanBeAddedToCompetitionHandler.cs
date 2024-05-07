@@ -27,7 +27,7 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
                     _unitOfWork.TeamPlayerRepository.TeamHasTheRequiredNumberOfActivePlayers(team.Id, (ushort)competition.GameFormat.TeamSize!).Result
                     && team.Players.All(player => competition.Competitors.All(competitor => !competitor.IsOrContainsCompetitor(player.Id))))
                 .ToList();
-            IEnumerable<TeamDisplayDTO> response = _mapper.Map<List<TeamDisplayDTO>>(teams);
+            IEnumerable<TeamDisplayDTO> response = _mapper.Map<IEnumerable<TeamDisplayDTO>>(teams);
             return response;
         }
     }

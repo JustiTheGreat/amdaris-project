@@ -1,26 +1,18 @@
-﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
+﻿using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Application.Test.ModelBuilder;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using AmdarisProject.Presentation;
 using Mapster;
 using MapsterMapper;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.CompetitorTests
 {
-    public class GetCompetitorByIdHandlerTest
+    public class GetCompetitorByIdHandlerTest : MockObjectUser
     {
-        private readonly Mock<ICompetitorRepository> _competitorRepositoryMock = new();
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
-        private readonly Mock<IMapper> _mapperMock = new();
-
-        public GetCompetitorByIdHandlerTest() => MapsterConfiguration.ConfigureMapster();
-
         [Fact]
-        public async Task Test_GetCompetitorByIdHandlerTest_Player_Success()
+        public async Task Test_GetCompetitorByIdHandler_Player_Success()
         {
             Player model = Builders.CreateBasicPlayer().Get();
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
@@ -37,7 +29,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         }
 
         [Fact]
-        public async Task Test_GetCompetitorByIdHandlerTest_Team_Success()
+        public async Task Test_GetCompetitorByIdHandler_Team_Success()
         {
             Team model = Builders.CreateBasicTeam().Get();
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
@@ -54,12 +46,12 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         }
 
         [Fact]
-        public async Task Test_GetCompetitorByIdHandlerTest_CompetitorNotFound_Throws_APNotFoundException()
+        public async Task Test_GetCompetitorByIdHandler_CompetitorNotFound_throws_APNotFoundException()
         {
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competitor?)null));
             GetCompetitorById command = new(It.IsAny<Guid>());
-            GetCompetitorByIdHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            GetCompetitorByIdHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>());
 
             await Assert.ThrowsAsync<APNotFoundException>(async () => await handler.Handle(command, default));
 

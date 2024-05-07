@@ -41,7 +41,7 @@ namespace AmdarisProject.Application.Services
             Match updated = await _unitOfWork.MatchRepository.Update(match);
 
             await _competitionMatchCreatorFactoryService
-                .GetCompetitionMatchCreatorService(updated.Competition.GetType())
+                .GetCompetitionMatchCreator(updated.Competition.GetType())
                 .CreateCompetitionMatches(updated.Competition.Id);
 
             updated = await _unitOfWork.MatchRepository.GetById(updated.Id)

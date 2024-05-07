@@ -4,6 +4,6 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorServices
 {
     public interface ICompetitionMatchCreatorFactoryService
     {
-        ICompetitionMatchCreator GetCompetitionMatchCreatorService(Type type);
+        ICompetitionMatchCreator GetCompetitionMatchCreator(Type type);
     }
 }

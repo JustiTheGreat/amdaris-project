@@ -12,11 +12,11 @@ namespace AmdarisProject.Application.Test.ModelBuilder
             => new(new GameFormat()
             {
                 Id = Guid.NewGuid(),
-                Name = "PingPongPlayerWinAt11",
+                Name = "Test",
                 GameType = GameType.PING_PONG,
                 CompetitorType = CompetitorType.PLAYER,
                 TeamSize = null,
-                WinAt = 11,
+                WinAt = 3,
                 DurationInMinutes = null,
             });
 

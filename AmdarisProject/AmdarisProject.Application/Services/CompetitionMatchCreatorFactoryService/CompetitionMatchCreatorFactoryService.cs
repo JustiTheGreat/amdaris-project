@@ -14,7 +14,7 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorServices
             competitionMatchCreatorServices.Add(typeof(TournamentCompetition), new TournamentCompetitionMatchCreator(unitOfWork));
         }
 
-        public ICompetitionMatchCreator GetCompetitionMatchCreatorService(Type type)
+        public ICompetitionMatchCreator GetCompetitionMatchCreator(Type type)
             => competitionMatchCreatorServices[type];
     }
 }

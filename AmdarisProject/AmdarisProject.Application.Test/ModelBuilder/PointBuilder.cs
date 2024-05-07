@@ -17,6 +17,15 @@ namespace AmdarisProject.Application.Test.ModelBuilder
                 Player = Builders.CreateBasicPlayer().Get(),
             });
 
+        public PointBuilder Clone()
+            => new(new Point()
+            {
+                Id = _model.Id,
+                Value = _model.Value,
+                Match = _model.Match,
+                Player = _model.Player,
+            });
+
         public PointBuilder SetValue(uint value)
         {
             _model.Value = value;

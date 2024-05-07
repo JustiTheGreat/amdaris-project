@@ -1,7 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
-using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using MapsterMapper;
 using MediatR;

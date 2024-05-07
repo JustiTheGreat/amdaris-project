@@ -35,7 +35,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 updated = await _unitOfWork.MatchRepository.Update(match);
 
                 await _competitionMatchCreatorFactoryService
-                    .GetCompetitionMatchCreatorService(updated.Competition.GetType())
+                    .GetCompetitionMatchCreator(updated.Competition.GetType())
                     .CreateCompetitionMatches(updated.Competition.Id);
 
                 await _unitOfWork.SaveAsync();
