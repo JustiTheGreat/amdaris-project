@@ -3,7 +3,6 @@ using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
-using AmdarisProject.Domain.Models.CompetitorModels;
 using MapsterMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;

@@ -6,7 +6,6 @@ using AmdarisProject.Domain.Models.CompetitorModels;
 using MapsterMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Net.Http;
 
 namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
 {

@@ -1,11 +1,9 @@
 ﻿using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
-using AmdarisProject.Application.Handlers.MatchHandlers;
 using AmdarisProject.Application.Handlers.TeamPlayerHandlers;
 using AmdarisProject.Application.Test.ModelBuilder;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using Mapster;
-using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
@@ -25,7 +23,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
             _mapperMock.Setup(o => o.Map<TeamPlayerGetDTO>(It.IsAny<TeamPlayer>())).Returns(teamPlayer.Adapt<TeamPlayerGetDTO>());
             ChangeTeamPlayerStatus command = new(teamPlayer.Team.Id, teamPlayer.Player.Id, newPlayerActivityStatus);
             ChangeTeamPlayerStatusHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
-                It.IsAny<ILogger<ChangeTeamPlayerStatusHandler>>());
+                GetLogger<ChangeTeamPlayerStatusHandler>());
 
             TeamPlayerGetDTO response = await handler.Handle(command, default);
 
@@ -42,7 +40,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
                 .Returns(Task.FromResult((TeamPlayer?)null));
             ChangeTeamPlayerStatus command = new(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<bool>());
             ChangeTeamPlayerStatusHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
-                It.IsAny<ILogger<ChangeTeamPlayerStatusHandler>>());
+                GetLogger<ChangeTeamPlayerStatusHandler>());
 
             await Assert.ThrowsAsync<APNotFoundException>(async () => await handler.Handle(command, default));
         }
@@ -58,7 +56,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
             _matchRepositoryMock.Setup(o => o.TeamIsInAStartedMatch(It.IsAny<Guid>())).Returns(Task.FromResult(true));
             ChangeTeamPlayerStatus command = new(teamPlayer.Team.Id, teamPlayer.Player.Id, It.IsAny<bool>());
             ChangeTeamPlayerStatusHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
-                It.IsAny<ILogger<ChangeTeamPlayerStatusHandler>>());
+                GetLogger<ChangeTeamPlayerStatusHandler>());
 
             await Assert.ThrowsAsync<AmdarisProjectException>(async () => await handler.Handle(command, default));
         }
@@ -75,7 +73,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
             _teamPlayerRepositoryMock.Setup(o => o.Update(It.IsAny<TeamPlayer>())).Throws<Exception>();
             ChangeTeamPlayerStatus command = new(teamPlayer.Team.Id, teamPlayer.Player.Id, It.IsAny<bool>());
             ChangeTeamPlayerStatusHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
-                It.IsAny<ILogger<ChangeTeamPlayerStatusHandler>>());
+                GetLogger<ChangeTeamPlayerStatusHandler>());
 
             await Assert.ThrowsAsync<Exception>(async () => await handler.Handle(command, default));
 

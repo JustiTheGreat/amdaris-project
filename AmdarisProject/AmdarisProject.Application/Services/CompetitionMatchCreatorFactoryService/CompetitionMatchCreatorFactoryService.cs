@@ -1,5 +1,4 @@
-﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreatorService;
+﻿using AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreatorService;
 using AmdarisProject.Domain.Models.CompetitionModels;
 
 namespace AmdarisProject.Application.Services.CompetitionMatchCreatorServices

@@ -1,13 +1,12 @@
 ﻿using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Handlers.MatchHandlers;
-using AmdarisProject.Application.Handlers.TeamPlayerHandlers;
 using AmdarisProject.Application.Test.ModelBuilder;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using Mapster;
 using MapsterMapper;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Match = AmdarisProject.Domain.Models.Match;
 
@@ -21,17 +20,20 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
             MatchBuilder matchBuilder = Builders.CreateBasicMatch()
                 .SetCompetition(Builders.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get());
             Match match = matchBuilder.Get();
-            Match updated = matchBuilder.Clone().SetStatus(MatchStatus.STARTED).Get();
+            Match updated = matchBuilder.Clone().SetStatus(MatchStatus.STARTED).InitializePoints().Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.PointRepository).Returns(_pointRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.CompetitionRepository).Returns(_competitionRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             _matchRepositoryMock.Setup(o => o.Update(It.IsAny<Match>())).Returns(Task.FromResult(updated));
+            var v = _pointRepositoryMock.SetupSequence(o => o.Create(It.IsAny<Point>()));
+            match.Points.ForEach(point => v.Returns(Task.FromResult(point)));
+
             _matchRepositoryMock.Setup(o => o.GetNotStartedByCompetitionOrderedByStartTime(It.IsAny<Guid>()))
                 .Returns(Task.FromResult((IEnumerable<Match>)[]));
             _mapperMock.Setup(o => o.Map<MatchGetDTO>(It.IsAny<Match>())).Returns(updated.Adapt<MatchGetDTO>());
             StartMatch command = new(match.Id);
-            StartMatchHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, It.IsAny<ILogger<StartMatchHandler>>());
+            StartMatchHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<StartMatchHandler>());
 
             MatchGetDTO response = await handler.Handle(command, default);
 
@@ -68,7 +70,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)null));
             StartMatch command = new(It.IsAny<Guid>());
-            StartMatchHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<ILogger<StartMatchHandler>>());
+            StartMatchHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), GetLogger<StartMatchHandler>());
 
             await Assert.ThrowsAsync<APNotFoundException>(async () => await handler.Handle(command, default));
         }
@@ -90,7 +92,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             StartMatch command = new(match.Id);
-            StartMatchHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<ILogger<StartMatchHandler>>());
+            StartMatchHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), GetLogger<StartMatchHandler>());
 
             await Assert.ThrowsAsync<APIllegalStatusException>(async () => await handler.Handle(command, default));
         }
@@ -104,7 +106,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             StartMatch command = new(match.Id);
-            StartMatchHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<ILogger<StartMatchHandler>>());
+            StartMatchHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), GetLogger<StartMatchHandler>());
 
             await Assert.ThrowsAsync<AmdarisProjectException>(async () => await handler.Handle(command, default));
         }
@@ -127,7 +129,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             StartMatch command = new(match.Id);
-            StartMatchHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<ILogger<StartMatchHandler>>());
+            StartMatchHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), GetLogger<StartMatchHandler>());
 
             await Assert.ThrowsAsync<APIllegalStatusException>(async () => await handler.Handle(command, default));
         }

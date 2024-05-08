@@ -7,7 +7,6 @@ using AmdarisProject.Domain.Models;
 using MapsterMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Text.RegularExpressions;
 
 namespace AmdarisProject.Application.Handlers.GameFormatHandlers
 {

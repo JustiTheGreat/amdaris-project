@@ -1,7 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.DisplayDTOs;
 using AmdarisProject.Domain.Models.CompetitionModels;
-using AmdarisProject.Domain.Models.CompetitorModels;
 using MapsterMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;

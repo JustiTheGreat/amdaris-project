@@ -149,7 +149,7 @@ namespace AmdarisProject.Presentation
                 .Map(dest => dest.TeamId, src => src.Team.Id)
                 .Map(dest => dest.PlayerId, src => src.Player.Id);
 
-            //HACK added for tests
+            //HACK supplementary
 
             TypeAdapterConfig<OneVSAllCompetition, CompetitionCreateDTO>.NewConfig()
                 .Map(dest => dest.GameFormat, src => src.GameFormat.Id);

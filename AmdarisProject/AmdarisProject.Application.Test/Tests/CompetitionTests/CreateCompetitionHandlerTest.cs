@@ -1,30 +1,18 @@
-﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Dtos.CreateDTOs;
+﻿using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitionHandlers;
-using AmdarisProject.Application.Handlers.GameFormatHandlers;
 using AmdarisProject.Application.Test.ModelBuilder;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
-using AmdarisProject.Presentation;
 using Mapster;
-using MapsterMapper;
-using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.CompetitionTests
 {
-    public class CreateCompetitionHandlerTest
+    public class CreateCompetitionHandlerTest : MockObjectUser
     {
-        private readonly Mock<ICompetitionRepository> _competitionRepositoryMock = new();
-        private readonly Mock<IGameFormatRepository> _gameFormatRepositoryMock = new();
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
-        private readonly Mock<IMapper> _mapperMock = new();
-
-        public CreateCompetitionHandlerTest() => MapsterConfiguration.ConfigureMapster();
-
         [Fact]
         public async Task Test_CreateCompetitionHandler_OneVSAllCompetition_Success()
         {
@@ -40,7 +28,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
             CompetitionCreateDTO createDTO = model.Adapt<CompetitionCreateDTO>();
             CreateOneVSAllCompetition command = new(createDTO);
             CreateOneVSAllCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
-                It.IsAny<ILogger<CreateOneVSAllCompetitionHandler>>());
+                GetLogger<CreateOneVSAllCompetitionHandler>());
 
             CompetitionGetDTO response = await handler.Handle(command, default);
 
@@ -71,7 +59,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
             CompetitionCreateDTO createDTO = model.Adapt<CompetitionCreateDTO>();
             CreateOneVSAllCompetition command = new(createDTO);
             CreateOneVSAllCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
-                It.IsAny<ILogger<CreateOneVSAllCompetitionHandler>>());
+                GetLogger<CreateOneVSAllCompetitionHandler>());
 
             CompetitionGetDTO response = await handler.Handle(command, default);
 
@@ -108,7 +96,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
             CompetitionCreateDTO createDTO = model.Adapt<CompetitionCreateDTO>();
             CreateOneVSAllCompetition command = new(createDTO);
             CreateOneVSAllCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
-                It.IsAny<ILogger<CreateOneVSAllCompetitionHandler>>());
+                GetLogger<CreateOneVSAllCompetitionHandler>());
 
             await Assert.ThrowsAsync<APIllegalStatusException>(async () => await handler.Handle(command, default));
         }
@@ -125,7 +113,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
             CompetitionCreateDTO createDTO = model.Adapt<CompetitionCreateDTO>();
             CreateOneVSAllCompetition command = new(createDTO);
             CreateOneVSAllCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
-                It.IsAny<ILogger<CreateOneVSAllCompetitionHandler>>());
+                GetLogger<CreateOneVSAllCompetitionHandler>());
 
             await Assert.ThrowsAsync<Exception>(async () => await handler.Handle(command, default));
 
@@ -144,7 +132,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
             CompetitionCreateDTO createDTO = model.Adapt<CompetitionCreateDTO>();
             CreateOneVSAllCompetition command = new(createDTO);
             CreateOneVSAllCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
-                It.IsAny<ILogger<CreateOneVSAllCompetitionHandler>>());
+                GetLogger<CreateOneVSAllCompetitionHandler>());
 
             await Assert.ThrowsAsync<Exception>(async () => await handler.Handle(command, default));
 

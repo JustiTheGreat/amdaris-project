@@ -36,7 +36,7 @@ namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
                 throw;
             }
 
-            _logger.LogInformation("Player {PlayerName} was removed from the team {TeamName}!", 
+            _logger.LogInformation("Player {PlayerName} was removed from the team {TeamName}!",
                 [teamPlayer.Player.Name, teamPlayer.Team.Name]);
 
             return true;

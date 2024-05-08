@@ -77,5 +77,26 @@ namespace AmdarisProject.Application.Test.ModelBuilder
             _model.CompetitorTwoPoints = points;
             return this;
         }
+
+        public MatchBuilder InitializePoints()
+        {
+            void CreatePoint(Player player)
+                => _model.Points.Add(Builders.CreateBasicPoint().SetPlayer(player).SetMatch(_model).SetValue(0).Get());
+
+            void CreatePointsForTeamPlayers(Team team) => team.Players.ForEach(CreatePoint);
+
+            if (_model.Competition.GameFormat.CompetitorType is CompetitorType.PLAYER)
+            {
+                CreatePoint((Player)_model.CompetitorOne);
+                CreatePoint((Player)_model.CompetitorTwo);
+            }
+            else
+            {
+                CreatePointsForTeamPlayers((Team)_model.CompetitorOne);
+                CreatePointsForTeamPlayers((Team)_model.CompetitorTwo);
+            }
+
+            return this;
+        }
     }
 }

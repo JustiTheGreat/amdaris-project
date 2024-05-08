@@ -1,5 +1,4 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
@@ -85,7 +84,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), match.Id));
 
             _logger.LogInformation("Match {CompetitorOneName}-{CompetitorTwoName} has started!",
-                [match.CompetitorOne.Name, match.CompetitorTwo.Name]);
+                [updated.CompetitorOne.Name, updated.CompetitorTwo.Name]);
 
             MatchGetDTO response = _mapper.Map<MatchGetDTO>(updated);
             return response;

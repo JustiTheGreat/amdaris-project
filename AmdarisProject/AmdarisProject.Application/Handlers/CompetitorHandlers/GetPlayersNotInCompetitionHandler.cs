@@ -1,7 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Domain.Exceptions;
-using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using MapsterMapper;
@@ -25,8 +24,10 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
 
             IEnumerable<Player> players = await _unitOfWork.CompetitorRepository.GetPlayersNotInCompetition(request.CompetitionId);
+
             _logger.LogInformation("Got all players not in competition {CompetitionName} (Count = {Count})!",
                 [competition.Name, players.Count()]);
+
             IEnumerable<PlayerDisplayDTO> response = _mapper.Map<IEnumerable<PlayerDisplayDTO>>(players);
             return response;
         }

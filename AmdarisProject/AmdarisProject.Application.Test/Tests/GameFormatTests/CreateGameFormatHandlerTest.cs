@@ -1,6 +1,5 @@
 ﻿using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
-using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Application.Handlers.GameFormatHandlers;
 using AmdarisProject.Application.Test.ModelBuilder;
 using AmdarisProject.Domain.Enums;
@@ -8,7 +7,6 @@ using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using Mapster;
 using MapsterMapper;
-using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.GameFormatTests
@@ -25,8 +23,7 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
             _mapperMock.Setup(o => o.Map<GameFormatGetDTO>(It.IsAny<GameFormat>())).Returns(gameFormat.Adapt<GameFormatGetDTO>());
             GameFormatCreateDTO createDTO = gameFormat.Adapt<GameFormatCreateDTO>();
             CreateGameFormat command = new(createDTO);
-            CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, 
-                It.IsAny<ILogger<CreateGameFormatHandler>>());
+            CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<CreateGameFormatHandler>());
 
             GameFormatGetDTO response = await handler.Handle(command, default);
 
@@ -43,8 +40,7 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
         {
             GameFormatCreateDTO createDTO = Builders.CreateBasicGameFormat().SetWinAt(null).SetDurationInMinutes(null).Get().Adapt<GameFormatCreateDTO>();
             CreateGameFormat command = new(createDTO);
-            CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(),
-                It.IsAny<ILogger<CreateGameFormatHandler>>());
+            CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), GetLogger<CreateGameFormatHandler>());
 
             await Assert.ThrowsAsync<APArgumentException>(async () => await handler.Handle(command, default));
         }
@@ -62,8 +58,7 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
         {
             GameFormatCreateDTO createDTO = model.Adapt<GameFormatCreateDTO>();
             CreateGameFormat command = new(createDTO);
-            CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(),
-                It.IsAny<ILogger<CreateGameFormatHandler>>());
+            CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), GetLogger<CreateGameFormatHandler>());
 
             await Assert.ThrowsAsync<APArgumentException>(async () => await handler.Handle(command, default));
         }
@@ -75,8 +70,7 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
             _gameFormatRepositoryMock.Setup(o => o.Create(It.IsAny<GameFormat>())).Throws<Exception>();
             GameFormatCreateDTO createDTO = Builders.CreateBasicGameFormat().Get().Adapt<GameFormatCreateDTO>();
             CreateGameFormat command = new(createDTO);
-            CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
-                It.IsAny<ILogger<CreateGameFormatHandler>>());
+            CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<CreateGameFormatHandler>());
 
             await Assert.ThrowsAsync<Exception>(async () => await handler.Handle(command, default));
 

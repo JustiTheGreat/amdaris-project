@@ -1,6 +1,7 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Presentation;
 using MapsterMapper;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests
@@ -15,8 +16,17 @@ namespace AmdarisProject.Application.Test.Tests
         protected readonly Mock<ITeamPlayerRepository> _teamPlayerRepositoryMock = new();
         protected readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
         protected readonly Mock<IMapper> _mapperMock = new();
-        protected readonly int NumberOfModelsInAList = 2;
+        protected readonly int _numberOfModelsInAList = 2;
+        private static bool _mapsterWasConfigured = false;
+        protected MockObjectUser()
+        {
+            if (!_mapsterWasConfigured)
+            {
+                _mapsterWasConfigured = true; ;
+                MapsterConfiguration.ConfigureMapster();
+            }
+        }
 
-        protected MockObjectUser() => MapsterConfiguration.ConfigureMapster();
+        protected ILogger<T> GetLogger<T>() => new Mock<ILogger<T>>().Object;
     }
 }

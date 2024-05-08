@@ -1,9 +1,7 @@
-﻿using AmdarisProject.Application.Handlers.CompetitorHandlers;
-using AmdarisProject.Application.Handlers.TeamPlayerHandlers;
+﻿using AmdarisProject.Application.Handlers.TeamPlayerHandlers;
 using AmdarisProject.Application.Test.ModelBuilder;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
@@ -20,8 +18,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
                 .Returns(Task.FromResult((TeamPlayer?)teamPlayer));
             _matchRepositoryMock.Setup(o => o.TeamIsInAStartedMatch(It.IsAny<Guid>())).Returns(Task.FromResult(false));
             RemovePlayerFromTeam command = new(teamPlayer.Player.Id, teamPlayer.Team.Id);
-            RemovePlayerFromTeamHandler handler = new(_unitOfWorkMock.Object,
-                It.IsAny<ILogger<RemovePlayerFromTeamHandler>>());
+            RemovePlayerFromTeamHandler handler = new(_unitOfWorkMock.Object, GetLogger<RemovePlayerFromTeamHandler>());
 
             bool response = await handler.Handle(command, default);
 
@@ -37,8 +34,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
             _teamPlayerRepositoryMock.Setup(o => o.GetByTeamAndPlayer(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .Returns(Task.FromResult((TeamPlayer?)null));
             RemovePlayerFromTeam command = new(teamPlayer.Player.Id, teamPlayer.Team.Id);
-            RemovePlayerFromTeamHandler handler = new(_unitOfWorkMock.Object,
-                It.IsAny<ILogger<RemovePlayerFromTeamHandler>>());
+            RemovePlayerFromTeamHandler handler = new(_unitOfWorkMock.Object, GetLogger<RemovePlayerFromTeamHandler>());
 
             await Assert.ThrowsAsync<APNotFoundException>(async () => await handler.Handle(command, default));
         }
@@ -53,8 +49,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
                 .Returns(Task.FromResult((TeamPlayer?)teamPlayer));
             _matchRepositoryMock.Setup(o => o.TeamIsInAStartedMatch(It.IsAny<Guid>())).Returns(Task.FromResult(true));
             RemovePlayerFromTeam command = new(teamPlayer.Player.Id, teamPlayer.Team.Id);
-            RemovePlayerFromTeamHandler handler = new(_unitOfWorkMock.Object,
-                It.IsAny<ILogger<RemovePlayerFromTeamHandler>>());
+            RemovePlayerFromTeamHandler handler = new(_unitOfWorkMock.Object, GetLogger<RemovePlayerFromTeamHandler>());
 
             await Assert.ThrowsAsync<AmdarisProjectException>(async () => await handler.Handle(command, default));
         }
@@ -70,8 +65,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
             _matchRepositoryMock.Setup(o => o.TeamIsInAStartedMatch(It.IsAny<Guid>())).Returns(Task.FromResult(false));
             _teamPlayerRepositoryMock.Setup(o => o.Delete(It.IsAny<Guid>())).Throws<Exception>();
             RemovePlayerFromTeam command = new(teamPlayer.Player.Id, teamPlayer.Team.Id);
-            RemovePlayerFromTeamHandler handler = new(_unitOfWorkMock.Object,
-                It.IsAny<ILogger<RemovePlayerFromTeamHandler>>());
+            RemovePlayerFromTeamHandler handler = new(_unitOfWorkMock.Object, GetLogger<RemovePlayerFromTeamHandler>());
 
             await Assert.ThrowsAsync<Exception>(async () => await handler.Handle(command, default));
 

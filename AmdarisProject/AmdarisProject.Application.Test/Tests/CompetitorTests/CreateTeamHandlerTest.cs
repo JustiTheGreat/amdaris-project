@@ -4,7 +4,6 @@ using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Application.Test.ModelBuilder;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using Mapster;
-using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.CompetitorTests
@@ -21,7 +20,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             _competitorRepositoryMock.Setup(o => o.Create(It.IsAny<Team>())).Returns(Task.FromResult((Competitor)team));
             _mapperMock.Setup(o => o.Map<TeamGetDTO>(It.IsAny<Team>())).Returns(team.Adapt<TeamGetDTO>());
             CreateTeam command = new(createDTO);
-            CreateTeamHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, It.IsAny<ILogger<CreateTeamHandler>>());
+            CreateTeamHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<CreateTeamHandler>());
 
             TeamGetDTO response = await handler.Handle(command, default);
 
@@ -38,7 +37,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.Create(It.IsAny<Competitor>())).Throws<Exception>();
             CreateTeam command = new(It.IsAny<CompetitorCreateDTO>());
-            CreateTeamHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, It.IsAny<ILogger<CreateTeamHandler>>());
+            CreateTeamHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<CreateTeamHandler>());
 
             await Assert.ThrowsAsync<Exception>(async () => await handler.Handle(command, default));
 
