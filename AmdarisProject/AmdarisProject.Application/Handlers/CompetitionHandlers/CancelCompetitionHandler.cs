@@ -3,17 +3,20 @@ using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
+using AmdarisProject.Domain.Models.CompetitorModels;
 using MapsterMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.handlers.competition
 {
     public record CancelCompetition(Guid CompetitionId) : IRequest<CompetitionGetDTO>;
-    public class CancelCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public class CancelCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<CancelCompetitionHandler> logger)
         : IRequestHandler<CancelCompetition, CompetitionGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<CancelCompetitionHandler> _logger = logger;
 
         public async Task<CompetitionGetDTO> Handle(CancelCompetition request, CancellationToken cancellationToken)
         {
@@ -41,9 +44,7 @@ namespace AmdarisProject.handlers.competition
                 throw;
             }
 
-            //TODO remove
-            Console.WriteLine($"Competition {updated.Name} ended!");
-            //
+            _logger.LogInformation("Competition {CompetitionName} was cancelled!", [competition.Name]);
 
             CompetitionGetDTO response = _mapper.Map<CompetitionGetDTO>(updated);
             return response;

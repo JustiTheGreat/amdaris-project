@@ -5,15 +5,17 @@ using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using MapsterMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.handlers.competition
 {
     public record StartCompetition(Guid CompetitionId) : IRequest<CompetitionGetDTO>;
-    public class StartCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public class StartCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<StartCompetitionHandler> logger)
         : IRequestHandler<StartCompetition, CompetitionGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<StartCompetitionHandler> _logger = logger;
 
         public async Task<CompetitionGetDTO> Handle(StartCompetition request, CancellationToken cancellationToken)
         {
@@ -39,9 +41,7 @@ namespace AmdarisProject.handlers.competition
                 throw;
             }
 
-            //TODO remove
-            Console.WriteLine($"Competition {updated.Name} started!");
-            //
+            _logger.LogInformation("Competition {CompetitionName} has started!", [competition.Name]);
 
             CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionGetDTO>(updated)
                 : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionGetDTO>(updated)

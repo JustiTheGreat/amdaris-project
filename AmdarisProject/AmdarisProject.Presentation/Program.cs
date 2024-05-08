@@ -1,5 +1,6 @@
 using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Services;
+using AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreatorService;
 using AmdarisProject.Application.Services.CompetitionMatchCreatorServices;
 using AmdarisProject.Infrastructure;
 using AmdarisProject.Infrastructure.Repositories;
@@ -25,6 +26,8 @@ builder.Services.AddScoped<IPointRepository, PointRepository>();
 builder.Services.AddScoped<ITeamPlayerRepository, TeamPlayerRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICompetitionMatchCreatorFactoryService, CompetitionMatchCreatorFactoryService>();
+builder.Services.AddScoped<IOneVsAllCompetitionMatchCreatorService, OneVsAllCompetitionMatchCreatorService>();
+builder.Services.AddScoped<ITournamentCompetitionMatchCreatorService, TournamentCompetitionMatchCreatorService>();
 builder.Services.AddScoped<ICompetitionRankingService, CompetionRankingService>();
 builder.Services.AddScoped<IEndMatchService, EndMatchService>();
 builder.Services.AddScoped<IMapper>(sp => new Mapper(MapsterConfiguration.GetMapsterConfiguration()));

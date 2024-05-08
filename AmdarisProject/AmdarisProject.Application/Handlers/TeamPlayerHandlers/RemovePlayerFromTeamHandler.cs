@@ -2,14 +2,16 @@
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
 {
     public record RemovePlayerFromTeam(Guid PlayerId, Guid TeamId) : IRequest<bool>;
-    public class RemovePlayerFromTeamHandler(IUnitOfWork unitOfWork)
+    public class RemovePlayerFromTeamHandler(IUnitOfWork unitOfWork, ILogger<RemovePlayerFromTeamHandler> logger)
         : IRequestHandler<RemovePlayerFromTeam, bool>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly ILogger<RemovePlayerFromTeamHandler> _logger = logger;
 
         public async Task<bool> Handle(RemovePlayerFromTeam request, CancellationToken cancellationToken)
         {
@@ -33,6 +35,9 @@ namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
                 await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
+
+            _logger.LogInformation("Player {PlayerName} was removed from the team {TeamName}!", 
+                [teamPlayer.Player.Name, teamPlayer.Team.Name]);
 
             return true;
         }

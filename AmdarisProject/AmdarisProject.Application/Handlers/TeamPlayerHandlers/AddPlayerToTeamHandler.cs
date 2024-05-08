@@ -5,23 +5,26 @@ using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using MapsterMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
+using System.Net.Http;
 
 namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
 {
     public record AddPlayerToTeam(Guid PlayerId, Guid TeamId) : IRequest<TeamPlayerGetDTO>;
-    public class AddPlayerToTeamHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public class AddPlayerToTeamHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<AddPlayerToTeamHandler> logger)
         : IRequestHandler<AddPlayerToTeam, TeamPlayerGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<AddPlayerToTeamHandler> _logger = logger;
 
         public async Task<TeamPlayerGetDTO> Handle(AddPlayerToTeam request, CancellationToken cancellationToken)
         {
-            Team team = (Team)(await _unitOfWork.CompetitorRepository.GetById(request.TeamId)
-                ?? throw new APNotFoundException(Tuple.Create(nameof(request.TeamId), request.TeamId)));
+            Team team = await _unitOfWork.CompetitorRepository.GetTeamById(request.TeamId)
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.TeamId), request.TeamId));
 
-            Player player = (Player)(await _unitOfWork.CompetitorRepository.GetById(request.PlayerId)
-                ?? throw new APNotFoundException(Tuple.Create(nameof(request.PlayerId), request.PlayerId)));
+            Player player = await _unitOfWork.CompetitorRepository.GetPlayerById(request.PlayerId)
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.PlayerId), request.PlayerId));
 
             if (team.ContainsPlayer(request.PlayerId))
                 throw new AmdarisProjectException($"Player {player.Id} is already a member of team {team.Id}!");
@@ -45,6 +48,9 @@ namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
                 await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
+
+            _logger.LogInformation("Added an {Status} player {PlayerName} to the team {TeamName}!",
+                [created.IsActive ? "active" : "inactive", created.Player.Name, created.Team.Name]);
 
             TeamPlayerGetDTO response = _mapper.Map<TeamPlayerGetDTO>(created);
             return response;

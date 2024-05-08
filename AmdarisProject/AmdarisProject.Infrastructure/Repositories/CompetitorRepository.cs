@@ -13,6 +13,12 @@ namespace AmdarisProject.Infrastructure.Repositories
         public async Task<IEnumerable<Player>> GetAllPlayers()
             => await _dbContext.Set<Player>().ToListAsync();
 
+        public async Task<Player?> GetPlayerById(Guid id)
+            => await _dbContext.Set<Player>().FirstOrDefaultAsync(item => item.Id.Equals(id));
+
+        public async Task<Team?> GetTeamById(Guid id)
+            => await _dbContext.Set<Team>().FirstOrDefaultAsync(item => item.Id.Equals(id));
+
         public async Task<bool> PlayerIsInATeam(Guid playerId)
             => await _dbContext.Set<Team>().AnyAsync(team => team.Players.Any(player => player.Id.Equals(playerId)));
 

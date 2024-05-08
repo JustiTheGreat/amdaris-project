@@ -5,13 +5,15 @@ using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
+using Microsoft.Extensions.Logging;
 
-namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreators
+namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreatorService
 {
-    public abstract class CompetitionMatchCreator<T>(IUnitOfWork unitOfWork)
-        : ICompetitionMatchCreator where T : Competition
+    public abstract class CompetitionMatchCreatorService<T>(IUnitOfWork unitOfWork, ILogger<CompetitionMatchCreatorService<T>> logger)
+        : ICompetitionMatchCreatorService where T : Competition
     {
         protected readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly ILogger _logger = logger;
 
         public async Task<IEnumerable<Match>> CreateCompetitionMatches(Guid competitionId)
         {
@@ -22,6 +24,8 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
                 return [];
 
             IEnumerable<Match> createdMatches = await CreateMatches((T)competition);
+            _logger.LogInformation("Created matches for competition {CompetitionName} (Count = {Count})!",
+                [competition.Name, createdMatches.Count()]);
             return createdMatches;
         }
 
@@ -90,6 +94,9 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
                 StageIndex = stageIndex,
                 Points = [],
             };
+
+            _logger.LogInformation("Created match {CompetitorOneName}-{CompetitorTwoName}!",
+                [match.CompetitorOne.Name, match.CompetitorTwo.Name]);
 
             Match created = await _unitOfWork.MatchRepository.Create(match);
             return created;

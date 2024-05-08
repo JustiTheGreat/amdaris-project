@@ -3,6 +3,7 @@ using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Application.Test.ModelBuilder;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using Mapster;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.CompetitorTests
@@ -20,7 +21,8 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             _mapperMock.Setup(o => o.Map<IEnumerable<PlayerDisplayDTO>>(It.IsAny<IEnumerable<Player>>()))
                 .Returns(players.Adapt<IEnumerable<PlayerDisplayDTO>>());
             GetPlayersNotInTeam command = new(It.IsAny<Guid>());
-            GetPlayersNotInTeamHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            GetPlayersNotInTeamHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
+                It.IsAny<ILogger<GetPlayersNotInTeamHandler>>());
 
             IEnumerable<PlayerDisplayDTO> response = await handler.Handle(command, default);
 

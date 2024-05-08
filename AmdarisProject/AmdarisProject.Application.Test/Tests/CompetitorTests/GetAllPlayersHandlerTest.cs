@@ -1,8 +1,10 @@
 ﻿using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
+using AmdarisProject.Application.Handlers.GameFormatHandlers;
 using AmdarisProject.Application.Test.ModelBuilder;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using Mapster;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.CompetitorTests
@@ -19,7 +21,8 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             _mapperMock.Setup(o => o.Map<IEnumerable<PlayerDisplayDTO>>(It.IsAny<IEnumerable<Player>>()))
                 .Returns(players.Adapt<IEnumerable<PlayerDisplayDTO>>());
             GetAllPlayers command = new();
-            GetAllPlayersHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            GetAllPlayersHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, 
+                It.IsAny<ILogger<GetAllPlayersHandler>>());
 
             IEnumerable<PlayerDisplayDTO> response = await handler.Handle(command, default);
 

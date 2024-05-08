@@ -6,6 +6,7 @@ using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using Mapster;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.CompetitorTests
@@ -29,7 +30,8 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             _mapperMock.Setup(o => o.Map<IEnumerable<TeamDisplayDTO>>(It.IsAny<IEnumerable<Team>>()))
                 .Returns(teams.Adapt<IEnumerable<TeamDisplayDTO>>());
             GetTeamsThatCanBeAddedToCompetition command = new(competition.Id);
-            GetTeamsThatCanBeAddedToCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            GetTeamsThatCanBeAddedToCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
+                It.IsAny<ILogger<GetTeamsThatCanBeAddedToCompetitionHandler>>());
 
             IEnumerable<TeamDisplayDTO> response = await handler.Handle(command, default);
 
@@ -53,7 +55,8 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             _unitOfWorkMock.Setup(o => o.CompetitionRepository).Returns(_competitionRepositoryMock.Object);
             _competitionRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competition?)null));
             GetTeamsThatCanBeAddedToCompetition command = new(It.IsAny<Guid>());
-            GetTeamsThatCanBeAddedToCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            GetTeamsThatCanBeAddedToCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
+                It.IsAny<ILogger<GetTeamsThatCanBeAddedToCompetitionHandler>>());
 
             await Assert.ThrowsAsync<APNotFoundException>(async () => await handler.Handle(command, default));
         }

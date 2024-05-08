@@ -3,6 +3,7 @@ using AmdarisProject.Application.Test.ModelBuilder;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.CompetitorTests
@@ -19,7 +20,8 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             _matchRepositoryMock.Setup(o => o.GetCompetitorWinRatingForGameType(It.IsAny<Guid>(), It.IsAny<GameType>()))
                 .Returns(Task.FromResult(0.5));
             GetCompetitorWinRatingForGameType command = new(model.Id, It.IsAny<GameType>());
-            GetCompetitorWinRatingForGameTypeHandler handler = new(_unitOfWorkMock.Object);
+            GetCompetitorWinRatingForGameTypeHandler handler = new(_unitOfWorkMock.Object,
+                It.IsAny<ILogger<GetCompetitorWinRatingForGameTypeHandler>>());
 
             double response = await handler.Handle(command, default);
 
@@ -34,7 +36,8 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competitor?)null));
             GetCompetitorWinRatingForGameType command = new(It.IsAny<Guid>(), It.IsAny<GameType>());
-            GetCompetitorWinRatingForGameTypeHandler handler = new(_unitOfWorkMock.Object);
+            GetCompetitorWinRatingForGameTypeHandler handler = new(_unitOfWorkMock.Object,
+                It.IsAny<ILogger<GetCompetitorWinRatingForGameTypeHandler>>());
 
             await Assert.ThrowsAsync<APNotFoundException>(async () => await handler.Handle(command, default));
 

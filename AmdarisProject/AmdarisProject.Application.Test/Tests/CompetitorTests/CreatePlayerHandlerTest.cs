@@ -1,9 +1,11 @@
 ﻿using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
+using AmdarisProject.Application.Handlers.CompetitionHandlers;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Application.Test.ModelBuilder;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using Mapster;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.CompetitorTests
@@ -20,7 +22,8 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             _competitorRepositoryMock.Setup(o => o.Create(It.IsAny<Player>())).Returns(Task.FromResult((Competitor)player));
             _mapperMock.Setup(o => o.Map<PlayerGetDTO>(It.IsAny<Player>())).Returns(player.Adapt<PlayerGetDTO>());
             CreatePlayer command = new(createDTO);
-            CreatePlayerHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            CreatePlayerHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, 
+                It.IsAny<ILogger<CreatePlayerHandler>>());
 
             PlayerGetDTO response = await handler.Handle(command, default);
 
@@ -38,7 +41,8 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.Create(It.IsAny<Competitor>())).Throws<Exception>();
             CreatePlayer command = new(It.IsAny<CompetitorCreateDTO>());
-            CreatePlayerHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object);
+            CreatePlayerHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, 
+                It.IsAny<ILogger<CreatePlayerHandler>>());
 
             await Assert.ThrowsAsync<Exception>(async () => await handler.Handle(command, default));
 

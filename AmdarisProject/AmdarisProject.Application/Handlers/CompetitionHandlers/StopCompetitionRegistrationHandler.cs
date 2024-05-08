@@ -6,17 +6,20 @@ using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using MapsterMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.handlers.competition
 {
     public record StopCompetitionRegistration(Guid CompetitionId) : IRequest<CompetitionGetDTO>;
     public class StopCompetitionRegistrationHandler(IUnitOfWork unitOfWork, IMapper mapper,
-        ICompetitionMatchCreatorFactoryService competitionMatchCreatorFactoryService)
+        ICompetitionMatchCreatorFactoryService competitionMatchCreatorFactoryService,
+        ILogger<StopCompetitionRegistrationHandler> logger)
         : IRequestHandler<StopCompetitionRegistration, CompetitionGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly ICompetitionMatchCreatorFactoryService _competitionMatchCreatorFactoryService = competitionMatchCreatorFactoryService;
+        private readonly ILogger<StopCompetitionRegistrationHandler> _logger = logger;
 
         public async Task<CompetitionGetDTO> Handle(StopCompetitionRegistration request, CancellationToken cancellationToken)
         {
@@ -52,9 +55,7 @@ namespace AmdarisProject.handlers.competition
             updated = await _unitOfWork.CompetitionRepository.GetById(updated.Id)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(updated.Id), updated.Id));
 
-            //TODO remove
-            Console.WriteLine($"Registrations for competition {updated.Name} have stopped!");
-            //
+            _logger.LogInformation("Registrations for competition {CompetitionName} have been stopped!", [competition.Name]);
 
             CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionGetDTO>(updated)
                 : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionGetDTO>(updated)

@@ -5,16 +5,19 @@ using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using MapsterMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 {
     public record CreateTournamentCompetition(CompetitionCreateDTO CompetitionCreateDTO)
         : IRequest<TournamentCompetitionGetDTO>;
-    public class CreateTournamentCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public class CreateTournamentCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper,
+        ILogger<CreateTournamentCompetitionHandler> logger)
         : IRequestHandler<CreateTournamentCompetition, TournamentCompetitionGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<CreateTournamentCompetitionHandler> _logger = logger;
 
         public async Task<TournamentCompetitionGetDTO> Handle(CreateTournamentCompetition request, CancellationToken cancellationToken)
         {
@@ -39,6 +42,8 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
                 await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
+
+            _logger.LogInformation("Created tournament competition {CompetitionName}!", [competition.Name]);
 
             TournamentCompetitionGetDTO response = _mapper.Map<TournamentCompetitionGetDTO>(competition);
             return response;

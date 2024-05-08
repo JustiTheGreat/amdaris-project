@@ -1,5 +1,6 @@
 ﻿using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Services;
+using AmdarisProject.Domain.Models.CompetitorModels;
 using MediatR;
 
 namespace AmdarisProject.handlers.competition

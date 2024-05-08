@@ -1,11 +1,13 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
+using Microsoft.Extensions.Logging;
 
-namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreators
+namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreatorService
 {
-    internal class OneVsAllCompetitionMatchCreator(IUnitOfWork unitOfWork)
-        : CompetitionMatchCreator<OneVSAllCompetition>(unitOfWork)
+    public class OneVsAllCompetitionMatchCreatorService(IUnitOfWork unitOfWork,
+        ILogger<CompetitionMatchCreatorService<OneVSAllCompetition>> logger)
+        : CompetitionMatchCreatorService<OneVSAllCompetition>(unitOfWork, logger), IOneVsAllCompetitionMatchCreatorService
     {
         protected override bool ShouldCreateMatches(OneVSAllCompetition competition)
             => competition.Matches.Count == 0;

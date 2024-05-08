@@ -1,12 +1,15 @@
 ﻿using AmdarisProject.Application.Dtos.ResponseDTOs;
+using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Application.Handlers.MatchHandlers;
-using AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreators;
+using AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreatorService;
 using AmdarisProject.Application.Services.CompetitionMatchCreatorServices;
 using AmdarisProject.Application.Test.ModelBuilder;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.handlers.point;
 using Mapster;
 using MapsterMapper;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Match = AmdarisProject.Domain.Models.Match;
 
@@ -15,7 +18,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
     public class CancelMatchHandlerTest : MockObjectUser
     {
         private readonly Mock<ICompetitionMatchCreatorFactoryService> _competitionMatchCreatorFactoryServiceMock = new();
-        private readonly Mock<ICompetitionMatchCreator> _competitionMatchCreatorMock = new();
+        private readonly Mock<ICompetitionMatchCreatorService> _competitionMatchCreatorMock = new();
 
         [Fact]
         public async Task Test_CancelMatchHandler_Success()
@@ -33,7 +36,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
             _mapperMock.Setup(o => o.Map<MatchGetDTO>(It.IsAny<Match>())).Returns(updatedMatch.Adapt<MatchGetDTO>());
             CancelMatch command = new(match.Id);
             CancelMatchHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
-                _competitionMatchCreatorFactoryServiceMock.Object);
+                _competitionMatchCreatorFactoryServiceMock.Object, It.IsAny<ILogger<CancelMatchHandler>>());
 
             MatchGetDTO response = await handler.Handle(command, default);
 
@@ -71,7 +74,8 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)null));
             GetMatchById command = new(match.Id);
-            GetMatchByIdHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>());
+            GetMatchByIdHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), 
+                It.IsAny<ILogger<GetMatchByIdHandler>>());
 
             await Assert.ThrowsAsync<APNotFoundException>(async () => await handler.Handle(command, default));
         }
@@ -84,7 +88,8 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             _matchRepositoryMock.Setup(o => o.Update(It.IsAny<Match>())).Throws<Exception>();
             CancelMatch command = new(match.Id);
-            CancelMatchHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<ICompetitionMatchCreatorFactoryService>());
+            CancelMatchHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(),
+                It.IsAny<ICompetitionMatchCreatorFactoryService>(), It.IsAny<ILogger<CancelMatchHandler>>());
 
             await Assert.ThrowsAsync<Exception>(async () => await handler.Handle(command, default));
 

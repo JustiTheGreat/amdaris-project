@@ -1,4 +1,5 @@
 ﻿using AmdarisProject.Application.Dtos.ResponseDTOs;
+using AmdarisProject.Application.Handlers.TeamPlayerHandlers;
 using AmdarisProject.Application.Services;
 using AmdarisProject.Application.Test.ModelBuilder;
 using AmdarisProject.Domain.Enums;
@@ -7,6 +8,7 @@ using AmdarisProject.Domain.Models;
 using AmdarisProject.handlers.point;
 using Mapster;
 using MapsterMapper;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Match = AmdarisProject.Domain.Models.Match;
 
@@ -33,7 +35,8 @@ namespace AmdarisProject.Application.Test.Tests.PointHandlers
             _matchRepositoryMock.Setup(o => o.Update(It.IsAny<Match>())).Returns(Task.FromResult(aux.Match));
             _mapperMock.Setup(o => o.Map<PointGetDTO>(It.IsAny<Point>())).Returns(aux.Adapt<PointGetDTO>());
             AddValueToPointValue command = new(point.Player.Id, point.Match.Id, pointsToAdd);
-            AddValueToPointValueHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, It.IsAny<IEndMatchService>());
+            AddValueToPointValueHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, It.IsAny<IEndMatchService>(),
+                It.IsAny<ILogger<AddValueToPointValueHandler>>());
 
             PointGetDTO response = await handler.Handle(command, default);
 
@@ -50,7 +53,8 @@ namespace AmdarisProject.Application.Test.Tests.PointHandlers
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)null));
             AddValueToPointValue command = new(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<uint>());
-            AddValueToPointValueHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<IEndMatchService>());
+            AddValueToPointValueHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<IEndMatchService>(),
+                It.IsAny<ILogger<AddValueToPointValueHandler>>());
 
             await Assert.ThrowsAsync<APNotFoundException>(async () => await handler.Handle(command, default));
         }
@@ -71,7 +75,8 @@ namespace AmdarisProject.Application.Test.Tests.PointHandlers
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             AddValueToPointValue command = new(It.IsAny<Guid>(), match.Id, It.IsAny<uint>());
-            AddValueToPointValueHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<IEndMatchService>());
+            AddValueToPointValueHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<IEndMatchService>(),
+                It.IsAny<ILogger<AddValueToPointValueHandler>>());
 
             await Assert.ThrowsAsync<APIllegalStatusException>(async () => await handler.Handle(command, default));
         }
@@ -90,7 +95,8 @@ namespace AmdarisProject.Application.Test.Tests.PointHandlers
             _unitOfWorkMock.Setup(o => o.PointRepository).Returns(_pointRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             AddValueToPointValue command = new(It.IsAny<Guid>(), match.Id, It.IsAny<uint>());
-            AddValueToPointValueHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<IEndMatchService>());
+            AddValueToPointValueHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<IEndMatchService>(),
+                It.IsAny<ILogger<AddValueToPointValueHandler>>());
 
             await Assert.ThrowsAsync<AmdarisProjectException>(async () => await handler.Handle(command, default));
         }
@@ -105,7 +111,8 @@ namespace AmdarisProject.Application.Test.Tests.PointHandlers
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)point.Match));
             _pointRepositoryMock.Setup(o => o.GetByPlayerAndMatch(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.FromResult((Point?)null));
             AddValueToPointValue command = new(point.Player.Id, point.Match.Id, It.IsAny<uint>());
-            AddValueToPointValueHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<IEndMatchService>());
+            AddValueToPointValueHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<IEndMatchService>(),
+                It.IsAny<ILogger<AddValueToPointValueHandler>>());
 
             await Assert.ThrowsAsync<APNotFoundException>(async () => await handler.Handle(command, default));
         }
@@ -128,7 +135,8 @@ namespace AmdarisProject.Application.Test.Tests.PointHandlers
             _matchRepositoryMock.Setup(o => o.Update(It.IsAny<Match>())).Returns(Task.FromResult(aux.Match));
             _mapperMock.Setup(o => o.Map<PointGetDTO>(It.IsAny<Point>())).Returns(aux.Adapt<PointGetDTO>());
             AddValueToPointValue command = new(point.Player.Id, point.Match.Id, pointsToAdd);
-            AddValueToPointValueHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, _endMatchServiceMock.Object);
+            AddValueToPointValueHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, _endMatchServiceMock.Object,
+                It.IsAny<ILogger<AddValueToPointValueHandler>>());
 
             PointGetDTO response = await handler.Handle(command, default);
 
@@ -150,7 +158,8 @@ namespace AmdarisProject.Application.Test.Tests.PointHandlers
                 .Returns(Task.FromResult((Point?)point));
             _pointRepositoryMock.Setup(o => o.Update(It.IsAny<Point>())).Throws<Exception>();
             AddValueToPointValue command = new(point.Player.Id, point.Match.Id, pointsToAdd);
-            AddValueToPointValueHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<IEndMatchService>());
+            AddValueToPointValueHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<IEndMatchService>(),
+                It.IsAny<ILogger<AddValueToPointValueHandler>>());
 
             await Assert.ThrowsAsync<Exception>(async () => await handler.Handle(command, default));
 

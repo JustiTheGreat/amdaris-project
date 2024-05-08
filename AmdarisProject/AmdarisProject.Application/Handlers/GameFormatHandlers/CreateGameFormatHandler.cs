@@ -6,16 +6,19 @@ using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using MapsterMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
+using System.Text.RegularExpressions;
 
 namespace AmdarisProject.Application.Handlers.GameFormatHandlers
 {
     public record CreateGameFormat(GameFormatCreateDTO GameFormatCreateDTO)
         : IRequest<GameFormatGetDTO>;
-    public class CreateGameFormatHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public class CreateGameFormatHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<CreateGameFormatHandler> logger)
         : IRequestHandler<CreateGameFormat, GameFormatGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<CreateGameFormatHandler> _logger = logger;
 
         public async Task<GameFormatGetDTO> Handle(CreateGameFormat request, CancellationToken cancellationToken)
         {
@@ -52,6 +55,8 @@ namespace AmdarisProject.Application.Handlers.GameFormatHandlers
                 await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
+
+            _logger.LogInformation("Game format {GameFormatId} was created!", [created.Id]);
 
             GameFormatGetDTO response = _mapper.Map<GameFormatGetDTO>(created);
             return response;

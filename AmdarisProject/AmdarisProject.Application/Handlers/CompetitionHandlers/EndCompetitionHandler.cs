@@ -3,17 +3,20 @@ using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
+using AmdarisProject.Domain.Models.CompetitorModels;
 using MapsterMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.handlers.competition
 {
     public record EndCompetition(Guid CompetitionId) : IRequest<CompetitionGetDTO>;
-    public class EndCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public class EndCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<EndCompetitionHandler> logger)
         : IRequestHandler<EndCompetition, CompetitionGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<EndCompetitionHandler> _logger = logger;
 
         public async Task<CompetitionGetDTO> Handle(EndCompetition request, CancellationToken cancellationToken)
         {
@@ -43,9 +46,7 @@ namespace AmdarisProject.handlers.competition
                 throw;
             }
 
-            //TODO remove
-            Console.WriteLine($"Competition {competition.Name} ended!");
-            //
+            _logger.LogInformation("Competition {CompetitionName} has ended!", [competition.Name]);
 
             CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionGetDTO>(updated)
                 : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionGetDTO>(updated)

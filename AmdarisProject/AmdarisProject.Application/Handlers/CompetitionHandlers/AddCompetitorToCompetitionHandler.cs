@@ -7,15 +7,18 @@ using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using MapsterMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 {
     public record AddCompetitorToCompetition(Guid CompetitorId, Guid CompetitionId) : IRequest<CompetitionGetDTO>;
-    public class AddCompetitorToCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public class AddCompetitorToCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper,
+        ILogger<AddCompetitorToCompetitionHandler> logger)
         : IRequestHandler<AddCompetitorToCompetition, CompetitionGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<AddCompetitorToCompetitionHandler> _logger = logger;
 
         public async Task<CompetitionGetDTO> Handle(AddCompetitorToCompetition request, CancellationToken cancellationToken)
         {
@@ -63,9 +66,8 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
                 throw;
             }
 
-            //TODO remove
-            Console.WriteLine($"Competitor {competitor.Name} has registered to competition {competition.Name}!");
-            //
+            _logger.LogInformation("Competitor {CompetitorName} has been registered to competition {CompetitionName}!",
+                [competitor.Name, competition.Name]);
 
             CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionGetDTO>(updated)
                 : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionGetDTO>(updated)

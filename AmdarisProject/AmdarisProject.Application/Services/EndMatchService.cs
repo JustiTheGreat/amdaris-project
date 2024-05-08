@@ -4,14 +4,17 @@ using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models;
+using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.Application.Services
 {
-    public class EndMatchService(IUnitOfWork unitOfWork, ICompetitionMatchCreatorFactoryService competitionMatchCreatorFactoryService)
+    public class EndMatchService(IUnitOfWork unitOfWork, ICompetitionMatchCreatorFactoryService competitionMatchCreatorFactoryService,
+        ILogger<EndMatchService> logger)
         : IEndMatchService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly ICompetitionMatchCreatorFactoryService _competitionMatchCreatorFactoryService = competitionMatchCreatorFactoryService;
+        private readonly ILogger<EndMatchService> _logger = logger;
 
         public async Task<Match> End(Guid matchId, MatchStatus endStatus)
         {
@@ -33,7 +36,7 @@ namespace AmdarisProject.Application.Services
                 || match.CompetitorTwoPoints == match.Competition.GameFormat.WinAt;
 
             if (endStatus is MatchStatus.FINISHED && !matchHasACompetitorWithTheWinningScore)
-                throw new AmdarisProjectException($"Match {match.Id} doesn't have a competitor with the winning number of points!");
+                throw new AmdarisProjectException($"Match {match.CompetitorOne.Name}-{match.CompetitorTwo.Name} doesn't have a competitor with the winning number of points!");
 
             match.Status = endStatus;
             match.EndTime = DateTime.UtcNow;
@@ -47,11 +50,8 @@ namespace AmdarisProject.Application.Services
             updated = await _unitOfWork.MatchRepository.GetById(updated.Id)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(updated.Id), updated.Id));
 
-            //TODO remove
-            Console.WriteLine($"Competition {match.Competition.Name}: Match between " +
-                $"{match.CompetitorOne.Name} and {match.CompetitorTwo.Name} now has status {match.Status} and score " +
-                $"{updated.CompetitorOnePoints}-{updated.CompetitorTwoPoints}!");
-            //
+            _logger.LogInformation("Match {CompetitorOneName}-{CompetitorTwoName} ended with status {Status}!",
+                [updated.CompetitorOne.Name, updated.CompetitorTwo.Name, match.Status]);
 
             return updated;
         }

@@ -4,11 +4,13 @@ using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
+using Microsoft.Extensions.Logging;
 
-namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreators
+namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreatorService
 {
-    internal class TournamentCompetitionMatchCreator(IUnitOfWork unitOfWork)
-        : CompetitionMatchCreator<TournamentCompetition>(unitOfWork)
+    public class TournamentCompetitionMatchCreatorService(IUnitOfWork unitOfWork,
+        ILogger<CompetitionMatchCreatorService<TournamentCompetition>> logger)
+        : CompetitionMatchCreatorService<TournamentCompetition>(unitOfWork, logger), ITournamentCompetitionMatchCreatorService
     {
         protected override bool ShouldCreateMatches(TournamentCompetition competition)
             => competition.StageLevel < Math.Log2(competition.Competitors.Count)

@@ -9,17 +9,19 @@ using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using MapsterMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.handlers.competition
 {
     public record GetCompetitionWinners(Guid CompetitionId) : IRequest<IEnumerable<CompetitorDisplayDTO>>;
     public class GetCompetitionWinnersHandler(IUnitOfWork unitOfWork, IMapper mapper,
-        ICompetitionRankingService competitionRankingService)
+        ICompetitionRankingService competitionRankingService, ILogger<GetCompetitionWinnersHandler> logger)
         : IRequestHandler<GetCompetitionWinners, IEnumerable<CompetitorDisplayDTO>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly ICompetitionRankingService _competitionRankingService = competitionRankingService;
+        private readonly ILogger<GetCompetitionWinnersHandler> _logger = logger;
 
         public async Task<IEnumerable<CompetitorDisplayDTO>> Handle(GetCompetitionWinners request, CancellationToken cancellationToken)
         {
@@ -63,9 +65,12 @@ namespace AmdarisProject.handlers.competition
                 .Where(competitor => numberOfVictoriesOverTheOthers[competitor]
                     == numberOfVictoriesOverTheOthers[firstPlaceCompetitors.ElementAt(0)]).ToList();
 
+            _logger.LogInformation("Got competition {CompetitorName} winners (Count = {Count})!",
+                [competition.Name, winners.Count()]);
+
             IEnumerable<CompetitorDisplayDTO> response =
-                competition.GameFormat.CompetitorType is CompetitorType.PLAYER ? _mapper.Map<List<PlayerDisplayDTO>>(winners)
-                : competition.GameFormat.CompetitorType is CompetitorType.TEAM ? _mapper.Map<List<TeamDisplayDTO>>(winners)
+                competition.GameFormat.CompetitorType is CompetitorType.PLAYER ? _mapper.Map<IEnumerable<PlayerDisplayDTO>>(winners)
+                : competition.GameFormat.CompetitorType is CompetitorType.TEAM ? _mapper.Map<IEnumerable<TeamDisplayDTO>>(winners)
                 : throw new AmdarisProjectException(nameof(winners));
             return response;
         }

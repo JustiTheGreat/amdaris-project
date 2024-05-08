@@ -3,12 +3,15 @@ using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
+using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.Application.Services
 {
-    public class CompetionRankingService(IUnitOfWork unitOfWork) : ICompetitionRankingService
+    public class CompetionRankingService(IUnitOfWork unitOfWork, ILogger<CompetionRankingService> logger)
+        : ICompetitionRankingService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly ILogger<CompetionRankingService> _logger = logger;
 
         public async Task<IEnumerable<RankingItemDTO>> GetCompetitionRanking(Guid competitionId)
         {
@@ -27,7 +30,8 @@ namespace AmdarisProject.Application.Services
                 .ThenBy(entry => entry.CompetitorName)
                 .ToList();
 
-            List<RankingItemDTO> competitorsWithTheSamePositionInRanking = [];
+            _logger.LogInformation("Got competition {CompetitorName} ranking (Count = {Count})!",
+                [competition.Name, ranking.Count()]);
 
             return ranking;
         }
@@ -42,6 +46,8 @@ namespace AmdarisProject.Application.Services
                 .Select(rankingItem => rankingItem.CompetitorId)
                 .ToList();
             IEnumerable<Competitor> firstPlaceCompetitors = await _unitOfWork.CompetitorRepository.GetByIds(firstPlaceCompetitorIds);
+            _logger.LogInformation("Got competition {CompetitorId} first place competitors (Count = {Count})!",
+                [competitionId, firstPlaceCompetitors.Count()]);
             return firstPlaceCompetitors;
         }
 

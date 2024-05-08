@@ -1,9 +1,9 @@
-﻿using AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreators;
+﻿using AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreatorService;
 
 namespace AmdarisProject.Application.Services.CompetitionMatchCreatorServices
 {
     public interface ICompetitionMatchCreatorFactoryService
     {
-        ICompetitionMatchCreator GetCompetitionMatchCreator(Type type);
+        ICompetitionMatchCreatorService GetCompetitionMatchCreator(Type type);
     }
 }

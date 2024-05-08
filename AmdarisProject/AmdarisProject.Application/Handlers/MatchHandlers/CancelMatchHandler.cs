@@ -6,17 +6,20 @@ using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using MapsterMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.Application.Handlers.MatchHandlers
 {
     public record CancelMatch(Guid MatchId) : IRequest<MatchGetDTO>;
     public class CancelMatchHandler(IUnitOfWork unitOfWork, IMapper mapper,
-        ICompetitionMatchCreatorFactoryService competitionMatchCreatorFactoryService)
+        ICompetitionMatchCreatorFactoryService competitionMatchCreatorFactoryService,
+        ILogger<CancelMatchHandler> logger)
         : IRequestHandler<CancelMatch, MatchGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly ICompetitionMatchCreatorFactoryService _competitionMatchCreatorFactoryService = competitionMatchCreatorFactoryService;
+        private readonly ILogger<CancelMatchHandler> _logger = logger;
 
         public async Task<MatchGetDTO> Handle(CancelMatch request, CancellationToken cancellationToken)
         {
@@ -50,10 +53,8 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             updated = await _unitOfWork.MatchRepository.GetById(updated.Id)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(updated.Id), updated.Id));
 
-            //TODO remove
-            Console.WriteLine($"Competition {match.Competition.Name}: Match between " +
-                $"{match.CompetitorOne.Name} and {match.CompetitorTwo.Name} was cancelled!");
-            //
+            _logger.LogInformation("Match {CompetitorOneName}-{CompetitorTwoName} was cancelled!",
+                [match.CompetitorOne.Name, match.CompetitorTwo.Name]);
 
             MatchGetDTO response = _mapper.Map<MatchGetDTO>(updated);
             return response;

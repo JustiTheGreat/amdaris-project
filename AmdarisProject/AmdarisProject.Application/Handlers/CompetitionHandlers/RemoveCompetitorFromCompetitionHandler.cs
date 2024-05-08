@@ -7,15 +7,18 @@ using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using MapsterMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 {
     public record RemoveCompetitorFromCompetition(Guid CompetitorId, Guid CompetitionId) : IRequest<CompetitionGetDTO>;
-    public class RemoveCompetitorFromCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public class RemoveCompetitorFromCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper,
+        ILogger<RemoveCompetitorFromCompetitionHandler> logger)
         : IRequestHandler<RemoveCompetitorFromCompetition, CompetitionGetDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<RemoveCompetitorFromCompetitionHandler> _logger = logger;
 
         public async Task<CompetitionGetDTO> Handle(RemoveCompetitorFromCompetition request, CancellationToken cancellationToken)
         {
@@ -51,6 +54,9 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
                 await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
+
+            _logger.LogInformation("Competitor {CompetitorName} has been removed from competition {CompetitionName}!",
+                [competitor.Name, competition.Name]);
 
             CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionGetDTO>(updated)
                 : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionGetDTO>(updated)
