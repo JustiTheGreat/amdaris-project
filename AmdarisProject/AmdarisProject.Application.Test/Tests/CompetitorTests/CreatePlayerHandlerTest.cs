@@ -1,7 +1,7 @@
 ﻿using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
-using AmdarisProject.Application.Test.ModelBuilder;
+using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using Mapster;
 using Moq;
@@ -13,7 +13,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         [Fact]
         public async Task Test_CreatePlayerHandler_Success()
         {
-            Player player = Builders.CreateBasicPlayer().Get();
+            Player player = Builder.CreateBasicPlayer().Get();
             CompetitorCreateDTO createDTO = player.Adapt<CompetitorCreateDTO>();
             _mapperMock.Setup(o => o.Map<Player>(It.IsAny<CompetitorCreateDTO>())).Returns(player);
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);

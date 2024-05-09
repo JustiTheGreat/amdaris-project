@@ -1,5 +1,5 @@
 ﻿using AmdarisProject.Application.Handlers.TeamPlayerHandlers;
-using AmdarisProject.Application.Test.ModelBuilder;
+using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using Moq;
@@ -11,12 +11,12 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
         [Fact]
         public async Task Test_RemovePlayerFromTeamHandlerTest_Success()
         {
-            TeamPlayer teamPlayer = Builders.CreateBasicTeamPlayer().Get();
+            TeamPlayer teamPlayer = Builder.CreateBasicTeamPlayer().Get();
             _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _teamPlayerRepositoryMock.Setup(o => o.GetByTeamAndPlayer(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .Returns(Task.FromResult((TeamPlayer?)teamPlayer));
-            _matchRepositoryMock.Setup(o => o.TeamIsInAStartedMatch(It.IsAny<Guid>())).Returns(Task.FromResult(false));
+            _matchRepositoryMock.Setup(o => o.CompetitorIsInAStartedMatch(It.IsAny<Guid>())).Returns(Task.FromResult(false));
             RemovePlayerFromTeam command = new(teamPlayer.Player.Id, teamPlayer.Team.Id);
             RemovePlayerFromTeamHandler handler = new(_unitOfWorkMock.Object, GetLogger<RemovePlayerFromTeamHandler>());
 
@@ -29,7 +29,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
         [Fact]
         public async Task Test_RemovePlayerFromTeamHandlerTest_TeamPlayerNotFound_throws_APNotFoundException()
         {
-            TeamPlayer teamPlayer = Builders.CreateBasicTeamPlayer().Get();
+            TeamPlayer teamPlayer = Builder.CreateBasicTeamPlayer().Get();
             _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
             _teamPlayerRepositoryMock.Setup(o => o.GetByTeamAndPlayer(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .Returns(Task.FromResult((TeamPlayer?)null));
@@ -42,12 +42,12 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
         [Fact]
         public async Task Test_RemovePlayerFromTeamHandlerTest_TeamIsInAStartedMatch_throws_AmdarisProjectException()
         {
-            TeamPlayer teamPlayer = Builders.CreateBasicTeamPlayer().Get();
+            TeamPlayer teamPlayer = Builder.CreateBasicTeamPlayer().Get();
             _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _teamPlayerRepositoryMock.Setup(o => o.GetByTeamAndPlayer(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .Returns(Task.FromResult((TeamPlayer?)teamPlayer));
-            _matchRepositoryMock.Setup(o => o.TeamIsInAStartedMatch(It.IsAny<Guid>())).Returns(Task.FromResult(true));
+            _matchRepositoryMock.Setup(o => o.CompetitorIsInAStartedMatch(It.IsAny<Guid>())).Returns(Task.FromResult(true));
             RemovePlayerFromTeam command = new(teamPlayer.Player.Id, teamPlayer.Team.Id);
             RemovePlayerFromTeamHandler handler = new(_unitOfWorkMock.Object, GetLogger<RemovePlayerFromTeamHandler>());
 
@@ -57,12 +57,12 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
         [Fact]
         public async Task Test_RemovePlayerFromTeamHandlerTest_RollbackIsCalled_throws_Exception()
         {
-            TeamPlayer teamPlayer = Builders.CreateBasicTeamPlayer().Get();
+            TeamPlayer teamPlayer = Builder.CreateBasicTeamPlayer().Get();
             _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _teamPlayerRepositoryMock.Setup(o => o.GetByTeamAndPlayer(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .Returns(Task.FromResult((TeamPlayer?)teamPlayer));
-            _matchRepositoryMock.Setup(o => o.TeamIsInAStartedMatch(It.IsAny<Guid>())).Returns(Task.FromResult(false));
+            _matchRepositoryMock.Setup(o => o.CompetitorIsInAStartedMatch(It.IsAny<Guid>())).Returns(Task.FromResult(false));
             _teamPlayerRepositoryMock.Setup(o => o.Delete(It.IsAny<Guid>())).Throws<Exception>();
             RemovePlayerFromTeam command = new(teamPlayer.Player.Id, teamPlayer.Team.Id);
             RemovePlayerFromTeamHandler handler = new(_unitOfWorkMock.Object, GetLogger<RemovePlayerFromTeamHandler>());

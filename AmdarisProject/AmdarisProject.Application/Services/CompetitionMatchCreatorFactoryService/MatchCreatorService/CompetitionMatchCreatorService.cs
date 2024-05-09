@@ -34,7 +34,7 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
         protected abstract Task<IEnumerable<Match>> CreateMatches(T competiton);
 
         protected async Task<Match> CreateMatch(string location, Guid competitorOneId,
-            Guid competitorTwoId, Guid competitionId, ushort? stageLevel, ushort? stageIndex)
+            Guid competitorTwoId, Guid competitionId, uint? stageLevel, uint? stageIndex)
         {
             Competitor competitorOne = await _unitOfWork.CompetitorRepository.GetById(competitorOneId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(competitorOneId), competitorOneId));

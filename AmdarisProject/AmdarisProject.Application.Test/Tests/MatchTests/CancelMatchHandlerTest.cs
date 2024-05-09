@@ -2,7 +2,7 @@
 using AmdarisProject.Application.Handlers.MatchHandlers;
 using AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreatorService;
 using AmdarisProject.Application.Services.CompetitionMatchCreatorServices;
-using AmdarisProject.Application.Test.ModelBuilder;
+using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using Mapster;
@@ -20,7 +20,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [Fact]
         public async Task Test_CancelMatchHandler_Success()
         {
-            MatchBuilder matchBuilder = Builders.CreateBasicMatch();
+            MatchBuilder matchBuilder = Builder.CreateBasicMatch();
             Match match = matchBuilder.Get();
             Match updatedMatch = matchBuilder.Clone().SetStatus(MatchStatus.CANCELED).Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
@@ -67,7 +67,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [Fact]
         public async Task Test_CancelMatchHandler_MatchNotFound_throws_APNotFoundException()
         {
-            Match match = Builders.CreateBasicMatch().Get();
+            Match match = Builder.CreateBasicMatch().Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)null));
             CancelMatch command = new(match.Id);
@@ -80,7 +80,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [Fact]
         public async Task Test_CancelMatchHandler_RollbackIsCalled_throws_Exception()
         {
-            Match match = Builders.CreateBasicMatch().Get();
+            Match match = Builder.CreateBasicMatch().Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             _matchRepositoryMock.Setup(o => o.Update(It.IsAny<Match>())).Throws<Exception>();

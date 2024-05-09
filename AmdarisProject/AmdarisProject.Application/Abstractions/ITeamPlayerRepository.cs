@@ -6,6 +6,6 @@ namespace AmdarisProject.Application.Abstractions
     {
         Task<TeamPlayer?> GetByTeamAndPlayer(Guid teamId, Guid playerId);
 
-        Task<bool> TeamHasTheRequiredNumberOfActivePlayers(Guid teamId, ushort requiredNumberOfActivePlayers);
+        Task<bool> TeamHasTheRequiredNumberOfActivePlayers(Guid teamId, uint requiredNumberOfActivePlayers);
     }
 }

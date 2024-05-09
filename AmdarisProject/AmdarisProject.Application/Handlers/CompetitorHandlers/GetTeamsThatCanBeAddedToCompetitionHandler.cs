@@ -27,7 +27,7 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
             IEnumerable<Team> teams = (await _unitOfWork.CompetitorRepository
                 .GetTeamsNotInCompetition(request.CompetitionId))
                 .Where(team =>
-                    _unitOfWork.TeamPlayerRepository.TeamHasTheRequiredNumberOfActivePlayers(team.Id, (ushort)competition.GameFormat.TeamSize!).Result
+                    _unitOfWork.TeamPlayerRepository.TeamHasTheRequiredNumberOfActivePlayers(team.Id, (uint)competition.GameFormat.TeamSize!).Result
                     && team.Players.All(player => competition.Competitors.All(competitor => !competitor.IsOrContainsCompetitor(player.Id))))
                 .ToList();
             _logger.LogInformation("Got all teams that could be added to competition {CompetitionName} (Count = {Count})!",

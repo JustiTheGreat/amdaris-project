@@ -8,10 +8,9 @@ using Microsoft.Extensions.Options;
 
 namespace AmdarisProject.Infrastructure
 {
-    public class AmdarisProjectDBContext : DbContext
+    public class AmdarisProjectDBContext(IOptions<ConnectionStrings> options) : DbContext
     {
-        private readonly IOptions<IConnectionStrings> _options;
-        private readonly IConnectionStrings _connectionStrings;
+        private readonly IOptions<IConnectionStrings> _options = options;
         public DbSet<Competitor> Competitors { get; set; }
         public DbSet<Competition> Competitions { get; set; }
         public DbSet<GameFormat> GameFormats { get; set; }
@@ -19,20 +18,10 @@ namespace AmdarisProject.Infrastructure
         public DbSet<Point> Points { get; set; }
         public DbSet<TeamPlayer> TeamPlayers { get; set; }
 
-        //public AmdarisProjectDBContext(IOptions<IConnectionStrings> options)
-        //{
-        //    _options = options;
-        //}
-        public AmdarisProjectDBContext(IConnectionStrings connectionStrings)
-        {
-            _connectionStrings = connectionStrings;
-        }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
-                //optionsBuilder.UseSqlServer(_options.Value.DatabaseConnection);
-                optionsBuilder.UseSqlServer(_connectionStrings.DatabaseConnection);
+                optionsBuilder.UseSqlServer(_options.Value.DatabaseConnection);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

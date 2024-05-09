@@ -44,6 +44,7 @@ namespace AmdarisProject.handlers.competition
             {
                 for (int j = i + 1; j < firstPlaceCompetitors.Count(); j++)
                 {
+                    //TODO call the repository or navigate on the object?
                     Match? match = await _unitOfWork.MatchRepository.GetMatchByCompetitionAndTheTwoCompetitors(competition.Id,
                         firstPlaceCompetitors.ElementAt(i).Id, firstPlaceCompetitors.ElementAt(j).Id);
 

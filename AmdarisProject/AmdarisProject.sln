@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmdarisProject.Application.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmdarisProject.Presentation", "AmdarisProject.Presentation\AmdarisProject.Presentation.csproj", "{CAA9F3B2-9106-47E1-92F9-C2C01A1FEAD8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmdarisProject.Presentation.Test", "AmdarisProject.Presentation.Test\AmdarisProject.Presentation.Test.csproj", "{D6C4E76E-EF3E-47FD-9352-AAA3468FBC08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{CAA9F3B2-9106-47E1-92F9-C2C01A1FEAD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAA9F3B2-9106-47E1-92F9-C2C01A1FEAD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAA9F3B2-9106-47E1-92F9-C2C01A1FEAD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6C4E76E-EF3E-47FD-9352-AAA3468FBC08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6C4E76E-EF3E-47FD-9352-AAA3468FBC08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6C4E76E-EF3E-47FD-9352-AAA3468FBC08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6C4E76E-EF3E-47FD-9352-AAA3468FBC08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

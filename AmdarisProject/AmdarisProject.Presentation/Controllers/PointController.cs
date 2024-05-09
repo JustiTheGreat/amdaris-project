@@ -18,7 +18,7 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> AddValueToPointValue([FromRoute] Guid playerId, [FromRoute] Guid matchId, [FromBody] ushort points)
+        public async Task<ActionResult> AddValueToPointValue([FromRoute] Guid playerId, [FromRoute] Guid matchId, [FromBody] uint points)
         {
             PointGetDTO response = await _mediator.Send(new AddValueToPointValue(playerId, matchId, points));
             return Ok(response);

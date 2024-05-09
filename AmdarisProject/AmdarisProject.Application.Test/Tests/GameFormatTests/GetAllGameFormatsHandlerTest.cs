@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Handlers.GameFormatHandlers;
-using AmdarisProject.Application.Test.ModelBuilder;
+using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Models;
 using Mapster;
 using Moq;
@@ -13,7 +13,7 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
         public async Task Test_GetAllGameFormatsHandler_Success()
         {
             List<GameFormat> models = [];
-            for (int i = 0; i < _numberOfModelsInAList; i++) models.Add(Builders.CreateBasicGameFormat().Get());
+            for (int i = 0; i < _numberOfModelsInAList; i++) models.Add(Builder.CreateBasicGameFormat().Get());
             IEnumerable<GameFormatGetDTO> dtos = models.Adapt<IEnumerable<GameFormatGetDTO>>();
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.GetAll()).Returns(Task.FromResult((IEnumerable<GameFormat>)models));

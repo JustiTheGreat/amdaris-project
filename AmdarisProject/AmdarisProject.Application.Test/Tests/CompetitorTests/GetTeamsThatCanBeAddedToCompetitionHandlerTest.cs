@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
-using AmdarisProject.Application.Test.ModelBuilder;
+using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
@@ -15,17 +15,17 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         [Fact]
         public async Task Test_GetTeamsThatCanBeAddedToCompetitionHandler_Success()
         {
-            GameFormat gameFormat = Builders.CreateBasicGameFormat()
+            GameFormat gameFormat = Builder.CreateBasicGameFormat()
                 .SetCompetitorType(Domain.Enums.CompetitorType.TEAM).SetTeamSize(2).Get();
-            Competition competition = Builders.CreateBasicOneVSAllCompetition().SetGameFormat(gameFormat).Get();
+            Competition competition = Builder.CreateBasicOneVSAllCompetition().SetGameFormat(gameFormat).Get();
             List<Team> teams = [];
-            for (int i = 0; i < _numberOfModelsInAList; i++) teams.Add(Builders.CreateBasicTeam().Get());
+            for (int i = 0; i < _numberOfModelsInAList; i++) teams.Add(Builder.CreateBasicTeam().Get());
             _unitOfWorkMock.Setup(o => o.CompetitionRepository).Returns(_competitionRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
             _competitionRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competition?)competition));
             _competitorRepositoryMock.Setup(o => o.GetTeamsNotInCompetition(It.IsAny<Guid>())).Returns(Task.FromResult((IEnumerable<Team>)teams));
-            _teamPlayerRepositoryMock.Setup(o => o.TeamHasTheRequiredNumberOfActivePlayers(It.IsAny<Guid>(), It.IsAny<ushort>())).Returns(Task.FromResult(true));
+            _teamPlayerRepositoryMock.Setup(o => o.TeamHasTheRequiredNumberOfActivePlayers(It.IsAny<Guid>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
             _mapperMock.Setup(o => o.Map<IEnumerable<TeamDisplayDTO>>(It.IsAny<IEnumerable<Team>>()))
                 .Returns(teams.Adapt<IEnumerable<TeamDisplayDTO>>());
             GetTeamsThatCanBeAddedToCompetition command = new(competition.Id);
@@ -35,7 +35,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             IEnumerable<TeamDisplayDTO> response = await handler.Handle(command, default);
 
             _competitorRepositoryMock.Verify(o => o.GetTeamsNotInCompetition(It.IsAny<Guid>()), Times.Once);
-            _teamPlayerRepositoryMock.Verify(o => o.TeamHasTheRequiredNumberOfActivePlayers(It.IsAny<Guid>(), It.IsAny<ushort>()), Times.Exactly(_numberOfModelsInAList));
+            _teamPlayerRepositoryMock.Verify(o => o.TeamHasTheRequiredNumberOfActivePlayers(It.IsAny<Guid>(), It.IsAny<uint>()), Times.Exactly(_numberOfModelsInAList));
             for (int i = 0; i < _numberOfModelsInAList; i++)
             {
                 Assert.Equal(teams.ElementAt(i).Id, response.ElementAt(i).Id);

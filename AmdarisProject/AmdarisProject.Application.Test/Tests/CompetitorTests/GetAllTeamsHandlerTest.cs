@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
-using AmdarisProject.Application.Test.ModelBuilder;
+using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using Mapster;
 using Moq;
@@ -13,7 +13,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         public async Task Test_GetAllTeamsHandler_Success()
         {
             List<Team> teams = [];
-            for (int i = 0; i < _numberOfModelsInAList; i++) teams.Add(Builders.CreateBasicTeam().Get());
+            for (int i = 0; i < _numberOfModelsInAList; i++) teams.Add(Builder.CreateBasicTeam().Get());
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.GetAllTeams()).Returns(Task.FromResult((IEnumerable<Team>)teams));
             _mapperMock.Setup(o => o.Map<IEnumerable<TeamDisplayDTO>>(It.IsAny<IEnumerable<Team>>()))

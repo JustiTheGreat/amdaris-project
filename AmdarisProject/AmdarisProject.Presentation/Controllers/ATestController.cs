@@ -21,20 +21,20 @@ namespace AmdarisProject.Presentation.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AController(IMediator mediator, AmdarisProjectDBContext amdarisProjectDBContext) : ControllerBase
+    public class ATestController(IMediator mediator, AmdarisProjectDBContext amdarisProjectDBContext) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
         private readonly AmdarisProjectDBContext _amdarisProjectDBContext = amdarisProjectDBContext;
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> A()
+        public async Task<ActionResult> Test()
         {
             await _amdarisProjectDBContext.Database.EnsureDeletedAsync();
             await _amdarisProjectDBContext.Database.EnsureCreatedAsync();
 
-            ushort myTeamSize = 2;
+            uint myTeamSize = 2;
 
             Guid pingPongPlayer = _mediator.Send(new CreateGameFormat(new GameFormatCreateDTO()
             {
@@ -149,10 +149,8 @@ namespace AmdarisProject.Presentation.Controllers
 
             async Task simulateCompetition(Guid competitionId)
             {
-                Console.WriteLine();
                 await _mediator.Send(new StopCompetitionRegistration(competitionId));
                 await _mediator.Send(new StartCompetition(competitionId));
-                Console.WriteLine();
 
                 async Task<List<MatchDisplayDTO>> getCompetitionUnfinishedMatches()
                     => (await _mediator.Send(new GetCompetitionById(competitionId))).Matches
@@ -220,7 +218,7 @@ namespace AmdarisProject.Presentation.Controllers
                     {
                         CompetitorGetDTO competitorOne = await _mediator.Send(new GetCompetitorById(match.CompetitorOne.Id));
                         CompetitorGetDTO competitorTwo = await _mediator.Send(new GetCompetitorById(match.CompetitorTwo.Id));
-                        int numberOfPlayers = 2 * competition.TeamSize ?? throw new AmdarisProjectException("");
+                        int numberOfPlayers = (int)(2 * competition.TeamSize ?? throw new AmdarisProjectException(""));
                         int random = new Random().Next(numberOfPlayers);
                         scorer = random < numberOfPlayers / 2
                             ? ((TeamGetDTO)competitorOne).Players[random % (numberOfPlayers / 2)].Id
@@ -229,12 +227,9 @@ namespace AmdarisProject.Presentation.Controllers
 
                     await _mediator.Send(new AddValueToPointValue(scorer ?? throw new AmdarisProjectException(""), match.Id, 1));
                 }
-
-                Console.WriteLine($"Winner: {(await _mediator.Send(new GetMatchById(matchId))).Winner?.Name}");
-                Console.WriteLine();
             }
 
-            return Ok("Merge!");
+            return Ok(await _mediator.Send(new GetCompetitionById(competitionToTestId)));
         }
     }
 }

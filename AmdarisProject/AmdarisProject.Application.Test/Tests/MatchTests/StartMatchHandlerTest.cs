@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Handlers.MatchHandlers;
-using AmdarisProject.Application.Test.ModelBuilder;
+using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
@@ -17,8 +17,8 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [Fact]
         public async Task Test_StartMatchHandler_Success()
         {
-            MatchBuilder matchBuilder = Builders.CreateBasicMatch()
-                .SetCompetition(Builders.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get());
+            MatchBuilder matchBuilder = Builder.CreateBasicMatch()
+                .SetCompetition(Builder.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get());
             Match match = matchBuilder.Get();
             Match updated = matchBuilder.Clone().SetStatus(MatchStatus.STARTED).InitializePoints().Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
@@ -87,8 +87,8 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [MemberData(nameof(CompetitionStatuses))]
         public async Task Test_EndMatchHandler_IllegalCompetitionStatus_throws_APIllegalStatusException(CompetitionStatus competitionStatus)
         {
-            Match match = Builders.CreateBasicMatch()
-                .SetCompetition(Builders.CreateBasicOneVSAllCompetition().SetStatus(competitionStatus).Get()).Get();
+            Match match = Builder.CreateBasicMatch()
+                .SetCompetition(Builder.CreateBasicOneVSAllCompetition().SetStatus(competitionStatus).Get()).Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             StartMatch command = new(match.Id);
@@ -100,9 +100,9 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [Fact]
         public async Task Test_EndMatchHandler_AnotherMatchIsBeingPlayed_throws_AmdarisProjectException()
         {
-            Competition competition = Builders.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get();
-            Match match = Builders.CreateBasicMatch().SetCompetition(competition).Get();
-            competition.Matches.AddRange([match, Builders.CreateBasicMatch().SetCompetition(competition).SetStatus(MatchStatus.STARTED).Get()]);
+            Competition competition = Builder.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get();
+            Match match = Builder.CreateBasicMatch().SetCompetition(competition).Get();
+            competition.Matches.AddRange([match, Builder.CreateBasicMatch().SetCompetition(competition).SetStatus(MatchStatus.STARTED).Get()]);
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             StartMatch command = new(match.Id);
@@ -124,8 +124,8 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [MemberData(nameof(MatchStatuses))]
         public async Task Test_EndMatchHandler_IllegalMatchStatus_throws_APIllegalStatusException(MatchStatus matchStatus)
         {
-            Match match = Builders.CreateBasicMatch().SetStatus(matchStatus)
-                .SetCompetition(Builders.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get()).Get();
+            Match match = Builder.CreateBasicMatch().SetStatus(matchStatus)
+                .SetCompetition(Builder.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get()).Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             StartMatch command = new(match.Id);

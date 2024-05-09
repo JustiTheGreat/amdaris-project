@@ -2,6 +2,7 @@
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using MapsterMapper;
 using MediatR;
@@ -25,7 +26,7 @@ namespace AmdarisProject.handlers.competition
             if (competition.Status is not CompetitionStatus.STARTED)
                 throw new APIllegalStatusException(competition.Status);
 
-            if (!await _unitOfWork.MatchRepository.AllMatchesOfCompetitonAreFinished(competition.Id))
+            if (!competition.AllMatchesOfCompetitonAreDone())
                 throw new AmdarisProjectException($"Competition {competition.Id} still has unfinished matches!");
 
             Competition updated;
@@ -34,7 +35,7 @@ namespace AmdarisProject.handlers.competition
             {
                 await _unitOfWork.BeginTransactionAsync();
                 competition.Status = CompetitionStatus.FINISHED;
-                //TODO move set winner here?
+                //TODO move set winners here?
                 updated = await _unitOfWork.CompetitionRepository.Update(competition);
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();

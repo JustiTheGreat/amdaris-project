@@ -1,7 +1,7 @@
 ﻿using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitionHandlers;
-using AmdarisProject.Application.Test.ModelBuilder;
+using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
@@ -16,7 +16,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
         [Fact]
         public async Task Test_CreateCompetitionHandler_OneVSAllCompetition_Success()
         {
-            OneVSAllCompetition model = Builders.CreateBasicOneVSAllCompetition().Get();
+            OneVSAllCompetition model = Builder.CreateBasicOneVSAllCompetition().Get();
             _unitOfWorkMock.Setup(o => o.CompetitionRepository).Returns(_competitionRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((GameFormat?)model.GameFormat));
@@ -48,7 +48,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
         [Fact]
         public async Task Test_CreateCompetitionHandler_TournamentCompetition_Success()
         {
-            TournamentCompetition model = Builders.CreateBasicTournamentCompetition().Get();
+            TournamentCompetition model = Builder.CreateBasicTournamentCompetition().Get();
             _unitOfWorkMock.Setup(o => o.CompetitionRepository).Returns(_competitionRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((GameFormat?)model.GameFormat));
@@ -74,19 +74,19 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
             Assert.Equal(model.GameFormat.TeamSize, response.TeamSize);
             Assert.Equal(model.GameFormat.WinAt, response.WinAt);
             Assert.Equal(model.GameFormat.DurationInMinutes, response.DurationInMinutes);
-            Assert.Equal(0, ((TournamentCompetitionGetDTO)response).StageLevel);
+            Assert.Equal(0, (int)((TournamentCompetitionGetDTO)response).StageLevel);
         }
 
         public static TheoryData<Competition> Status => new()
         {
-            Builders.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.NOT_STARTED).Get(),
-            Builders.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get(),
-            Builders.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.FINISHED).Get(),
-            Builders.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.CANCELED).Get(),
-            Builders.CreateBasicTournamentCompetition().SetStatus(CompetitionStatus.NOT_STARTED).Get(),
-            Builders.CreateBasicTournamentCompetition().SetStatus(CompetitionStatus.STARTED).Get(),
-            Builders.CreateBasicTournamentCompetition().SetStatus(CompetitionStatus.FINISHED).Get(),
-            Builders.CreateBasicTournamentCompetition().SetStatus(CompetitionStatus.CANCELED).Get()
+            Builder.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.NOT_STARTED).Get(),
+            Builder.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get(),
+            Builder.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.FINISHED).Get(),
+            Builder.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.CANCELED).Get(),
+            Builder.CreateBasicTournamentCompetition().SetStatus(CompetitionStatus.NOT_STARTED).Get(),
+            Builder.CreateBasicTournamentCompetition().SetStatus(CompetitionStatus.STARTED).Get(),
+            Builder.CreateBasicTournamentCompetition().SetStatus(CompetitionStatus.FINISHED).Get(),
+            Builder.CreateBasicTournamentCompetition().SetStatus(CompetitionStatus.CANCELED).Get()
         };
 
         [Theory]
@@ -104,7 +104,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
         [Fact]
         public async Task Test_CreateCompetitionHandler_OneVSAllCompetition_RollbackIsCalled_throws_Exception()
         {
-            OneVSAllCompetition model = Builders.CreateBasicOneVSAllCompetition().Get();
+            OneVSAllCompetition model = Builder.CreateBasicOneVSAllCompetition().Get();
             _unitOfWorkMock.Setup(o => o.CompetitionRepository).Returns(_competitionRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((GameFormat?)model.GameFormat));
@@ -123,7 +123,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
         [Fact]
         public async Task Test_CreateCompetitionHandler_TournamentCompetition_RollbackIsCalled_throws_Exception()
         {
-            TournamentCompetition model = Builders.CreateBasicTournamentCompetition().Get();
+            TournamentCompetition model = Builder.CreateBasicTournamentCompetition().Get();
             _unitOfWorkMock.Setup(o => o.CompetitionRepository).Returns(_competitionRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((GameFormat?)model.GameFormat));

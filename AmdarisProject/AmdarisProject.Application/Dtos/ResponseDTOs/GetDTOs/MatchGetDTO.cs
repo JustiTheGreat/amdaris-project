@@ -16,8 +16,8 @@ namespace AmdarisProject.Application.Dtos.ResponseDTOs
         public required uint? CompetitorOnePoints { get; set; }
         public required uint? CompetitorTwoPoints { get; set; }
         public required CompetitorDisplayDTO? Winner { get; set; }
-        public required ushort? StageLevel { get; set; }
-        public required ushort? StageIndex { get; set; }
+        public required uint? StageLevel { get; set; }
+        public required uint? StageIndex { get; set; }
         public required List<PointDisplayDTO> Points { get; set; } = [];
     }
 }

@@ -53,7 +53,6 @@ namespace AmdarisProject.Infrastructure.Repositories
                 ?? throw new APNotFoundException(Tuple.Create(nameof(item.Id), item.Id));
 
             T updated = _dbContext.Set<T>().Update(stored).Entity;
-            await _dbContext.SaveChangesAsync();
             return updated;
         }
     }

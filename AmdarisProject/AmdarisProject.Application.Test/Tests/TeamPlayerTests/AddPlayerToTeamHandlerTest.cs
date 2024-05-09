@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
 using AmdarisProject.Application.Handlers.TeamPlayerHandlers;
-using AmdarisProject.Application.Test.ModelBuilder;
+using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using Mapster;
@@ -13,7 +13,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
         [Fact]
         public async Task Test_AddPlayerToTeamHandler_Success()
         {
-            TeamPlayer teamPlayer = Builders.CreateBasicTeamPlayer().Get();
+            TeamPlayer teamPlayer = Builder.CreateBasicTeamPlayer().Get();
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.GetTeamById(It.IsAny<Guid>()))
@@ -49,7 +49,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
         [Fact]
         public async Task Test_AddPlayerToTeamHandler_PlayerNotFound_throws_APNotFoundException()
         {
-            Team team = Builders.CreateBasicTeam().Get();
+            Team team = Builder.CreateBasicTeam().Get();
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.GetTeamById(It.IsAny<Guid>()))
                 .Returns(Task.FromResult((Team?)team));
@@ -64,7 +64,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
         [Fact]
         public async Task Test_AddPlayerToTeamHandler_PlayerIsAlreadyInATeam_throws_AmdarisProjectException()
         {
-            TeamPlayer teamPlayer = Builders.CreateBasicTeamPlayer().Get();
+            TeamPlayer teamPlayer = Builder.CreateBasicTeamPlayer().Get();
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.GetTeamById(It.IsAny<Guid>()))
@@ -82,7 +82,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
         [Fact]
         public async Task Test_AddPlayerToTeamHandler_RollbackIsCalled_throws_Exception()
         {
-            TeamPlayer teamPlayer = Builders.CreateBasicTeamPlayer().Get();
+            TeamPlayer teamPlayer = Builder.CreateBasicTeamPlayer().Get();
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.GetTeamById(It.IsAny<Guid>()))

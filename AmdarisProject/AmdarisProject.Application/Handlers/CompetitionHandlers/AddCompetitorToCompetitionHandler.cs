@@ -41,7 +41,7 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 
             if (competition.GameFormat.CompetitorType is CompetitorType.TEAM
                 && !await _unitOfWork.TeamPlayerRepository.TeamHasTheRequiredNumberOfActivePlayers(
-                    competitor.Id, (ushort)competition.GameFormat.TeamSize!))
+                    competitor.Id, (uint)competition.GameFormat.TeamSize!))
                 throw new AmdarisProjectException($"Team {competitor.Id} doesn't have the required number of active competitors!");
 
             bool teamContainsAPlayerPartOfAnotherTeamFromCompetition = competitor is Team team

@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Handlers.MatchHandlers;
-using AmdarisProject.Application.Test.ModelBuilder;
+using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Exceptions;
 using Mapster;
 using MapsterMapper;
@@ -14,7 +14,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [Fact]
         public async Task Test_GetMatchByIdHandler_Success()
         {
-            Match match = Builders.CreateBasicMatch().Get();
+            Match match = Builder.CreateBasicMatch().Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             _mapperMock.Setup(o => o.Map<MatchGetDTO>(It.IsAny<Match>())).Returns(match.Adapt<MatchGetDTO>());
@@ -54,7 +54,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [Fact]
         public async Task Test_GetMatchByIdHandler_MatchNotFound_throws_APNotFoundException()
         {
-            Match match = Builders.CreateBasicMatch().Get();
+            Match match = Builder.CreateBasicMatch().Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)null));
             GetMatchById command = new(match.Id);

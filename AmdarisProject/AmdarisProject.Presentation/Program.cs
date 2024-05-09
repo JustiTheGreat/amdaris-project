@@ -32,9 +32,7 @@ builder.Services.AddScoped<ICompetitionRankingService, CompetionRankingService>(
 builder.Services.AddScoped<IEndMatchService, EndMatchService>();
 builder.Services.AddScoped<IMapper>(sp => new Mapper(MapsterConfiguration.GetMapsterConfiguration()));
 builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblies(handlerAssembly));
-builder.Services.AddScoped<IConnectionStrings>(sp =>
-    (ConnectionStrings)builder.Configuration.GetRequiredSection(nameof(ConnectionStrings)).Get(typeof(ConnectionStrings))!);
-//builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection(nameof(ConnectionStrings)));
+builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection(nameof(ConnectionStrings)));
 
 var app = builder.Build();
 
@@ -45,7 +43,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<RequestCompletionTimeLoggingMiddleware>();
-app.UseExceptionHandler("/Error");
 app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthorization();

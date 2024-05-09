@@ -2,6 +2,6 @@
 {
     public class TournamentCompetitionGetDTO : CompetitionGetDTO
     {
-        public required ushort StageLevel { get; set; }
+        public required uint StageLevel { get; set; }
     }
 }

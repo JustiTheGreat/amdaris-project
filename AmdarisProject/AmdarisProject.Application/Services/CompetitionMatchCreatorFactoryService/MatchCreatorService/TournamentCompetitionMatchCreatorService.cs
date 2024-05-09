@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
@@ -15,84 +15,67 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
         protected override bool ShouldCreateMatches(TournamentCompetition competition)
             => competition.StageLevel < Math.Log2(competition.Competitors.Count)
             && (competition.Matches.Count == 0
-                || _unitOfWork.MatchRepository.AllMatchesOfCompetitonAreFinished(competition.Id).Result
-                        && _unitOfWork.MatchRepository.AtLeastTwoCompetitionMatchesFromStageHaveAWinner(competition.Id, competition.StageLevel).Result);
+                || competition.AllMatchesOfCompetitonAreDone()
+                    && competition.AtLeastTwoMatchesFromTheCurrentStageHaveAWinner());
 
-        protected override async Task<IEnumerable<Match>> CreateMatches(TournamentCompetition competition)
+        protected override async Task<IEnumerable<Match>> CreateMatches(TournamentCompetition tournamentCompetition)
         {
-            IEnumerable<Match> currentStageMatches =
-                await _unitOfWork.MatchRepository.GetAllByCompetitionAndStageLevel(competition.Id, competition.StageLevel);
+            IEnumerable<Match> currentStageMatches = tournamentCompetition.GetCurrentStageLevelMatches();
             List<Match> createdMatches = [];
 
             List<Competitor> competitors;
 
-            int newStageLevel = competition.StageLevel + 1;
+            uint newStageLevel = tournamentCompetition.StageLevel + 1;
 
             if (newStageLevel == 1)
             {
-                competitors = competition.Competitors
+                competitors = tournamentCompetition.Competitors
                     .OrderByDescending(competitor =>
                         _unitOfWork.MatchRepository
-                            .GetCompetitorWinRatingForGameType(competitor.Id, competition.GameFormat.GameType).Result)
+                            .GetCompetitorWinRatingForGameType(competitor.Id, tournamentCompetition.GameFormat.GameType).Result)
                     .ToList();
 
                 for (int i = 0; i < competitors.Count; i += 2)
                 {
-                    Match created = await CreateMatch(competition.Location, competitors[i].Id, competitors[i + 1].Id,
-                        competition.Id, (ushort?)newStageLevel, (ushort?)(i / 2));
+                    Match created = await CreateMatch(tournamentCompetition.Location, competitors[i].Id, competitors[i + 1].Id,
+                        tournamentCompetition.Id, newStageLevel, (uint?)(i / 2));
                     createdMatches.Add(created);
                 }
             }
             else
             {
-                double stageCount = Math.Log2(competition.Competitors.Count);
+                double stageCount = Math.Log2(tournamentCompetition.Competitors.Count);
                 double numberOfMatchesToCreate = Math.Pow(2, stageCount - newStageLevel);
 
-                for (int stageIndex = 0; stageIndex < numberOfMatchesToCreate; stageIndex++)
+                for (uint stageIndex = 0; stageIndex < numberOfMatchesToCreate; stageIndex++)
                 {
-                    Match? matchOne = await GetMatchFromWhichToTakeTheWinnerToTakePartInThisStageLevel(
-                        competition.Id, competition.StageLevel, stageIndex * 2);
+                    Match? matchOne = tournamentCompetition.GetMatchFromWhichToTakeTheWinnerToTakePartInThisStageLevelAndStageIndex(
+                        tournamentCompetition.StageLevel, stageIndex * 2);
 
                     if (matchOne is null) continue;
 
                     if (matchOne.Winner is null) throw new AmdarisProjectException("Match without winner!");
 
-                    Match? matchTwo = await GetMatchFromWhichToTakeTheWinnerToTakePartInThisStageLevel(
-                        competition.Id, competition.StageLevel, stageIndex * 2 + 1);
+                    Match? matchTwo = tournamentCompetition.GetMatchFromWhichToTakeTheWinnerToTakePartInThisStageLevelAndStageIndex(
+                        tournamentCompetition.StageLevel, stageIndex * 2 + 1);
 
                     if (matchTwo is null) continue;
 
                     if (matchTwo.Winner is null) throw new AmdarisProjectException("Match without winner!");
 
-                    Match created = await CreateMatch(competition.Location, matchOne.Winner.Id, matchTwo.Winner.Id,
-                        competition.Id, (ushort?)newStageLevel, (ushort?)stageIndex);
+                    Match created = await CreateMatch(tournamentCompetition.Location, matchOne.Winner.Id, matchTwo.Winner.Id,
+                        tournamentCompetition.Id, newStageLevel, stageIndex);
                     createdMatches.Add(created);
                 }
             }
 
-            competition = (TournamentCompetition)(await _unitOfWork.CompetitionRepository.GetById(competition.Id)
-                ?? throw new APNotFoundException(Tuple.Create(nameof(competition.Id), competition.Id)));
+            tournamentCompetition = (TournamentCompetition)(await _unitOfWork.CompetitionRepository.GetById(tournamentCompetition.Id)
+                ?? throw new APNotFoundException(Tuple.Create(nameof(tournamentCompetition.Id), tournamentCompetition.Id)));
 
-            competition.StageLevel = (ushort)newStageLevel;
-            await _unitOfWork.CompetitionRepository.Update(competition);
+            tournamentCompetition.StageLevel = newStageLevel;
+            await _unitOfWork.CompetitionRepository.Update(tournamentCompetition);
 
             return createdMatches;
-        }
-
-        private async Task<Match?> GetMatchFromWhichToTakeTheWinnerToTakePartInThisStageLevel(Guid tournamentCompetitionId, int stageLevel, int stageIndex)
-        {
-            Match? match =
-                await _unitOfWork.MatchRepository.GetMatchByCompetitionStageLevelAndStageIndex(
-                    tournamentCompetitionId, (ushort)stageLevel, (ushort)stageIndex);
-
-            match ??= await GetMatchFromWhichToTakeTheWinnerToTakePartInThisStageLevel(tournamentCompetitionId, stageLevel - 1, stageIndex * 2)
-                ?? await GetMatchFromWhichToTakeTheWinnerToTakePartInThisStageLevel(tournamentCompetitionId, stageLevel - 1, stageIndex * 2 + 1);
-
-            if (match is null) return match;
-
-            if (match.Status is MatchStatus.CANCELED) return null;
-
-            return match;
         }
     }
 }

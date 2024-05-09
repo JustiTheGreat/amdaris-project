@@ -37,9 +37,9 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             if (match.Competition.GameFormat.CompetitorType is CompetitorType.TEAM)
             {
                 bool teamOneHasTheRequiredNumberOfCompetitors = await _unitOfWork.TeamPlayerRepository
-                    .TeamHasTheRequiredNumberOfActivePlayers(match.CompetitorOne.Id, (ushort)match.Competition.GameFormat.TeamSize!);
+                    .TeamHasTheRequiredNumberOfActivePlayers(match.CompetitorOne.Id, (uint)match.Competition.GameFormat.TeamSize!);
                 bool teamTwoHasTheRequiredNumberOfCompetitors = await _unitOfWork.TeamPlayerRepository
-                    .TeamHasTheRequiredNumberOfActivePlayers(match.CompetitorTwo.Id, (ushort)match.Competition.GameFormat.TeamSize!);
+                    .TeamHasTheRequiredNumberOfActivePlayers(match.CompetitorTwo.Id, (uint)match.Competition.GameFormat.TeamSize!);
 
                 match.Status =
                     teamOneHasTheRequiredNumberOfCompetitors && teamTwoHasTheRequiredNumberOfCompetitors ? MatchStatus.STARTED
@@ -105,7 +105,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                     [created.Player.Name, created.Match.Id, created.Value]);
             }
 
-            async Task CreatePointsForTeamPlayers(Team team)
+            async Task CreatePoints(Team team)
             {
                 foreach (Player player in team.Players)
                     await CreatePoint(player);
@@ -118,13 +118,14 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             }
             else
             {
-                await CreatePointsForTeamPlayers((Team)match.CompetitorOne);
-                await CreatePointsForTeamPlayers((Team)match.CompetitorTwo);
+                await CreatePoints((Team)match.CompetitorOne);
+                await CreatePoints((Team)match.CompetitorTwo);
             }
         }
 
         private async Task UpdateUnstartedMatchesStartTimes(Match match)
         {
+            //TODO call the repository or navigate on the object?
             IEnumerable<Match> matches = await _unitOfWork.MatchRepository
                 .GetNotStartedByCompetitionOrderedByStartTime(match.Competition.Id);
             int i = 0;

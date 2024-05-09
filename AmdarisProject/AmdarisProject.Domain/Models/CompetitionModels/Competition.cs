@@ -10,7 +10,7 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
         public required DateTime StartTime { get; set; }
         public required CompetitionStatus Status { get; set; }
         public required ulong? BreakInMinutes { get; set; }
-        public required GameFormat GameFormat { get; set; }
+        public virtual required GameFormat GameFormat { get; set; }
         public virtual required List<Competitor> Competitors { get; set; } = [];
         public virtual required List<Match> Matches { get; set; } = [];
     }

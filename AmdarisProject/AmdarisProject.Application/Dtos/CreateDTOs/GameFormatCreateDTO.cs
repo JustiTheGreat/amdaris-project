@@ -11,7 +11,7 @@ namespace AmdarisProject.Application.Dtos.CreateDTOs
         public required GameType GameType { get; set; }
         [Required]
         public required CompetitorType CompetitorType { get; set; }
-        public ushort? TeamSize { get; set; }
+        public uint? TeamSize { get; set; }
         public uint? WinAt { get; set; }
         public ulong? DurationInMinutes { get; set; }
     }

@@ -14,8 +14,6 @@ namespace AmdarisProject.Application.Abstractions
 
         Task<bool> PlayerIsInATeam(Guid playerId);
 
-        Task<IEnumerable<Player>> GetPlayersInTeam(Guid teamId);
-
         Task<IEnumerable<Player>> GetPlayersNotInTeam(Guid teamId);
 
         Task<IEnumerable<Player>> GetPlayersNotInCompetition(Guid competitionId);

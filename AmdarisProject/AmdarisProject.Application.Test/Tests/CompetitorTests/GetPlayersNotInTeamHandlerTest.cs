@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
-using AmdarisProject.Application.Test.ModelBuilder;
+using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using Mapster;
@@ -13,9 +13,9 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         [Fact]
         public async Task Test_GetPlayersNotInTeamHandler_Success()
         {
-            Team team = Builders.CreateBasicTeam().Get();
+            Team team = Builder.CreateBasicTeam().Get();
             List<Player> players = [];
-            for (int i = 0; i < _numberOfModelsInAList; i++) players.Add(Builders.CreateBasicPlayer().Get());
+            for (int i = 0; i < _numberOfModelsInAList; i++) players.Add(Builder.CreateBasicPlayer().Get());
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.GetTeamById(It.IsAny<Guid>()))
                 .Returns(Task.FromResult((Team?)team));

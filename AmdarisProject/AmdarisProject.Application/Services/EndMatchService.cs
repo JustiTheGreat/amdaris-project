@@ -47,6 +47,8 @@ namespace AmdarisProject.Application.Services
                 .GetCompetitionMatchCreator(updated.Competition.GetType())
                 .CreateCompetitionMatches(updated.Competition.Id);
 
+            //TODO automatically end the competition?
+
             updated = await _unitOfWork.MatchRepository.GetById(updated.Id)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(updated.Id), updated.Id));
 
