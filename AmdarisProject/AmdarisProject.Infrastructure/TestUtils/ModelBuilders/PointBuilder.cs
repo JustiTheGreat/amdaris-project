@@ -9,8 +9,8 @@ namespace AmdarisProject.Application.Test.ModelBuilders
         {
             Id = Guid.NewGuid(),
             Value = 0,
-            Match = Builder.CreateBasicMatch().Get(),
-            Player = Builder.CreateBasicPlayer().Get(),
+            Match = APBuilder.CreateBasicMatch().Get(),
+            Player = APBuilder.CreateBasicPlayer().Get(),
         })
         { }
 
@@ -36,6 +36,12 @@ namespace AmdarisProject.Application.Test.ModelBuilders
         public PointBuilder SetPlayer(Player player)
         {
             _model.Player = player;
+            return this;
+        }
+
+        public PointBuilder AddValue(uint value)
+        {
+            _model.Value += value;
             return this;
         }
     }

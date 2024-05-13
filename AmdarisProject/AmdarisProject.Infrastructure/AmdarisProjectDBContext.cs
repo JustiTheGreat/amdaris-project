@@ -8,7 +8,8 @@ using Microsoft.Extensions.Options;
 
 namespace AmdarisProject.Infrastructure
 {
-    public class AmdarisProjectDBContext(IOptions<ConnectionStrings> options) : DbContext
+    public class AmdarisProjectDBContext(DbContextOptions dbContextOptions, IOptions<ConnectionStrings> options)
+        : DbContext(dbContextOptions)
     {
         private readonly IOptions<IConnectionStrings> _options = options;
         public DbSet<Competitor> Competitors { get; set; }

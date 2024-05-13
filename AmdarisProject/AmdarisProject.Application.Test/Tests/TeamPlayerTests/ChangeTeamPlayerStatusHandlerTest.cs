@@ -14,22 +14,24 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
         public async Task Test_ChangeTeamPlayerStatusHandler_Success()
         {
             bool newPlayerActivityStatus = true;
-            TeamPlayer teamPlayer = Builder.CreateBasicTeamPlayer().Get();
+            TeamPlayerBuilder teamPlayerBuilder = APBuilder.CreateBasicTeamPlayer();
+            TeamPlayer teamPlayer = teamPlayerBuilder.Get();
+            TeamPlayer updated = teamPlayerBuilder.SetIsActive(newPlayerActivityStatus).Get();
             _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _teamPlayerRepositoryMock.Setup(o => o.GetByTeamAndPlayer(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.FromResult((TeamPlayer?)teamPlayer));
             _matchRepositoryMock.Setup(o => o.CompetitorIsInAStartedMatch(It.IsAny<Guid>())).Returns(Task.FromResult(false));
-            _teamPlayerRepositoryMock.Setup(o => o.Update(It.IsAny<TeamPlayer>())).Returns(Task.FromResult(teamPlayer));
-            _mapperMock.Setup(o => o.Map<TeamPlayerGetDTO>(It.IsAny<TeamPlayer>())).Returns(teamPlayer.Adapt<TeamPlayerGetDTO>());
+            _teamPlayerRepositoryMock.Setup(o => o.Update(It.IsAny<TeamPlayer>())).Returns(Task.FromResult(updated));
+            _mapperMock.Setup(o => o.Map<TeamPlayerGetDTO>(It.IsAny<TeamPlayer>())).Returns(updated.Adapt<TeamPlayerGetDTO>());
             ChangeTeamPlayerStatus command = new(teamPlayer.Team.Id, teamPlayer.Player.Id, newPlayerActivityStatus);
             ChangeTeamPlayerStatusHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
                 GetLogger<ChangeTeamPlayerStatusHandler>());
 
             TeamPlayerGetDTO response = await handler.Handle(command, default);
 
-            Assert.Equal(teamPlayer.Team.Id, response.TeamId);
-            Assert.Equal(teamPlayer.Player.Id, response.PlayerId);
-            Assert.Equal(teamPlayer.IsActive, response.IsActive);
+            Assert.Equal(updated.Team.Id, response.TeamId);
+            Assert.Equal(updated.Player.Id, response.PlayerId);
+            Assert.Equal(updated.IsActive, response.IsActive);
         }
 
         [Fact]
@@ -48,7 +50,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
         [Fact]
         public async Task Test_ChangeTeamPlayerStatusHandler_TeamIsInAStartedMatch_throws_AmdarisProjectException()
         {
-            TeamPlayer teamPlayer = Builder.CreateBasicTeamPlayer().Get();
+            TeamPlayer teamPlayer = APBuilder.CreateBasicTeamPlayer().Get();
             _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _teamPlayerRepositoryMock.Setup(o => o.GetByTeamAndPlayer(It.IsAny<Guid>(), It.IsAny<Guid>()))
@@ -64,7 +66,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
         [Fact]
         public async Task Test_ChangeTeamPlayerStatusHandler_RollbackIsCalled_throws_Exception()
         {
-            TeamPlayer teamPlayer = Builder.CreateBasicTeamPlayer().Get();
+            TeamPlayer teamPlayer = APBuilder.CreateBasicTeamPlayer().Get();
             _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _teamPlayerRepositoryMock.Setup(o => o.GetByTeamAndPlayer(It.IsAny<Guid>(), It.IsAny<Guid>()))

@@ -32,6 +32,7 @@ namespace AmdarisProject.Application.Test.ModelBuilders.CompetitorBuilders
         public TeamBuilder AddPlayer(Player player)
         {
             _model.Players.Add(player);
+            player.Teams.Add(_model);
             return this;
         }
     }

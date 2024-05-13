@@ -25,7 +25,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [MemberData(nameof(MatchStatuses))]
         public async Task Test_EndMatchHandler_Success(MatchStatus matchStatus)
         {
-            Match match = Builder.CreateBasicMatch().SetStatus(matchStatus).Get();
+            Match match = APBuilder.CreateBasicMatch().SetStatus(matchStatus).Get();
             _endMatchServiceMock.Setup(o => o.End(It.IsAny<Guid>(), It.IsAny<MatchStatus>())).Returns(Task.FromResult(match));
             _mapperMock.Setup(o => o.Map<MatchGetDTO>(It.IsAny<Match>())).Returns(match.Adapt<MatchGetDTO>());
             EndMatch command = new(match.Id, matchStatus);
@@ -57,13 +57,14 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
             {
                 Assert.Equal(point.Id, response.Points.FirstOrDefault(pointDisplay => pointDisplay.Id.Equals(point.Id))?.Id);
                 Assert.Equal(point.Value, response.Points.FirstOrDefault(pointDisplay => pointDisplay.Id.Equals(point.Id))?.Value);
+                Assert.Equal(point.Player.Name, response.Points.FirstOrDefault(pointDisplay => pointDisplay.Id.Equals(point.Id))?.PlayerName);
             });
         }
 
         [Fact]
         public async Task Test_EndMatchHandler_RollbackIsCalled_throws_Exception()
         {
-            Match match = Builder.CreateBasicMatch().Get();
+            Match match = APBuilder.CreateBasicMatch().Get();
             _endMatchServiceMock.Setup(o => o.End(It.IsAny<Guid>(), It.IsAny<MatchStatus>())).Throws<Exception>();
             EndMatch command = new(It.IsAny<Guid>(), It.IsAny<MatchStatus>());
             EndMatchHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), _endMatchServiceMock.Object);

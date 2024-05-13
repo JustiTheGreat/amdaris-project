@@ -18,9 +18,9 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> AddPlayerToTeam([FromRoute] Guid playerId, [FromRoute] Guid teamId)
+        public async Task<ActionResult> AddPlayerToTeam([FromRoute] Guid teamId, [FromRoute] Guid playerId)
         {
-            TeamPlayerGetDTO response = await _mediator.Send(new AddPlayerToTeam(playerId, teamId));
+            TeamPlayerGetDTO response = await _mediator.Send(new AddPlayerToTeam(teamId, playerId));
             return Ok(response);
         }
 
@@ -30,9 +30,9 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> ChangeTeamPlayerStatus([FromRoute] Guid playerId, [FromRoute] Guid teamId, [FromBody] bool active)
+        public async Task<ActionResult> ChangeTeamPlayerStatus([FromRoute] Guid teamId, [FromRoute] Guid playerId, [FromBody] bool active)
         {
-            TeamPlayerGetDTO response = await _mediator.Send(new ChangeTeamPlayerStatus(playerId, teamId, active));
+            TeamPlayerGetDTO response = await _mediator.Send(new ChangeTeamPlayerStatus(teamId, playerId, active));
             return Ok(response);
         }
 
@@ -41,9 +41,9 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> RemovePlayerFromTeam([FromRoute] Guid playerId, [FromRoute] Guid teamId)
+        public async Task<ActionResult> RemovePlayerFromTeam([FromRoute] Guid teamId, [FromRoute] Guid playerId)
         {
-            await _mediator.Send(new RemovePlayerFromTeam(playerId, teamId));
+            await _mediator.Send(new RemovePlayerFromTeam(teamId, playerId));
             return Ok();
         }
     }

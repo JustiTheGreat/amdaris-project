@@ -20,7 +20,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [Fact]
         public async Task Test_CancelMatchHandler_Success()
         {
-            MatchBuilder matchBuilder = Builder.CreateBasicMatch();
+            MatchBuilder matchBuilder = APBuilder.CreateBasicMatch();
             Match match = matchBuilder.Get();
             Match updatedMatch = matchBuilder.Clone().SetStatus(MatchStatus.CANCELED).Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
@@ -56,18 +56,19 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
             Assert.Equal(updatedMatch.Winner?.Name, response.Winner?.Name);
             Assert.Equal(updatedMatch.StageLevel, response.StageLevel);
             Assert.Equal(updatedMatch.StageIndex, response.StageIndex);
-            Assert.Equal(updatedMatch.Points.Count, response.Points.Count);
+            Assert.Equal(match.Points.Count, response.Points.Count);
             match.Points.ForEach(point =>
             {
                 Assert.Equal(point.Id, response.Points.FirstOrDefault(pointDisplay => pointDisplay.Id.Equals(point.Id))?.Id);
                 Assert.Equal(point.Value, response.Points.FirstOrDefault(pointDisplay => pointDisplay.Id.Equals(point.Id))?.Value);
+                Assert.Equal(point.Player.Name, response.Points.FirstOrDefault(pointDisplay => pointDisplay.Id.Equals(point.Id))?.PlayerName);
             });
         }
 
         [Fact]
         public async Task Test_CancelMatchHandler_MatchNotFound_throws_APNotFoundException()
         {
-            Match match = Builder.CreateBasicMatch().Get();
+            Match match = APBuilder.CreateBasicMatch().Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)null));
             CancelMatch command = new(match.Id);
@@ -80,7 +81,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [Fact]
         public async Task Test_CancelMatchHandler_RollbackIsCalled_throws_Exception()
         {
-            Match match = Builder.CreateBasicMatch().Get();
+            Match match = APBuilder.CreateBasicMatch().Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             _matchRepositoryMock.Setup(o => o.Update(It.IsAny<Match>())).Throws<Exception>();

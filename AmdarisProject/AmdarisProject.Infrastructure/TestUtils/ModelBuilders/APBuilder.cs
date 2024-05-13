@@ -3,7 +3,7 @@ using AmdarisProject.Application.Test.ModelBuilders.CompetitorBuilders;
 
 namespace AmdarisProject.Application.Test.ModelBuilders
 {
-    public class Builder
+    public class APBuilder
     {
         public static PlayerBuilder CreateBasicPlayer() => new();
 

@@ -13,7 +13,7 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
         public async Task Test_GetAllGameFormatsHandler_Success()
         {
             List<GameFormat> models = [];
-            for (int i = 0; i < _numberOfModelsInAList; i++) models.Add(Builder.CreateBasicGameFormat().Get());
+            for (int i = 0; i < _numberOfModelsInAList; i++) models.Add(APBuilder.CreateBasicGameFormat().Get());
             IEnumerable<GameFormatGetDTO> dtos = models.Adapt<IEnumerable<GameFormatGetDTO>>();
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.GetAll()).Returns(Task.FromResult((IEnumerable<GameFormat>)models));
@@ -26,12 +26,12 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
             _gameFormatRepositoryMock.Verify(o => o.GetAll(), Times.Once);
             for (int i = 0; i < _numberOfModelsInAList; i++)
             {
-                Assert.Equal(response.ElementAt(i).Name, models.ElementAt(i).Name);
-                Assert.Equal(response.ElementAt(i).GameType, models.ElementAt(i).GameType);
-                Assert.Equal(response.ElementAt(i).CompetitorType, models.ElementAt(i).CompetitorType);
-                Assert.Equal(response.ElementAt(i).TeamSize, models.ElementAt(i).TeamSize);
-                Assert.Equal(response.ElementAt(i).WinAt, models.ElementAt(i).WinAt);
-                Assert.Equal(response.ElementAt(i).DurationInMinutes, models.ElementAt(i).DurationInMinutes);
+                Assert.Equal(models.ElementAt(i).Name, response.ElementAt(i).Name);
+                Assert.Equal(models.ElementAt(i).GameType, response.ElementAt(i).GameType);
+                Assert.Equal(models.ElementAt(i).CompetitorType, response.ElementAt(i).CompetitorType);
+                Assert.Equal(models.ElementAt(i).TeamSize, response.ElementAt(i).TeamSize);
+                Assert.Equal(models.ElementAt(i).WinAt, response.ElementAt(i).WinAt);
+                Assert.Equal(models.ElementAt(i).DurationInMinutes, response.ElementAt(i).DurationInMinutes);
             }
         }
     }

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
 {
-    public record AddPlayerToTeam(Guid PlayerId, Guid TeamId) : IRequest<TeamPlayerGetDTO>;
+    public record AddPlayerToTeam(Guid TeamId, Guid PlayerId) : IRequest<TeamPlayerGetDTO>;
     public class AddPlayerToTeamHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<AddPlayerToTeamHandler> logger)
         : IRequestHandler<AddPlayerToTeam, TeamPlayerGetDTO>
     {

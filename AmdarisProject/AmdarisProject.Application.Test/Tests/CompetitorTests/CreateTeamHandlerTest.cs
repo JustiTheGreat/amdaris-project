@@ -13,7 +13,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         [Fact]
         public async Task Test_CreateTeamHandler_Success()
         {
-            Team team = Builder.CreateBasicTeam().Get();
+            Team team = APBuilder.CreateBasicTeam().Get();
             CompetitorCreateDTO createDTO = team.Adapt<CompetitorCreateDTO>();
             _mapperMock.Setup(o => o.Map<Team>(It.IsAny<CompetitorCreateDTO>())).Returns(team);
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);

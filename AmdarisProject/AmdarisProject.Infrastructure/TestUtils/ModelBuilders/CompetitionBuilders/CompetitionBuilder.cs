@@ -55,5 +55,12 @@ namespace AmdarisProject.Application.Test.ModelBuilders.CompetitionBuilders
             _model.Matches = matches;
             return (Y)this;
         }
+
+        public Y AddCompetitor(Competitor competitor)
+        {
+            _model.Competitors.Add(competitor);
+            competitor.Competitions.Add(_model);
+            return (Y)this;
+        }
     }
 }

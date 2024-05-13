@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
 {
-    public record RemovePlayerFromTeam(Guid PlayerId, Guid TeamId) : IRequest<bool>;
+    public record RemovePlayerFromTeam(Guid TeamId, Guid PlayerId) : IRequest<bool>;
     public class RemovePlayerFromTeamHandler(IUnitOfWork unitOfWork, ILogger<RemovePlayerFromTeamHandler> logger)
         : IRequestHandler<RemovePlayerFromTeam, bool>
     {

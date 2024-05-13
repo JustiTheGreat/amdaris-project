@@ -19,8 +19,8 @@ namespace AmdarisProject.Application.Services
         public async Task<Match> End(Guid matchId, MatchStatus endStatus)
         {
             if (endStatus is not MatchStatus.FINISHED
-                    or MatchStatus.SPECIAL_WIN_COMPETITOR_ONE
-                    or MatchStatus.SPECIAL_WIN_COMPETITOR_TWO)
+                    && endStatus is not MatchStatus.SPECIAL_WIN_COMPETITOR_ONE
+                    && endStatus is not MatchStatus.SPECIAL_WIN_COMPETITOR_TWO)
                 throw new APIllegalStatusException(endStatus);
 
             Match match = await _unitOfWork.MatchRepository.GetById(matchId)

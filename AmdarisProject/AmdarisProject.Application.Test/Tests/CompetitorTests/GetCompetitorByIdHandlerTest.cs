@@ -14,7 +14,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         [Fact]
         public async Task Test_GetCompetitorByIdHandler_Player_Success()
         {
-            Player model = Builder.CreateBasicPlayer().Get();
+            Player model = APBuilder.CreateBasicPlayer().Get();
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competitor?)model));
             _mapperMock.Setup(o => o.Map<PlayerGetDTO>(It.IsAny<Player>())).Returns(model.Adapt<PlayerGetDTO>());
@@ -31,7 +31,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         [Fact]
         public async Task Test_GetCompetitorByIdHandler_Team_Success()
         {
-            Team model = Builder.CreateBasicTeam().Get();
+            Team model = APBuilder.CreateBasicTeam().Get();
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competitor?)model));
             _mapperMock.Setup(o => o.Map<TeamGetDTO>(It.IsAny<Team>())).Returns(model.Adapt<TeamGetDTO>());

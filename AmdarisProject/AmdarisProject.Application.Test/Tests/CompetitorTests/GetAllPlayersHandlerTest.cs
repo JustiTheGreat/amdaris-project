@@ -13,7 +13,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         public async Task Test_GetAllTeamsHandler_Success()
         {
             List<Player> players = [];
-            for (int i = 0; i < _numberOfModelsInAList; i++) players.Add(Builder.CreateBasicPlayer().Get());
+            for (int i = 0; i < _numberOfModelsInAList; i++) players.Add(APBuilder.CreateBasicPlayer().Get());
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.GetAllPlayers()).Returns(Task.FromResult((IEnumerable<Player>)players));
             _mapperMock.Setup(o => o.Map<IEnumerable<PlayerDisplayDTO>>(It.IsAny<IEnumerable<Player>>()))

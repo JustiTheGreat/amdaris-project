@@ -16,7 +16,7 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
         [Fact]
         public async Task Test_CreateGameFormatHandler_Success()
         {
-            GameFormat gameFormat = Builder.CreateBasicGameFormat().Get();
+            GameFormat gameFormat = APBuilder.CreateBasicGameFormat().Get();
             _mapperMock.Setup(o => o.Map<GameFormat>(It.IsAny<GameFormatCreateDTO>())).Returns(gameFormat);
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.Create(It.IsAny<GameFormat>())).Returns(Task.FromResult(gameFormat));
@@ -38,7 +38,7 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
         [Fact]
         public async Task Test_CreateGameFormatHandler_WinningConditions_throws_APArgumentException()
         {
-            GameFormatCreateDTO createDTO = Builder.CreateBasicGameFormat().SetWinAt(null).SetDurationInMinutes(null).Get().Adapt<GameFormatCreateDTO>();
+            GameFormatCreateDTO createDTO = APBuilder.CreateBasicGameFormat().SetWinAt(null).SetDurationInMinutes(null).Get().Adapt<GameFormatCreateDTO>();
             CreateGameFormat command = new(createDTO);
             CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), GetLogger<CreateGameFormatHandler>());
 
@@ -47,9 +47,9 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
 
         public static TheoryData<GameFormat> CompetitorTypeAndTeamSize => new()
         {
-            Builder.CreateBasicGameFormat().SetCompetitorType(CompetitorType.PLAYER).SetTeamSize(2).Get(),
-            Builder.CreateBasicGameFormat().SetCompetitorType(CompetitorType.TEAM).SetTeamSize(null).Get(),
-            Builder.CreateBasicGameFormat().SetCompetitorType(CompetitorType.TEAM).SetTeamSize(1).Get(),
+            APBuilder.CreateBasicGameFormat().SetCompetitorType(CompetitorType.PLAYER).SetTeamSize(2).Get(),
+            APBuilder.CreateBasicGameFormat().SetCompetitorType(CompetitorType.TEAM).SetTeamSize(null).Get(),
+            APBuilder.CreateBasicGameFormat().SetCompetitorType(CompetitorType.TEAM).SetTeamSize(1).Get(),
         };
 
         [Theory]
@@ -68,7 +68,7 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
         {
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.Create(It.IsAny<GameFormat>())).Throws<Exception>();
-            GameFormatCreateDTO createDTO = Builder.CreateBasicGameFormat().Get().Adapt<GameFormatCreateDTO>();
+            GameFormatCreateDTO createDTO = APBuilder.CreateBasicGameFormat().Get().Adapt<GameFormatCreateDTO>();
             CreateGameFormat command = new(createDTO);
             CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<CreateGameFormatHandler>());
 

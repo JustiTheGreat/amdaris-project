@@ -9,10 +9,10 @@ namespace AmdarisProject.Infrastructure.Repositories
     {
         public new async Task<Competition?> GetById(Guid id)
             => await _dbContext.Set<Competition>()
-            //.AsSplitQuery()
-            //.Include(o => o.GameFormat)
-            //.Include(o => o.Competitors)
-            //.Include(o => o.Matches)
+            .AsSplitQuery()
+            .Include(o => o.GameFormat)
+            .Include(o => o.Competitors)
+            .Include(o => o.Matches)
             .FirstOrDefaultAsync(item => item.Id.Equals(id));
     }
 }

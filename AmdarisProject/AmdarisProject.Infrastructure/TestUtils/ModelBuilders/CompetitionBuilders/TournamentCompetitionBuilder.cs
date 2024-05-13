@@ -3,9 +3,9 @@ using AmdarisProject.Domain.Models.CompetitionModels;
 
 namespace AmdarisProject.Application.Test.ModelBuilders.CompetitionBuilders
 {
-    public class OneVSAllCompetitionBuilder : CompetitionBuilder<OneVSAllCompetition, OneVSAllCompetitionBuilder>
+    public class TournamentCompetitionBuilder : CompetitionBuilder<TournamentCompetition, TournamentCompetitionBuilder>
     {
-        public OneVSAllCompetitionBuilder() : base(new OneVSAllCompetition()
+        public TournamentCompetitionBuilder() : base(new TournamentCompetition()
         {
             Id = Guid.NewGuid(),
             Name = "Test",
@@ -13,14 +13,15 @@ namespace AmdarisProject.Application.Test.ModelBuilders.CompetitionBuilders
             StartTime = DateTime.UtcNow,
             Status = CompetitionStatus.ORGANIZING,
             BreakInMinutes = 3,
-            GameFormat = Builder.CreateBasicGameFormat().Get(),
+            GameFormat = APBuilder.CreateBasicGameFormat().Get(),
             Competitors = [],
             Matches = [],
+            StageLevel = 0
         })
         { }
 
-        public override OneVSAllCompetitionBuilder Clone()
-            => new OneVSAllCompetitionBuilder()
+        public override TournamentCompetitionBuilder Clone()
+            => new TournamentCompetitionBuilder()
             .SetId(_model.Id)
             .SetName(_model.Name)
             .SetLocation(_model.Location)
@@ -29,6 +30,13 @@ namespace AmdarisProject.Application.Test.ModelBuilders.CompetitionBuilders
             .SetBreakInMinutes(_model.BreakInMinutes)
             .SetGameFormat(_model.GameFormat)
             .SetCompetitors(_model.Competitors)
-            .SetMatches(_model.Matches);
+            .SetMatches(_model.Matches)
+            .SetStageLevel(_model.StageLevel);
+
+        public TournamentCompetitionBuilder SetStageLevel(uint stageLevel)
+        {
+            _model.StageLevel = stageLevel;
+            return this;
+        }
     }
 }

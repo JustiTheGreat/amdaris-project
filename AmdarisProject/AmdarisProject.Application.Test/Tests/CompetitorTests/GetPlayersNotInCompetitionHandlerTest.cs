@@ -14,9 +14,9 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         [Fact]
         public async Task Test_GetPlayersNotInCompetitionHandler_Success()
         {
-            Competition competition = Builder.CreateBasicOneVSAllCompetition().Get();
+            Competition competition = APBuilder.CreateBasicOneVSAllCompetition().Get();
             List<Player> players = [];
-            for (int i = 0; i < _numberOfModelsInAList; i++) players.Add(Builder.CreateBasicPlayer().Get());
+            for (int i = 0; i < _numberOfModelsInAList; i++) players.Add(APBuilder.CreateBasicPlayer().Get());
             _unitOfWorkMock.Setup(o => o.CompetitionRepository).Returns(_competitionRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitionRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competition?)competition));

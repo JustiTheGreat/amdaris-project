@@ -7,9 +7,9 @@ namespace AmdarisProject.Application.Test.ModelBuilders
         public TeamPlayerBuilder() : base(new TeamPlayer()
         {
             Id = Guid.NewGuid(),
-            Team = Builder.CreateBasicTeam().Get(),
-            Player = Builder.CreateBasicPlayer().Get(),
-            IsActive = true
+            Team = APBuilder.CreateBasicTeam().Get(),
+            Player = APBuilder.CreateBasicPlayer().Get(),
+            IsActive = false
         })
         { }
 

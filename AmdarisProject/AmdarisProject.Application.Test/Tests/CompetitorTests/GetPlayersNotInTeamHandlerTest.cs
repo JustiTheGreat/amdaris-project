@@ -13,9 +13,9 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         [Fact]
         public async Task Test_GetPlayersNotInTeamHandler_Success()
         {
-            Team team = Builder.CreateBasicTeam().Get();
+            Team team = APBuilder.CreateBasicTeam().Get();
             List<Player> players = [];
-            for (int i = 0; i < _numberOfModelsInAList; i++) players.Add(Builder.CreateBasicPlayer().Get());
+            for (int i = 0; i < _numberOfModelsInAList; i++) players.Add(APBuilder.CreateBasicPlayer().Get());
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _competitorRepositoryMock.Setup(o => o.GetTeamById(It.IsAny<Guid>()))
                 .Returns(Task.FromResult((Team?)team));

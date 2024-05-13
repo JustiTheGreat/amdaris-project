@@ -27,7 +27,6 @@ namespace AmdarisProject.Presentation.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<GameFormatGetDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetAllGameFormats()
         {

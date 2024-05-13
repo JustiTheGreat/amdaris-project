@@ -17,8 +17,8 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [Fact]
         public async Task Test_StartMatchHandler_Success()
         {
-            MatchBuilder matchBuilder = Builder.CreateBasicMatch()
-                .SetCompetition(Builder.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get());
+            MatchBuilder matchBuilder = APBuilder.CreateBasicMatch()
+                .SetCompetition(APBuilder.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get());
             Match match = matchBuilder.Get();
             Match updated = matchBuilder.Clone().SetStatus(MatchStatus.STARTED).InitializePoints().Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
@@ -57,10 +57,10 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
             Assert.Equal(updated.StageLevel, response.StageLevel);
             Assert.Equal(updated.StageIndex, response.StageIndex);
             Assert.Equal(updated.Points.Count, response.Points.Count);
-            match.Points.ForEach(point =>
+            updated.Points.ForEach(point =>
             {
-                Assert.Equal(point.Id, response.Points.FirstOrDefault(pointDisplay => pointDisplay.Id.Equals(point.Id))?.Id);
-                Assert.Equal(point.Value, response.Points.FirstOrDefault(pointDisplay => pointDisplay.Id.Equals(point.Id))?.Value);
+                Assert.Equal(point.Value, response.Points.ElementAt(match.Points.IndexOf(point)).Value);
+                Assert.Equal(point.Player.Name, response.Points.ElementAt(match.Points.IndexOf(point)).PlayerName);
             });
         }
 
@@ -87,8 +87,8 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [MemberData(nameof(CompetitionStatuses))]
         public async Task Test_EndMatchHandler_IllegalCompetitionStatus_throws_APIllegalStatusException(CompetitionStatus competitionStatus)
         {
-            Match match = Builder.CreateBasicMatch()
-                .SetCompetition(Builder.CreateBasicOneVSAllCompetition().SetStatus(competitionStatus).Get()).Get();
+            Match match = APBuilder.CreateBasicMatch()
+                .SetCompetition(APBuilder.CreateBasicOneVSAllCompetition().SetStatus(competitionStatus).Get()).Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             StartMatch command = new(match.Id);
@@ -100,9 +100,9 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [Fact]
         public async Task Test_EndMatchHandler_AnotherMatchIsBeingPlayed_throws_AmdarisProjectException()
         {
-            Competition competition = Builder.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get();
-            Match match = Builder.CreateBasicMatch().SetCompetition(competition).Get();
-            competition.Matches.AddRange([match, Builder.CreateBasicMatch().SetCompetition(competition).SetStatus(MatchStatus.STARTED).Get()]);
+            Competition competition = APBuilder.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get();
+            Match match = APBuilder.CreateBasicMatch().SetCompetition(competition).Get();
+            competition.Matches.AddRange([match, APBuilder.CreateBasicMatch().SetCompetition(competition).SetStatus(MatchStatus.STARTED).Get()]);
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             StartMatch command = new(match.Id);
@@ -124,8 +124,8 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [MemberData(nameof(MatchStatuses))]
         public async Task Test_EndMatchHandler_IllegalMatchStatus_throws_APIllegalStatusException(MatchStatus matchStatus)
         {
-            Match match = Builder.CreateBasicMatch().SetStatus(matchStatus)
-                .SetCompetition(Builder.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get()).Get();
+            Match match = APBuilder.CreateBasicMatch().SetStatus(matchStatus)
+                .SetCompetition(APBuilder.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get()).Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
             StartMatch command = new(match.Id);

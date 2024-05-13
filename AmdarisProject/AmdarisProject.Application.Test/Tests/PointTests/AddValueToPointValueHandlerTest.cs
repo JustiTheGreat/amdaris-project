@@ -19,8 +19,8 @@ namespace AmdarisProject.Application.Test.Tests.PointHandlers
         [Fact]
         public async Task Test_AddValueToPointValueHandler_Success()
         {
-            uint pointsToAdd = (uint)Builder.CreateBasicGameFormat().Get().WinAt! - 1;
-            PointBuilder builder = Builder.CreateBasicPoint();
+            uint pointsToAdd = (uint)APBuilder.CreateBasicGameFormat().Get().WinAt! - 1;
+            PointBuilder builder = APBuilder.CreateBasicPoint();
             Point point = builder.Get();
             Point aux = builder.Clone().SetValue(point.Value + pointsToAdd).Get();
             point.Match.Status = MatchStatus.STARTED;
@@ -59,11 +59,11 @@ namespace AmdarisProject.Application.Test.Tests.PointHandlers
 
         public static TheoryData<Match> Status => new()
         {
-            Builder.CreateBasicMatch().SetStatus(MatchStatus.NOT_STARTED).Get(),
-            Builder.CreateBasicMatch().SetStatus(MatchStatus.FINISHED).Get(),
-            Builder.CreateBasicMatch().SetStatus(MatchStatus.SPECIAL_WIN_COMPETITOR_ONE).Get(),
-            Builder.CreateBasicMatch().SetStatus(MatchStatus.SPECIAL_WIN_COMPETITOR_TWO).Get(),
-            Builder.CreateBasicMatch().SetStatus(MatchStatus.CANCELED).Get(),
+            APBuilder.CreateBasicMatch().SetStatus(MatchStatus.NOT_STARTED).Get(),
+            APBuilder.CreateBasicMatch().SetStatus(MatchStatus.FINISHED).Get(),
+            APBuilder.CreateBasicMatch().SetStatus(MatchStatus.SPECIAL_WIN_COMPETITOR_ONE).Get(),
+            APBuilder.CreateBasicMatch().SetStatus(MatchStatus.SPECIAL_WIN_COMPETITOR_TWO).Get(),
+            APBuilder.CreateBasicMatch().SetStatus(MatchStatus.CANCELED).Get(),
         };
 
         [Theory]
@@ -81,8 +81,8 @@ namespace AmdarisProject.Application.Test.Tests.PointHandlers
 
         public static TheoryData<Match> WinningScores => new()
         {
-            Builder.CreateBasicMatch().SetStatus(MatchStatus.STARTED).SetCompetitorOnePoints(Builder.CreateBasicGameFormat().Get().WinAt).SetCompetitorTwoPoints(0).Get(),
-            Builder.CreateBasicMatch().SetStatus(MatchStatus.STARTED).SetCompetitorOnePoints(0).SetCompetitorTwoPoints(Builder.CreateBasicGameFormat().Get().WinAt).Get(),
+            APBuilder.CreateBasicMatch().SetStatus(MatchStatus.STARTED).SetCompetitorOnePoints(APBuilder.CreateBasicGameFormat().Get().WinAt).SetCompetitorTwoPoints(0).Get(),
+            APBuilder.CreateBasicMatch().SetStatus(MatchStatus.STARTED).SetCompetitorOnePoints(0).SetCompetitorTwoPoints(APBuilder.CreateBasicGameFormat().Get().WinAt).Get(),
         };
 
         [Theory]
@@ -102,7 +102,7 @@ namespace AmdarisProject.Application.Test.Tests.PointHandlers
         [Fact]
         public async Task Test_AddValueToPointValueHandler_PointNotFound_throws_APNotFoundException()
         {
-            Point point = Builder.CreateBasicPoint().Get();
+            Point point = APBuilder.CreateBasicPoint().Get();
             point.Match.Status = MatchStatus.STARTED;
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.PointRepository).Returns(_pointRepositoryMock.Object);
@@ -119,8 +119,8 @@ namespace AmdarisProject.Application.Test.Tests.PointHandlers
         [MemberData(nameof(WinningScores))]
         public async Task Test_AddValueToPointValueHandler_EndMatchIsCalled(Match match)
         {
-            uint pointsToAdd = (uint)Builder.CreateBasicGameFormat().Get().WinAt!;
-            PointBuilder builder = Builder.CreateBasicPoint();
+            uint pointsToAdd = (uint)APBuilder.CreateBasicGameFormat().Get().WinAt!;
+            PointBuilder builder = APBuilder.CreateBasicPoint();
             Point point = builder.Get();
             Point aux = builder.Clone().SetValue(point.Value + pointsToAdd).SetMatch(match).Get();
             point.Match.Status = MatchStatus.STARTED;
@@ -144,8 +144,8 @@ namespace AmdarisProject.Application.Test.Tests.PointHandlers
         [Fact]
         public async Task Test_AddValueToPointValueHandler_RollbackIsCalled_throws_Exception()
         {
-            uint pointsToAdd = (uint)Builder.CreateBasicGameFormat().Get().WinAt!;
-            PointBuilder builder = Builder.CreateBasicPoint();
+            uint pointsToAdd = (uint)APBuilder.CreateBasicGameFormat().Get().WinAt!;
+            PointBuilder builder = APBuilder.CreateBasicPoint();
             Point point = builder.Get();
             Point aux = builder.Clone().SetValue(point.Value + pointsToAdd).Get();
             point.Match.Status = MatchStatus.STARTED;

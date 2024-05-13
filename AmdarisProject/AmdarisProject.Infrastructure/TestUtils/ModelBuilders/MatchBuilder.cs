@@ -14,9 +14,9 @@ namespace AmdarisProject.Application.Test.ModelBuilders
             StartTime = null,
             EndTime = null,
             Status = MatchStatus.NOT_STARTED,
-            CompetitorOne = Builder.CreateBasicPlayer().Get(),
-            CompetitorTwo = Builder.CreateBasicPlayer().Get(),
-            Competition = Builder.CreateBasicOneVSAllCompetition().Get(),
+            CompetitorOne = APBuilder.CreateBasicPlayer().Get(),
+            CompetitorTwo = APBuilder.CreateBasicPlayer().Get(),
+            Competition = APBuilder.CreateBasicOneVSAllCompetition().Get(),
             CompetitorOnePoints = null,
             CompetitorTwoPoints = null,
             Winner = null,
@@ -124,7 +124,7 @@ namespace AmdarisProject.Application.Test.ModelBuilders
         public MatchBuilder InitializePoints()
         {
             void CreatePoint(Player player)
-                => _model.Points.Add(Builder.CreateBasicPoint().SetPlayer(player).SetMatch(_model).SetValue(0).Get());
+                => _model.Points.Add(APBuilder.CreateBasicPoint().SetPlayer(player).SetMatch(_model).SetValue(0).Get());
 
             void CreatePoints(Team team) => team.Players.ForEach(CreatePoint);
 
@@ -138,6 +138,9 @@ namespace AmdarisProject.Application.Test.ModelBuilders
                 CreatePoints((Team)_model.CompetitorOne);
                 CreatePoints((Team)_model.CompetitorTwo);
             }
+
+            SetCompetitorOnePoints(0);
+            SetCompetitorTwoPoints(0);
 
             return this;
         }

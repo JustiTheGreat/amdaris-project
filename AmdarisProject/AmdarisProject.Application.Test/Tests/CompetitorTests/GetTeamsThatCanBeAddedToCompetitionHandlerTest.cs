@@ -15,11 +15,11 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         [Fact]
         public async Task Test_GetTeamsThatCanBeAddedToCompetitionHandler_Success()
         {
-            GameFormat gameFormat = Builder.CreateBasicGameFormat()
+            GameFormat gameFormat = APBuilder.CreateBasicGameFormat()
                 .SetCompetitorType(Domain.Enums.CompetitorType.TEAM).SetTeamSize(2).Get();
-            Competition competition = Builder.CreateBasicOneVSAllCompetition().SetGameFormat(gameFormat).Get();
+            Competition competition = APBuilder.CreateBasicOneVSAllCompetition().SetGameFormat(gameFormat).Get();
             List<Team> teams = [];
-            for (int i = 0; i < _numberOfModelsInAList; i++) teams.Add(Builder.CreateBasicTeam().Get());
+            for (int i = 0; i < _numberOfModelsInAList; i++) teams.Add(APBuilder.CreateBasicTeam().Get());
             _unitOfWorkMock.Setup(o => o.CompetitionRepository).Returns(_competitionRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
