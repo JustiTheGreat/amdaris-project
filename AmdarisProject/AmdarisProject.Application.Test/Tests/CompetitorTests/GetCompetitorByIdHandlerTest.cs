@@ -3,6 +3,7 @@ using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
+using AmdarisProject.Presentation.Test.Tests;
 using Mapster;
 using MapsterMapper;
 using Moq;
@@ -14,35 +15,33 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         [Fact]
         public async Task Test_GetCompetitorByIdHandler_Player_Success()
         {
-            Player model = APBuilder.CreateBasicPlayer().Get();
+            Player player = APBuilder.CreateBasicPlayer().Get();
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
-            _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competitor?)model));
-            _mapperMock.Setup(o => o.Map<PlayerGetDTO>(It.IsAny<Player>())).Returns(model.Adapt<PlayerGetDTO>());
-            GetCompetitorById command = new(model.Id);
+            _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competitor?)player));
+            _mapperMock.Setup(o => o.Map<PlayerGetDTO>(It.IsAny<Player>())).Returns(player.Adapt<PlayerGetDTO>());
+            GetCompetitorById command = new(player.Id);
             GetCompetitorByIdHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<GetCompetitorByIdHandler>());
 
             CompetitorGetDTO response = await handler.Handle(command, default);
 
             Assert.True(response is PlayerGetDTO);
-            Assert.Equal(model.Id, response.Id);
-            _competitorRepositoryMock.Verify(o => o.GetById(It.IsAny<Guid>()), Times.Once);
+            AssertResponse.PlayerGetDTO(player, (PlayerGetDTO)response);
         }
 
         [Fact]
         public async Task Test_GetCompetitorByIdHandler_Team_Success()
         {
-            Team model = APBuilder.CreateBasicTeam().Get();
+            Team team = APBuilder.CreateBasicTeam().Get();
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
-            _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competitor?)model));
-            _mapperMock.Setup(o => o.Map<TeamGetDTO>(It.IsAny<Team>())).Returns(model.Adapt<TeamGetDTO>());
-            GetCompetitorById command = new(model.Id);
+            _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competitor?)team));
+            _mapperMock.Setup(o => o.Map<TeamGetDTO>(It.IsAny<Team>())).Returns(team.Adapt<TeamGetDTO>());
+            GetCompetitorById command = new(team.Id);
             GetCompetitorByIdHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<GetCompetitorByIdHandler>());
 
             CompetitorGetDTO response = await handler.Handle(command, default);
 
             Assert.True(response is TeamGetDTO);
-            Assert.Equal(model.Id, response.Id);
-            _competitorRepositoryMock.Verify(o => o.GetById(It.IsAny<Guid>()), Times.Once);
+            AssertResponse.TeamGetDTO(team, (TeamGetDTO)response);
         }
 
         [Fact]

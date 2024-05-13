@@ -13,30 +13,30 @@ namespace AmdarisProject.Presentation.Test.Tests
     public class GameFormatControllerTests : ControllerTests<GameFormatController>
     {
         [Fact]
-        public async Task Test_CreateGameFormat_Success()
+        public async Task Test_CreateGameFormat_OkStatus()
         {
             Setup<CreateGameFormat, GameFormatGetDTO, CreateGameFormatHandler>();
-            GameFormatCreateDTO dto = APBuilder.CreateBasicGameFormat().Get().Adapt<GameFormatCreateDTO>();
+            GameFormat gameFormat = APBuilder.CreateBasicGameFormat().Get();
 
-            var requestResult = await _controller.CreateGameFormat(dto);
+            var requestResult = await _controller.CreateGameFormat(gameFormat.Adapt<GameFormatCreateDTO>());
 
             var result = requestResult as OkObjectResult;
             var response = result?.Value as GameFormatGetDTO;
             Assert.Equal((int)HttpStatusCode.OK, result!.StatusCode);
             Assert.NotNull(response);
-            Assert.Equal(dto.Name, response.Name);
-            Assert.Equal(dto.GameType, response.GameType);
-            Assert.Equal(dto.CompetitorType, response.CompetitorType);
-            Assert.Equal(dto.TeamSize, response.TeamSize);
-            Assert.Equal(dto.WinAt, response.WinAt);
-            Assert.Equal(dto.DurationInMinutes, response.DurationInMinutes);
+            Assert.Equal(gameFormat.Name, response.Name);
+            Assert.Equal(gameFormat.GameType, response.GameType);
+            Assert.Equal(gameFormat.CompetitorType, response.CompetitorType);
+            Assert.Equal(gameFormat.TeamSize, response.TeamSize);
+            Assert.Equal(gameFormat.WinAt, response.WinAt);
+            Assert.Equal(gameFormat.DurationInMinutes, response.DurationInMinutes);
         }
 
         [Fact]
-        public async Task Test_GetAllGameFormats_Success()
+        public async Task Test_GetAllGameFormats_OkStatus()
         {
             Setup<CreateGameFormat, GameFormatGetDTO, CreateGameFormatHandler>();
-            Seed_GetAllGameFormats(out List<GameFormat> models);
+            Seed_GetAllGameFormats(out List<GameFormat> gameFormats);
 
             var requestResult = await _controller.GetAllGameFormats();
 
@@ -44,29 +44,33 @@ namespace AmdarisProject.Presentation.Test.Tests
             var response = result?.Value as IEnumerable<GameFormatGetDTO>;
             Assert.Equal((int)HttpStatusCode.OK, result!.StatusCode);
             Assert.NotNull(response);
-            for (int i = 0; i < _numberOfModelsInAList; i++)
+            Assert.Equal(gameFormats.Count, response.Count());
+            for (int i = 0; i < gameFormats.Count; i++)
             {
-                Assert.Equal(models.ElementAt(i).Id, response.ElementAt(i).Id);
-                Assert.Equal(models.ElementAt(i).Name, response.ElementAt(i).Name);
-                Assert.Equal(models.ElementAt(i).GameType, response.ElementAt(i).GameType);
-                Assert.Equal(models.ElementAt(i).CompetitorType, response.ElementAt(i).CompetitorType);
-                Assert.Equal(models.ElementAt(i).TeamSize, response.ElementAt(i).TeamSize);
-                Assert.Equal(models.ElementAt(i).WinAt, response.ElementAt(i).WinAt);
-                Assert.Equal(models.ElementAt(i).DurationInMinutes, response.ElementAt(i).DurationInMinutes);
+                GameFormat gameFormat = gameFormats[i];
+                GameFormatGetDTO gameFormatGetDTO = response.ElementAt(i);
+
+                Assert.Equal(gameFormat.Id, gameFormatGetDTO.Id);
+                Assert.Equal(gameFormat.Name, gameFormatGetDTO.Name);
+                Assert.Equal(gameFormat.GameType, gameFormatGetDTO.GameType);
+                Assert.Equal(gameFormat.CompetitorType, gameFormatGetDTO.CompetitorType);
+                Assert.Equal(gameFormat.TeamSize, gameFormatGetDTO.TeamSize);
+                Assert.Equal(gameFormat.WinAt, gameFormatGetDTO.WinAt);
+                Assert.Equal(gameFormat.DurationInMinutes, gameFormatGetDTO.DurationInMinutes);
             }
         }
 
-        private void Seed_GetAllGameFormats(out List<GameFormat> models)
+        private void Seed_GetAllGameFormats(out List<GameFormat> gameFormats)
         {
-            models = [];
+            gameFormats = [];
             for (int i = 0; i < _numberOfModelsInAList; i++)
             {
-                GameFormat model = APBuilder.CreateBasicGameFormat().Get();
-                _dbContext.Add(model);
-                models.Add(model);
+                GameFormat gameFormat = APBuilder.CreateBasicGameFormat().Get();
+                _dbContext.Add(gameFormat);
+                gameFormats.Add(gameFormat);
             }
             _dbContext.SaveChanges();
-            models.ForEach(Detach);
+            gameFormats.ForEach(Detach);
         }
     }
 }

@@ -36,15 +36,16 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
 
             _competitorRepositoryMock.Verify(o => o.GetTeamsNotInCompetition(It.IsAny<Guid>()), Times.Once);
             _teamPlayerRepositoryMock.Verify(o => o.TeamHasTheRequiredNumberOfActivePlayers(It.IsAny<Guid>(), It.IsAny<uint>()), Times.Exactly(_numberOfModelsInAList));
-            for (int i = 0; i < _numberOfModelsInAList; i++)
+            Assert.Equal(teams.Count, response.Count());
+            for (int i = 0; i < teams.Count; i++)
             {
-                Assert.Equal(teams.ElementAt(i).Id, response.ElementAt(i).Id);
-                Assert.Equal(teams.ElementAt(i).Name, response.ElementAt(i).Name);
-                Assert.Equal(teams.ElementAt(i).Players.Count, response.ElementAt(i).PlayerNames.Count);
-                teams.ElementAt(i).Players.ForEach(player =>
-                {
-                    Assert.Equal(player.Name, response.ElementAt(i).PlayerNames.FirstOrDefault(name => name.Equals(player.Name)));
-                });
+                Team team = teams[i];
+                TeamDisplayDTO teamDisplayDTO = response.ElementAt(i);
+
+                Assert.Equal(team.Id, teamDisplayDTO.Id);
+                Assert.Equal(team.Name, teamDisplayDTO.Name);
+                Assert.Equal(team.Players.Count, teamDisplayDTO.PlayerNames.Count);
+                team.Players.ForEach(player => Assert.Contains(player.Name, teamDisplayDTO.PlayerNames));
             }
         }
 

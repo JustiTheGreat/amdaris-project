@@ -13,7 +13,7 @@ namespace AmdarisProject.Presentation.Test.Tests
     public class MatchControllerTests : ControllerTests<MatchController>
     {
         [Fact]
-        public async Task Test_GetMatchById_Success()
+        public async Task Test_GetMatchById_OkStatus()
         {
             Setup<GetMatchById, MatchGetDTO, GetMatchByIdHandler>();
             Seed_GetMatchById(out Match match);
@@ -36,7 +36,7 @@ namespace AmdarisProject.Presentation.Test.Tests
         }
 
         [Fact]
-        public async Task Test_StartMatch_Success()
+        public async Task Test_StartMatch_OkStatus()
         {
             Setup<StartMatch, MatchGetDTO, StartMatchHandler>();
             Seed_StartMatch(out Match match);
@@ -71,7 +71,7 @@ namespace AmdarisProject.Presentation.Test.Tests
 
         [Theory]
         [MemberData(nameof(EndStatuses))]
-        public async Task Test_EndMatch_Success(MatchStatus endStatus)
+        public async Task Test_EndMatch_OkStatus(MatchStatus endStatus)
         {
             Setup<EndMatch, MatchGetDTO, EndMatchHandler>();
             Seed_EndMatch(out Match match, endStatus);
@@ -101,7 +101,7 @@ namespace AmdarisProject.Presentation.Test.Tests
         }
 
         [Fact]
-        public async Task Test_CancelMatch_Success()
+        public async Task Test_CancelMatch_OkStatus()
         {
             Setup<CancelMatch, MatchGetDTO, CancelMatchHandler>();
             Seed_CancelMatch(out Match match);

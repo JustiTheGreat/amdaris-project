@@ -2,7 +2,6 @@
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitionHandlers;
 using AmdarisProject.Application.Test.ModelBuilders;
-using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;

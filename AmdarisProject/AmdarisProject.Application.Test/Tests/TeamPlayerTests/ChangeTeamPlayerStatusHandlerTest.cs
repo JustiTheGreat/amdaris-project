@@ -16,22 +16,22 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
             bool newPlayerActivityStatus = true;
             TeamPlayerBuilder teamPlayerBuilder = APBuilder.CreateBasicTeamPlayer();
             TeamPlayer teamPlayer = teamPlayerBuilder.Get();
-            TeamPlayer updated = teamPlayerBuilder.SetIsActive(newPlayerActivityStatus).Get();
             _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _teamPlayerRepositoryMock.Setup(o => o.GetByTeamAndPlayer(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.FromResult((TeamPlayer?)teamPlayer));
             _matchRepositoryMock.Setup(o => o.CompetitorIsInAStartedMatch(It.IsAny<Guid>())).Returns(Task.FromResult(false));
-            _teamPlayerRepositoryMock.Setup(o => o.Update(It.IsAny<TeamPlayer>())).Returns(Task.FromResult(updated));
-            _mapperMock.Setup(o => o.Map<TeamPlayerGetDTO>(It.IsAny<TeamPlayer>())).Returns(updated.Adapt<TeamPlayerGetDTO>());
+            teamPlayer = teamPlayerBuilder.SetIsActive(newPlayerActivityStatus).Get();
+            _teamPlayerRepositoryMock.Setup(o => o.Update(It.IsAny<TeamPlayer>())).Returns(Task.FromResult(teamPlayer));
+            _mapperMock.Setup(o => o.Map<TeamPlayerGetDTO>(It.IsAny<TeamPlayer>())).Returns(teamPlayer.Adapt<TeamPlayerGetDTO>());
             ChangeTeamPlayerStatus command = new(teamPlayer.Team.Id, teamPlayer.Player.Id, newPlayerActivityStatus);
             ChangeTeamPlayerStatusHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
                 GetLogger<ChangeTeamPlayerStatusHandler>());
 
             TeamPlayerGetDTO response = await handler.Handle(command, default);
 
-            Assert.Equal(updated.Team.Id, response.TeamId);
-            Assert.Equal(updated.Player.Id, response.PlayerId);
-            Assert.Equal(updated.IsActive, response.IsActive);
+            Assert.Equal(teamPlayer.Team.Id, response.TeamId);
+            Assert.Equal(teamPlayer.Player.Id, response.PlayerId);
+            Assert.Equal(teamPlayer.IsActive, response.IsActive);
         }
 
         [Fact]

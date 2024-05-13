@@ -5,6 +5,7 @@ using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
+using AmdarisProject.Presentation.Test.Tests;
 using Mapster;
 using MapsterMapper;
 using Moq;
@@ -20,48 +21,24 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
             MatchBuilder matchBuilder = APBuilder.CreateBasicMatch()
                 .SetCompetition(APBuilder.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get());
             Match match = matchBuilder.Get();
-            Match updated = matchBuilder.Clone().SetStatus(MatchStatus.STARTED).InitializePoints().Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.PointRepository).Returns(_pointRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.CompetitionRepository).Returns(_competitionRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
-            _matchRepositoryMock.Setup(o => o.Update(It.IsAny<Match>())).Returns(Task.FromResult(updated));
+            match = matchBuilder.Clone().SetStatus(MatchStatus.STARTED).SetStartTime(DateTime.UtcNow).InitializePoints().Get();
+            _matchRepositoryMock.Setup(o => o.Update(It.IsAny<Match>())).Returns(Task.FromResult(match));
             var v = _pointRepositoryMock.SetupSequence(o => o.Create(It.IsAny<Point>()));
             match.Points.ForEach(point => v.Returns(Task.FromResult(point)));
 
             _matchRepositoryMock.Setup(o => o.GetNotStartedByCompetitionOrderedByStartTime(It.IsAny<Guid>()))
                 .Returns(Task.FromResult((IEnumerable<Match>)[]));
-            _mapperMock.Setup(o => o.Map<MatchGetDTO>(It.IsAny<Match>())).Returns(updated.Adapt<MatchGetDTO>());
+            _mapperMock.Setup(o => o.Map<MatchGetDTO>(It.IsAny<Match>())).Returns(match.Adapt<MatchGetDTO>());
             StartMatch command = new(match.Id);
             StartMatchHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<StartMatchHandler>());
 
             MatchGetDTO response = await handler.Handle(command, default);
 
-            Assert.Equal(match.Id, response.Id);
-            Assert.NotNull(match.StartTime);
-            Assert.Equal(updated.EndTime, response.EndTime);
-            Assert.Equal(updated.Status, response.Status);
-            Assert.Equal(updated.CompetitorOne.Id, response.CompetitorOne.Id);
-            Assert.Equal(updated.CompetitorOne.Name, response.CompetitorOne.Name);
-            Assert.Equal(updated.CompetitorTwo.Id, response.CompetitorTwo.Id);
-            Assert.Equal(updated.CompetitorTwo.Name, response.CompetitorTwo.Name);
-            Assert.Equal(updated.Competition.Id, response.Competition.Id);
-            Assert.Equal(updated.Competition.Name, response.Competition.Name);
-            Assert.Equal(updated.Competition.Status, response.Competition.Status);
-            Assert.Equal(updated.Competition.GameFormat.GameType, response.Competition.GameType);
-            Assert.Equal(updated.Competition.GameFormat.CompetitorType, response.Competition.CompetitorType);
-            Assert.Equal(updated.CompetitorOnePoints, response.CompetitorOnePoints);
-            Assert.Equal(updated.CompetitorTwoPoints, response.CompetitorTwoPoints);
-            Assert.Equal(updated.Winner?.Id, response.Winner?.Id);
-            Assert.Equal(updated.Winner?.Name, response.Winner?.Name);
-            Assert.Equal(updated.StageLevel, response.StageLevel);
-            Assert.Equal(updated.StageIndex, response.StageIndex);
-            Assert.Equal(updated.Points.Count, response.Points.Count);
-            updated.Points.ForEach(point =>
-            {
-                Assert.Equal(point.Value, response.Points.ElementAt(match.Points.IndexOf(point)).Value);
-                Assert.Equal(point.Player.Name, response.Points.ElementAt(match.Points.IndexOf(point)).PlayerName);
-            });
+            AssertResponse.MatchMatchGetDTO(match, response, startMatch: true);
         }
 
         [Fact]

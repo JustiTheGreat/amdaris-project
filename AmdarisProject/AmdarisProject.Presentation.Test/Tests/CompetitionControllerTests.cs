@@ -1,19 +1,14 @@
 ﻿using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.DisplayDTOs;
-using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
-using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitionHandlers;
-using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
-using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.handlers.competition;
 using AmdarisProject.Presentation.Controllers;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Net;
 
 namespace AmdarisProject.Presentation.Test.Tests
@@ -21,7 +16,7 @@ namespace AmdarisProject.Presentation.Test.Tests
     public class CompetitionControllerTests : ControllerTests<CompetitionController>
     {
         [Fact]
-        public async Task Test_CreateOneVSAllCompetition_Success()
+        public async Task Test_CreateOneVSAllCompetition_OkStatus()
         {
             Setup<CreateOneVSAllCompetition, OneVSAllCompetitionGetDTO, CreateOneVSAllCompetitionHandler>();
             Seed_CreateOneVSAllCompetition(out OneVSAllCompetition oneVSAllCompetition);
@@ -44,7 +39,7 @@ namespace AmdarisProject.Presentation.Test.Tests
         }
 
         [Fact]
-        public async Task Test_CreateTournamentCompetition_Success()
+        public async Task Test_CreateTournamentCompetition_OkStatus()
         {
             Setup<CreateTournamentCompetition, TournamentCompetitionGetDTO, CreateTournamentCompetitionHandler>();
             Seed_CreateTournamentCompetition(out TournamentCompetition tournamentCompetition);
@@ -67,7 +62,7 @@ namespace AmdarisProject.Presentation.Test.Tests
         }
 
         [Fact]
-        public async Task Test_GetCompetitionById_OneVSAllCompetition_Success()
+        public async Task Test_GetCompetitionById_OneVSAllCompetition_OkStatus()
         {
             Setup<GetCompetitionById, CompetitionGetDTO, GetCompetitionByIdHandler>();
             Seed_GetCompetitionById(out OneVSAllCompetition oneVSAllCompetition);
@@ -90,7 +85,7 @@ namespace AmdarisProject.Presentation.Test.Tests
         }
 
         [Fact]
-        public async Task Test_GetCompetitionById_TournamentCompetition_Success()
+        public async Task Test_GetCompetitionById_TournamentCompetition_OkStatus()
         {
             Setup<GetCompetitionById, CompetitionGetDTO, GetCompetitionByIdHandler>();
             Seed_GetCompetitionById(out TournamentCompetition tournamentCompetition);
@@ -113,7 +108,7 @@ namespace AmdarisProject.Presentation.Test.Tests
         }
 
         [Fact]
-        public async Task Test_GetAllCompetitions_Success()
+        public async Task Test_GetAllCompetitions_OkStatus()
         {
             Setup<GetAllCompetitions, IEnumerable<CompetitionDisplayDTO>, GetAllCompetitionsHandler>();
             Seed_GetAllCompetitions(out List<Competition> competitions);
@@ -127,7 +122,7 @@ namespace AmdarisProject.Presentation.Test.Tests
             Assert.Equal(competitions.Count, response.Count());
             competitions.ForEach(competition =>
             {
-                CompetitionDisplayDTO competitionDisplayDTO = 
+                CompetitionDisplayDTO competitionDisplayDTO =
                     response.First(competitionDisplayDTO => competitionDisplayDTO.Id.Equals(competition.Id));
 
                 Assert.Equal(competition.Id, competitionDisplayDTO.Id);

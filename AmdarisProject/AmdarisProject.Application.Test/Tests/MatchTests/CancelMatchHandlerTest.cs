@@ -5,6 +5,7 @@ using AmdarisProject.Application.Services.CompetitionMatchCreatorServices;
 using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Presentation.Test.Tests;
 using Mapster;
 using MapsterMapper;
 using Moq;
@@ -22,47 +23,22 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         {
             MatchBuilder matchBuilder = APBuilder.CreateBasicMatch();
             Match match = matchBuilder.Get();
-            Match updatedMatch = matchBuilder.Clone().SetStatus(MatchStatus.CANCELED).Get();
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
-            _matchRepositoryMock.Setup(o => o.Update(It.IsAny<Match>())).Returns(Task.FromResult(updatedMatch));
+            match = matchBuilder.Clone().SetStatus(MatchStatus.CANCELED).Get();
+            _matchRepositoryMock.Setup(o => o.Update(It.IsAny<Match>())).Returns(Task.FromResult(match));
             _competitionMatchCreatorFactoryServiceMock.Setup(o => o.GetCompetitionMatchCreator(It.IsAny<Type>()))
                 .Returns(_competitionMatchCreatorMock.Object);
             _competitionMatchCreatorMock.Setup(o => o.CreateCompetitionMatches(It.IsAny<Guid>()))
                 .Returns(Task.FromResult(It.IsAny<IEnumerable<Match>>()));
-            _mapperMock.Setup(o => o.Map<MatchGetDTO>(It.IsAny<Match>())).Returns(updatedMatch.Adapt<MatchGetDTO>());
+            _mapperMock.Setup(o => o.Map<MatchGetDTO>(It.IsAny<Match>())).Returns(match.Adapt<MatchGetDTO>());
             CancelMatch command = new(match.Id);
             CancelMatchHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
                 _competitionMatchCreatorFactoryServiceMock.Object, GetLogger<CancelMatchHandler>());
 
             MatchGetDTO response = await handler.Handle(command, default);
 
-            Assert.Equal(updatedMatch.Id, response.Id);
-            Assert.Equal(updatedMatch.StartTime, response.StartTime);
-            Assert.Equal(updatedMatch.EndTime, response.EndTime);
-            Assert.Equal(updatedMatch.Status, response.Status);
-            Assert.Equal(updatedMatch.CompetitorOne.Id, response.CompetitorOne.Id);
-            Assert.Equal(updatedMatch.CompetitorOne.Name, response.CompetitorOne.Name);
-            Assert.Equal(updatedMatch.CompetitorTwo.Id, response.CompetitorTwo.Id);
-            Assert.Equal(updatedMatch.CompetitorTwo.Name, response.CompetitorTwo.Name);
-            Assert.Equal(updatedMatch.Competition.Id, response.Competition.Id);
-            Assert.Equal(updatedMatch.Competition.Name, response.Competition.Name);
-            Assert.Equal(updatedMatch.Competition.Status, response.Competition.Status);
-            Assert.Equal(updatedMatch.Competition.GameFormat.GameType, response.Competition.GameType);
-            Assert.Equal(updatedMatch.Competition.GameFormat.CompetitorType, response.Competition.CompetitorType);
-            Assert.Equal(updatedMatch.CompetitorOnePoints, response.CompetitorOnePoints);
-            Assert.Equal(updatedMatch.CompetitorTwoPoints, response.CompetitorTwoPoints);
-            Assert.Equal(updatedMatch.Winner?.Id, response.Winner?.Id);
-            Assert.Equal(updatedMatch.Winner?.Name, response.Winner?.Name);
-            Assert.Equal(updatedMatch.StageLevel, response.StageLevel);
-            Assert.Equal(updatedMatch.StageIndex, response.StageIndex);
-            Assert.Equal(match.Points.Count, response.Points.Count);
-            match.Points.ForEach(point =>
-            {
-                Assert.Equal(point.Id, response.Points.FirstOrDefault(pointDisplay => pointDisplay.Id.Equals(point.Id))?.Id);
-                Assert.Equal(point.Value, response.Points.FirstOrDefault(pointDisplay => pointDisplay.Id.Equals(point.Id))?.Value);
-                Assert.Equal(point.Player.Name, response.Points.FirstOrDefault(pointDisplay => pointDisplay.Id.Equals(point.Id))?.PlayerName);
-            });
+            AssertResponse.MatchMatchGetDTO(match, response);
         }
 
         [Fact]

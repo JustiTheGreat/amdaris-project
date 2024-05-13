@@ -21,18 +21,17 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.Create(It.IsAny<GameFormat>())).Returns(Task.FromResult(gameFormat));
             _mapperMock.Setup(o => o.Map<GameFormatGetDTO>(It.IsAny<GameFormat>())).Returns(gameFormat.Adapt<GameFormatGetDTO>());
-            GameFormatCreateDTO createDTO = gameFormat.Adapt<GameFormatCreateDTO>();
-            CreateGameFormat command = new(createDTO);
+            CreateGameFormat command = new(gameFormat.Adapt<GameFormatCreateDTO>());
             CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<CreateGameFormatHandler>());
 
             GameFormatGetDTO response = await handler.Handle(command, default);
 
-            Assert.Equal(createDTO.Name, response.Name);
-            Assert.Equal(createDTO.GameType, response.GameType);
-            Assert.Equal(createDTO.CompetitorType, response.CompetitorType);
-            Assert.Equal(createDTO.TeamSize, response.TeamSize);
-            Assert.Equal(createDTO.WinAt, response.WinAt);
-            Assert.Equal(createDTO.DurationInMinutes, response.DurationInMinutes);
+            Assert.Equal(gameFormat.Name, response.Name);
+            Assert.Equal(gameFormat.GameType, response.GameType);
+            Assert.Equal(gameFormat.CompetitorType, response.CompetitorType);
+            Assert.Equal(gameFormat.TeamSize, response.TeamSize);
+            Assert.Equal(gameFormat.WinAt, response.WinAt);
+            Assert.Equal(gameFormat.DurationInMinutes, response.DurationInMinutes);
         }
 
         [Fact]

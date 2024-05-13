@@ -11,7 +11,7 @@ namespace AmdarisProject.Presentation.Test.Tests
     public class TeamPlayerControllerTests : ControllerTests<TeamPlayerController>
     {
         [Fact]
-        public async Task Test_AddPlayerToTeam_Success()
+        public async Task Test_AddPlayerToTeam_OkStatus()
         {
             Setup<AddPlayerToTeam, TeamPlayerGetDTO, AddPlayerToTeamHandler>();
             Seed_AddPlayerToTeam(out Team team, out Player player);
@@ -39,7 +39,7 @@ namespace AmdarisProject.Presentation.Test.Tests
         }
 
         [Fact]
-        public async Task Test_ChangeTeamPlayerStatus_Success()
+        public async Task Test_ChangeTeamPlayerStatus_OkStatus()
         {
             Setup<AddPlayerToTeam, TeamPlayerGetDTO, AddPlayerToTeamHandler>();
             bool newStatus = true;
@@ -66,7 +66,7 @@ namespace AmdarisProject.Presentation.Test.Tests
         }
 
         [Fact]
-        public async Task Test_RemovePlayerFromTeam_Success()
+        public async Task Test_RemovePlayerFromTeam_OkStatus()
         {
             Setup<RemovePlayerFromTeam, bool, RemovePlayerFromTeamHandler>();
             Seed_RemovePlayerFromTeam(out TeamPlayer teamPlayer);

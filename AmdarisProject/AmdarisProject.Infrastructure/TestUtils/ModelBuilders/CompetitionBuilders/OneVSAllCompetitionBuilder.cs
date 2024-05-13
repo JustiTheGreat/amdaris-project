@@ -12,7 +12,7 @@ namespace AmdarisProject.Application.Test.ModelBuilders.CompetitionBuilders
             Location = "Test",
             StartTime = DateTime.UtcNow,
             Status = CompetitionStatus.ORGANIZING,
-            BreakInMinutes = 3,
+            BreakInMinutes = null,
             GameFormat = APBuilder.CreateBasicGameFormat().Get(),
             Competitors = [],
             Matches = [],

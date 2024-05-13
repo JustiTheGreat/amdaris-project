@@ -2,18 +2,12 @@
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitionHandlers;
 using AmdarisProject.Application.Test.ModelBuilders;
-using AmdarisProject.Domain.Models.CompetitionModels;
-using AmdarisProject.Domain.Models;
-using AmdarisProject.Presentation.Test.Tests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Moq;
-using Mapster;
-using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Domain.Models;
+using AmdarisProject.Domain.Models.CompetitionModels;
+using AmdarisProject.Presentation.Test.Tests;
+using Mapster;
+using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.CompetitionTests
 {

@@ -12,7 +12,7 @@ namespace AmdarisProject.Presentation.Test.Tests
     public class PointControllerTests : ControllerTests<PointController>
     {
         [Fact]
-        public async Task Test_AddValueToPointValue_Success()
+        public async Task Test_AddValueToPointValue_OkStatus()
         {
             Setup<AddValueToPointValue, PointGetDTO, AddValueToPointValueHandler>();
             uint pointsToAdd = 1;

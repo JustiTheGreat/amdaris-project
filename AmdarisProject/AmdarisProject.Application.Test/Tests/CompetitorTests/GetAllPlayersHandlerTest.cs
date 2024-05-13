@@ -10,7 +10,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
     public class GetAllPlayersHandlerTest : MockObjectUser
     {
         [Fact]
-        public async Task Test_GetAllTeamsHandler_Success()
+        public async Task Test_GetAllPlayersHandler_Success()
         {
             List<Player> players = [];
             for (int i = 0; i < _numberOfModelsInAList; i++) players.Add(APBuilder.CreateBasicPlayer().Get());
@@ -24,10 +24,14 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             IEnumerable<PlayerDisplayDTO> response = await handler.Handle(command, default);
 
             _competitorRepositoryMock.Verify(o => o.GetAllPlayers(), Times.Once);
-            for (int i = 0; i < _numberOfModelsInAList; i++)
+            Assert.Equal(players.Count, response.Count());
+            for (int i = 0; i < players.Count; i++)
             {
-                Assert.Equal(players.ElementAt(i).Id, response.ElementAt(i).Id);
-                Assert.Equal(players.ElementAt(i).Name, response.ElementAt(i).Name);
+                Player player = players[i];
+                PlayerDisplayDTO playerDisplayDTO = response.ElementAt(i);
+
+                Assert.Equal(player.Id, playerDisplayDTO.Id);
+                Assert.Equal(player.Name, playerDisplayDTO.Name);
             }
         }
     }

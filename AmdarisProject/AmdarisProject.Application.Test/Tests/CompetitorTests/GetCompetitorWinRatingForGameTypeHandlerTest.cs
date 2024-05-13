@@ -12,13 +12,13 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
         [Fact]
         public async Task Test_GetCompetitorWinRatingForGameTypeHandler_Success()
         {
-            Player model = APBuilder.CreateBasicPlayer().Get();
+            Player player = APBuilder.CreateBasicPlayer().Get();
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
-            _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competitor?)model));
+            _competitorRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competitor?)player));
             _matchRepositoryMock.Setup(o => o.GetCompetitorWinRatingForGameType(It.IsAny<Guid>(), It.IsAny<GameType>()))
                 .Returns(Task.FromResult(0.5));
-            GetCompetitorWinRatingForGameType command = new(model.Id, It.IsAny<GameType>());
+            GetCompetitorWinRatingForGameType command = new(player.Id, It.IsAny<GameType>());
             GetCompetitorWinRatingForGameTypeHandler handler = new(_unitOfWorkMock.Object,
                 GetLogger<GetCompetitorWinRatingForGameTypeHandler>());
 

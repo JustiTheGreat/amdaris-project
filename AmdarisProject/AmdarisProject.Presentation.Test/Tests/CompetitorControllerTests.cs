@@ -1,9 +1,7 @@
 ﻿using AmdarisProject.Application.Dtos.CreateDTOs;
 using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
-using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
-using AmdarisProject.Application.Handlers.GameFormatHandlers;
 using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Application.Test.ModelBuilders.CompetitionBuilders;
 using AmdarisProject.Application.Test.ModelBuilders.CompetitorBuilders;
@@ -14,7 +12,6 @@ using AmdarisProject.Presentation.Controllers;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using System.Numerics;
 
 namespace AmdarisProject.Presentation.Test.Tests
 {
@@ -23,7 +20,7 @@ namespace AmdarisProject.Presentation.Test.Tests
         public class PointControllerTests : ControllerTests<CompetitorController>
         {
             [Fact]
-            public async Task Test_GetCompetitorById_Player_Success()
+            public async Task Test_GetCompetitorById_Player_OkStatus()
             {
                 Setup<GetCompetitorById, CompetitorGetDTO, GetCompetitorByIdHandler>();
                 Seed_GetCompetitorById(out Player player);
@@ -46,7 +43,7 @@ namespace AmdarisProject.Presentation.Test.Tests
             }
 
             [Fact]
-            public async Task Test_GetCompetitorById_Team_Success()
+            public async Task Test_GetCompetitorById_Team_OkStatus()
             {
                 Setup<GetCompetitorById, CompetitorGetDTO, GetCompetitorByIdHandler>();
                 Seed_GetCompetitorById(out Team team);
@@ -69,7 +66,7 @@ namespace AmdarisProject.Presentation.Test.Tests
             }
 
             [Fact]
-            public async Task Test_CreatePlayer_Success()
+            public async Task Test_CreatePlayer_OkStatus()
             {
                 Setup<CreatePlayer, PlayerGetDTO, CreatePlayerHandler>();
                 Player player = APBuilder.CreateBasicPlayer().Get();
@@ -84,7 +81,7 @@ namespace AmdarisProject.Presentation.Test.Tests
             }
 
             [Fact]
-            public async Task Test_CreateTeam_Success()
+            public async Task Test_CreateTeam_OkStatus()
             {
                 Setup<CreateTeam, TeamGetDTO, CreateTeamHandler>();
                 Team team = APBuilder.CreateBasicTeam().Get();
@@ -99,7 +96,7 @@ namespace AmdarisProject.Presentation.Test.Tests
             }
 
             [Fact]
-            public async Task Test_GetAllPlayers_Success()
+            public async Task Test_GetAllPlayers_OkStatus()
             {
                 Setup<GetAllPlayers, IEnumerable<PlayerDisplayDTO>, GetAllPlayersHandler>();
                 Seed_GetAllPlayers(out List<Player> players);
@@ -110,10 +107,14 @@ namespace AmdarisProject.Presentation.Test.Tests
                 var response = result?.Value as IEnumerable<PlayerDisplayDTO>;
                 Assert.Equal((int)HttpStatusCode.OK, result!.StatusCode);
                 Assert.NotNull(response);
-                for (int i = 0; i < _numberOfModelsInAList; i++)
+                Assert.Equal(players.Count, response.Count());
+                for (int i = 0; i < players.Count; i++)
                 {
-                    Assert.Equal(players.ElementAt(i).Id, response.ElementAt(i).Id);
-                    Assert.Equal(players.ElementAt(i).Name, response.ElementAt(i).Name);
+                    Player player = players[i];
+                    PlayerDisplayDTO playerDisplayDTO = response.ElementAt(i);
+
+                    Assert.Equal(player.Id, playerDisplayDTO.Id);
+                    Assert.Equal(player.Name, playerDisplayDTO.Name);
                 }
             }
 
@@ -131,7 +132,7 @@ namespace AmdarisProject.Presentation.Test.Tests
             }
 
             [Fact]
-            public async Task Test_GetAllTeams_Success()
+            public async Task Test_GetAllTeams_OkStatus()
             {
                 Setup<GetAllTeams, IEnumerable<TeamDisplayDTO>, GetAllTeamsHandler>();
                 Seed_GetAllTeams(out List<Team> teams);
@@ -142,11 +143,15 @@ namespace AmdarisProject.Presentation.Test.Tests
                 var response = result?.Value as IEnumerable<TeamDisplayDTO>;
                 Assert.Equal((int)HttpStatusCode.OK, result!.StatusCode);
                 Assert.NotNull(response);
-                for (int i = 0; i < _numberOfModelsInAList; i++)
+                Assert.Equal(teams.Count, response.Count());
+                for (int i = 0; i < teams.Count; i++)
                 {
-                    Assert.Equal(teams.ElementAt(i).Id, response.ElementAt(i).Id);
-                    Assert.Equal(teams.ElementAt(i).Name, response.ElementAt(i).Name);
-                    teams.ElementAt(i).Players.ForEach(player => Assert.Contains(player.Name, response.ElementAt(i).PlayerNames));
+                    Team team = teams[i];
+                    TeamDisplayDTO teamDisplayDTO = response.ElementAt(i);
+
+                    Assert.Equal(team.Id, teamDisplayDTO.Id);
+                    Assert.Equal(team.Name, teamDisplayDTO.Name);
+                    team.Players.ForEach(player => Assert.Contains(player.Name, teamDisplayDTO.PlayerNames));
                 }
             }
 
@@ -164,7 +169,7 @@ namespace AmdarisProject.Presentation.Test.Tests
             }
 
             [Fact]
-            public async Task Test_GetPlayersNotInTeam_Success()
+            public async Task Test_GetPlayersNotInTeam_OkStatus()
             {
                 Setup<GetPlayersNotInTeam, IEnumerable<PlayerDisplayDTO>, GetPlayersNotInTeamHandler>();
                 Seed_GetPlayersNotInTeam(out List<Player> playersNotInTeam, out Guid teamId);
@@ -175,10 +180,14 @@ namespace AmdarisProject.Presentation.Test.Tests
                 var response = result?.Value as IEnumerable<PlayerDisplayDTO>;
                 Assert.Equal((int)HttpStatusCode.OK, result!.StatusCode);
                 Assert.NotNull(response);
+                Assert.Equal(playersNotInTeam.Count, response.Count());
                 for (int i = 0; i < playersNotInTeam.Count; i++)
                 {
-                    Assert.Equal(playersNotInTeam.ElementAt(i).Id, response.ElementAt(i).Id);
-                    Assert.Equal(playersNotInTeam.ElementAt(i).Name, response.ElementAt(i).Name);
+                    Player player = playersNotInTeam[i];
+                    PlayerDisplayDTO playerDisplayDTO = response.ElementAt(i);
+
+                    Assert.Equal(player.Id, playerDisplayDTO.Id);
+                    Assert.Equal(player.Name, playerDisplayDTO.Name);
                 }
             }
 
@@ -210,7 +219,7 @@ namespace AmdarisProject.Presentation.Test.Tests
             }
 
             [Fact]
-            public async Task Test_GetPlayersNotInCompetition_Success()
+            public async Task Test_GetPlayersNotInCompetition_OkStatus()
             {
                 Setup<GetPlayersNotInCompetition, IEnumerable<PlayerDisplayDTO>, GetPlayersNotInCompetitionHandler>();
                 Seed_GetPlayersNotInCompetition(out List<Player> playersNotInCompetitions, out Guid teamId);
@@ -221,10 +230,14 @@ namespace AmdarisProject.Presentation.Test.Tests
                 var response = result?.Value as IEnumerable<PlayerDisplayDTO>;
                 Assert.Equal((int)HttpStatusCode.OK, result!.StatusCode);
                 Assert.NotNull(response);
+                Assert.Equal(playersNotInCompetitions.Count, response.Count());
                 for (int i = 0; i < playersNotInCompetitions.Count; i++)
                 {
-                    Assert.Equal(playersNotInCompetitions.ElementAt(i).Id, response.ElementAt(i).Id);
-                    Assert.Equal(playersNotInCompetitions.ElementAt(i).Name, response.ElementAt(i).Name);
+                    Player player = playersNotInCompetitions[i];
+                    PlayerDisplayDTO playerDisplayDTO = response.ElementAt(i);
+
+                    Assert.Equal(player.Id, playerDisplayDTO.Id);
+                    Assert.Equal(player.Name, playerDisplayDTO.Name);
                 }
             }
 
@@ -256,7 +269,7 @@ namespace AmdarisProject.Presentation.Test.Tests
             }
 
             [Fact]
-            public async Task Test_GetTeamsThatCanBeAddedToCompetition_Success()
+            public async Task Test_GetTeamsThatCanBeAddedToCompetition_OkStatus()
             {
                 Setup<GetPlayersNotInCompetition, IEnumerable<PlayerDisplayDTO>, GetPlayersNotInCompetitionHandler>();
                 Seed_GetTeamsThatCanBeAddedToCompetition(out List<Team> teamsThatCanBeAddedToCompetition, out Guid competitionId);
@@ -267,10 +280,14 @@ namespace AmdarisProject.Presentation.Test.Tests
                 var response = result?.Value as IEnumerable<TeamDisplayDTO>;
                 Assert.Equal((int)HttpStatusCode.OK, result!.StatusCode);
                 Assert.NotNull(response);
+                Assert.Equal(teamsThatCanBeAddedToCompetition.Count, response.Count());
                 for (int i = 0; i < teamsThatCanBeAddedToCompetition.Count; i++)
                 {
-                    Assert.Equal(teamsThatCanBeAddedToCompetition.ElementAt(i).Id, response.ElementAt(i).Id);
-                    Assert.Equal(teamsThatCanBeAddedToCompetition.ElementAt(i).Name, response.ElementAt(i).Name);
+                    Team team = teamsThatCanBeAddedToCompetition[i];
+                    TeamDisplayDTO teamDisplayDTO = response.ElementAt(i);
+
+                    Assert.Equal(team.Id, teamDisplayDTO.Id);
+                    Assert.Equal(team.Name, teamDisplayDTO.Name);
                 }
             }
 
