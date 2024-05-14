@@ -1,17 +1,20 @@
+using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.Presentation.Options;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace AmdarisProject.Infrastructure
 {
-    public class AmdarisProjectDBContext(DbContextOptions dbContextOptions, IOptions<ConnectionStrings> options)
-        : DbContext(dbContextOptions)
+    public class AmdarisProjectDBContext(DbContextOptions dbContextOptions, IOptions<ConnectionStrings> connectionStringsOptions)
+        : IdentityDbContext<IdentityUser>(dbContextOptions)
     {
-        private readonly IOptions<IConnectionStrings> _options = options;
+        private readonly string _databaseConnection = connectionStringsOptions.Value.DatabaseConnection;
         public DbSet<Competitor> Competitors { get; set; }
         public DbSet<Competition> Competitions { get; set; }
         public DbSet<GameFormat> GameFormats { get; set; }
@@ -22,11 +25,13 @@ namespace AmdarisProject.Infrastructure
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseSqlServer(_options.Value.DatabaseConnection);
+                optionsBuilder.UseSqlServer(_databaseConnection);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Competition>()
                 .HasDiscriminator<string>("Discriminator")
                 .HasValue<OneVSAllCompetition>(nameof(OneVSAllCompetition))

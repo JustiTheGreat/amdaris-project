@@ -3,26 +3,28 @@ using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Handlers.GameFormatHandlers;
 using AmdarisProject.Presentation.Filters;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AmdarisProject.Presentation.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class GameFormatController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
 
         [HttpPost]
         [ValidateModelState]
-        [ProducesResponseType(typeof(GameFormatGetDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CreateGameFormat([FromBody] GameFormatCreateDTO create)
         {
-            GameFormatGetDTO response = await _mediator.Send(new CreateGameFormat(create));
-            return Ok(response);
+            await _mediator.Send(new CreateGameFormat(create));
+            return Created();
         }
 
         [HttpGet]

@@ -5,12 +5,14 @@ using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.Presentation.Filters;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AmdarisProject.Presentation.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class CompetitorController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
@@ -28,12 +30,12 @@ namespace AmdarisProject.Presentation.Controllers
 
         [HttpPut(nameof(Player))]
         [ValidateModelState]
-        [ProducesResponseType(typeof(PlayerGetDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CreatePlayer([FromBody] CompetitorCreateDTO create)
         {
-            PlayerGetDTO response = await _mediator.Send(new CreatePlayer(create));
-            return Ok(response);
+            await _mediator.Send(new CreatePlayer(create));
+            return Created();
         }
 
         [HttpGet(nameof(Player))]
@@ -69,12 +71,12 @@ namespace AmdarisProject.Presentation.Controllers
 
         [HttpPut(nameof(Team))]
         [ValidateModelState]
-        [ProducesResponseType(typeof(TeamGetDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CreateTeam([FromBody] CompetitorCreateDTO create)
         {
-            TeamGetDTO response = await _mediator.Send(new CreateTeam(create));
-            return Ok(response);
+            await _mediator.Send(new CreateTeam(create));
+            return Created();
         }
 
         [HttpGet(nameof(Team))]

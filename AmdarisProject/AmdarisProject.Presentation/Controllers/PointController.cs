@@ -2,12 +2,14 @@
 using AmdarisProject.handlers.point;
 using AmdarisProject.Presentation.Filters;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AmdarisProject.Presentation.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class PointController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;

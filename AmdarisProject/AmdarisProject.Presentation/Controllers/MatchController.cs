@@ -3,12 +3,14 @@ using AmdarisProject.Application.Handlers.MatchHandlers;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Presentation.Filters;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AmdarisProject.Presentation.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class MatchController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
