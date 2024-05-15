@@ -18,8 +18,8 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             _competitorRepositoryMock.Setup(o => o.GetAllTeams()).Returns(Task.FromResult((IEnumerable<Team>)teams));
             _mapperMock.Setup(o => o.Map<IEnumerable<TeamDisplayDTO>>(It.IsAny<IEnumerable<Team>>()))
                 .Returns(teams.Adapt<IEnumerable<TeamDisplayDTO>>());
-            GetAllTeams command = new();
-            GetAllTeamsHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<GetAllTeamsHandler>());
+            GetPagedTeams command = new();
+            GetPagedTeamsHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<GetPagedTeamsHandler>());
 
             IEnumerable<TeamDisplayDTO> response = await handler.Handle(command, default);
 

@@ -1,6 +1,6 @@
-﻿using AmdarisProject.Application.Dtos.CreateDTOs;
-using AmdarisProject.Application.Dtos.DisplayDTOs;
+﻿using AmdarisProject.Application.Dtos.DisplayDTOs;
 using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
+using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitionHandlers;

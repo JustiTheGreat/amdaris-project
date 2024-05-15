@@ -18,17 +18,22 @@ namespace AmdarisProject.Presentation.Middleware
             catch (APNotFoundException e)
             {
                 LogError(httpContext, e);
-                await CreateResponse(httpContext, $"NotFound: {e.Message}!", StatusCodes.Status404NotFound);
+                await CreateResponse(httpContext, $"NotFound: {e.Message}", StatusCodes.Status404NotFound);
             }
             catch (APArgumentException e)
             {
                 LogError(httpContext, e);
-                await CreateResponse(httpContext, $"BadArgument: {e.Message}!", StatusCodes.Status400BadRequest);
+                await CreateResponse(httpContext, $"BadArgument: {e.Message}", StatusCodes.Status400BadRequest);
             }
             catch (APIllegalStatusException e)
             {
                 LogError(httpContext, e);
-                await CreateResponse(httpContext, $"IllegalStatus: {e.Message}!", StatusCodes.Status400BadRequest);
+                await CreateResponse(httpContext, $"IllegalStatus: {e.Message}", StatusCodes.Status400BadRequest);
+            }
+            catch (APUnauthorizedException e)
+            {
+                LogError(httpContext, e);
+                await CreateResponse(httpContext, $"Unauthorized: {e.Message}", StatusCodes.Status401Unauthorized);
             }
             catch (Exception e)
             {

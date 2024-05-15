@@ -1,6 +1,6 @@
-﻿using AmdarisProject.Application.Dtos.CreateDTOs;
-using AmdarisProject.Application.Dtos.DisplayDTOs;
+﻿using AmdarisProject.Application.Dtos.DisplayDTOs;
 using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
+using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
@@ -13,7 +13,7 @@ using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.handlers.competition;
 using AmdarisProject.handlers.point;
-using AmdarisProject.Infrastructure;
+using AmdarisProject.Infrastructure.Persistance.Contexts;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

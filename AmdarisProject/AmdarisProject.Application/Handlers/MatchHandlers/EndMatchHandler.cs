@@ -1,6 +1,5 @@
-﻿using AmdarisProject.Application.Abstractions;
+﻿using AmdarisProject.Application.Common.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
-using AmdarisProject.Application.Services;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Models;
 using MapsterMapper;

@@ -1,4 +1,5 @@
-﻿using AmdarisProject.Application.Abstractions;
+﻿using AmdarisProject.Application.Common.Abstractions;
+using AmdarisProject.Application.Common.Abstractions.RepositoryAbstractions;
 using AmdarisProject.Presentation;
 using MapsterMapper;
 using Microsoft.Extensions.Logging;

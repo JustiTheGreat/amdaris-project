@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Application.Dtos.CreateDTOs;
+﻿using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitionHandlers;
 using AmdarisProject.Application.Test.ModelBuilders;

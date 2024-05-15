@@ -1,5 +1,5 @@
-﻿using AmdarisProject.Application.Dtos.CreateDTOs;
-using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
+﻿using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
+using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Application.Test.ModelBuilders;
@@ -98,7 +98,7 @@ namespace AmdarisProject.Presentation.Test.Tests
             [Fact]
             public async Task Test_GetAllPlayers_OkStatus()
             {
-                Setup<GetAllPlayers, IEnumerable<PlayerDisplayDTO>, GetAllPlayersHandler>();
+                Setup<GetPagedPlayers, IEnumerable<PlayerDisplayDTO>, GetPagedPlayersHandler>();
                 Seed_GetAllPlayers(out List<Player> players);
 
                 var requestResult = await _controller.GetAllPlayers();
@@ -134,7 +134,7 @@ namespace AmdarisProject.Presentation.Test.Tests
             [Fact]
             public async Task Test_GetAllTeams_OkStatus()
             {
-                Setup<GetAllTeams, IEnumerable<TeamDisplayDTO>, GetAllTeamsHandler>();
+                Setup<GetPagedTeams, IEnumerable<TeamDisplayDTO>, GetPagedTeamsHandler>();
                 Seed_GetAllTeams(out List<Team> teams);
 
                 var requestResult = await _controller.GetAllTeams();

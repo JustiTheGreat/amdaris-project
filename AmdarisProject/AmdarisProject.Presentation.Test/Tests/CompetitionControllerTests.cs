@@ -1,5 +1,5 @@
-﻿using AmdarisProject.Application.Dtos.CreateDTOs;
-using AmdarisProject.Application.Dtos.DisplayDTOs;
+﻿using AmdarisProject.Application.Dtos.DisplayDTOs;
+using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitionHandlers;
 using AmdarisProject.Application.Test.ModelBuilders;
@@ -110,7 +110,7 @@ namespace AmdarisProject.Presentation.Test.Tests
         [Fact]
         public async Task Test_GetAllCompetitions_OkStatus()
         {
-            Setup<GetAllCompetitions, IEnumerable<CompetitionDisplayDTO>, GetAllCompetitionsHandler>();
+            Setup<GetPagedCompetitions, IEnumerable<CompetitionDisplayDTO>, GetPagedCompetitionsHandler>();
             Seed_GetAllCompetitions(out List<Competition> competitions);
 
             var requestResult = await _controller.GetAllCompetitions();

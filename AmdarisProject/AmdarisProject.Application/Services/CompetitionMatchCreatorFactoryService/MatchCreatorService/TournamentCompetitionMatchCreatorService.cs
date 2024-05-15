@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Application.Abstractions;
+﻿using AmdarisProject.Application.Common.Abstractions;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models;

@@ -1,4 +1,6 @@
-﻿using AmdarisProject.Application.Abstractions;
+﻿using AmdarisProject.Application.Common.Abstractions;
+using AmdarisProject.Application.Common.Abstractions.RepositoryAbstractions;
+using AmdarisProject.Infrastructure.Persistance.Contexts;
 
 namespace AmdarisProject.Infrastructure
 {

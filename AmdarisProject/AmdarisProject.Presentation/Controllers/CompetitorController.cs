@@ -1,5 +1,5 @@
-﻿using AmdarisProject.Application.Dtos.CreateDTOs;
-using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
+﻿using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
+using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Domain.Models.CompetitorModels;
@@ -84,7 +84,7 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetAllTeams()
         {
-            IEnumerable<TeamDisplayDTO> response = await _mediator.Send(new GetAllTeams());
+            IEnumerable<TeamDisplayDTO> response = await _mediator.Send(new GetPagedTeams());
             return Ok(response);
         }
 

@@ -1,10 +1,11 @@
-﻿using AmdarisProject.Application.Abstractions;
+﻿using AmdarisProject.Application.Common.Abstractions;
+using AmdarisProject.Application.Common.Abstractions.RepositoryAbstractions;
 using AmdarisProject.Application.Services;
 using AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreatorService;
 using AmdarisProject.Application.Services.CompetitionMatchCreatorServices;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Infrastructure;
-using AmdarisProject.Infrastructure.Repositories;
+using AmdarisProject.Infrastructure.Persistance.Contexts;
 using MapsterMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

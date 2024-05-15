@@ -19,7 +19,7 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
             _mapperMock.Setup(o => o.Map<IEnumerable<GameFormatGetDTO>>(It.IsAny<IEnumerable<GameFormat>>()))
                 .Returns(gameFormats.Adapt<IEnumerable<GameFormatGetDTO>>());
             GetAllGameFormats command = new();
-            GetAllGameFormatsHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<GetAllGameFormatsHandler>());
+            GetPagedGameFormatsHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<GetPagedGameFormatsHandler>());
 
             IEnumerable<GameFormatGetDTO> response = await handler.Handle(command, default);
 
