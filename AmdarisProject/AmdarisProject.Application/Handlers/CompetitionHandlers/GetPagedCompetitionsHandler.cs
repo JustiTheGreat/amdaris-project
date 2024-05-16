@@ -1,22 +1,22 @@
-﻿using AmdarisProject.Application.Common.Abstractions;
+﻿using AmdarisProject.Application.Abstractions;
+using AmdarisProject.Application.Common.Models;
 using AmdarisProject.Application.Dtos.DisplayDTOs;
 using AmdarisProject.Domain.Models.CompetitionModels;
-using MapsterMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using OnlineBookShop.Application.Common.Models;
 
 namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 {
-    public record GetPagedCompetitions(PagedRequest PagedRequest) : IRequest<PaginatedResult<CompetitionDisplayDTO>>;
+    public record GetPaginatedCompetitions(PagedRequest PagedRequest) : IRequest<PaginatedResult<CompetitionDisplayDTO>>;
     public class GetPagedCompetitionsHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GetPagedCompetitionsHandler> logger)
-        : IRequestHandler<GetPagedCompetitions, PaginatedResult<CompetitionDisplayDTO>>
+        : IRequestHandler<GetPaginatedCompetitions, PaginatedResult<CompetitionDisplayDTO>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly ILogger<GetPagedCompetitionsHandler> _logger = logger;
 
-        public async Task<PaginatedResult<CompetitionDisplayDTO>> Handle(GetPagedCompetitions request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<CompetitionDisplayDTO>> Handle(GetPaginatedCompetitions request, CancellationToken cancellationToken)
         {
             IEnumerable<Competition> competitions = await _unitOfWork.CompetitionRepository.GetPagedData(request.PagedRequest);
             IEnumerable<CompetitionDisplayDTO> mapped = _mapper.Map<IEnumerable<CompetitionDisplayDTO>>(competitions);

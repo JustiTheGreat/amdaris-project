@@ -24,8 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AmdarisProject.Application.Test\AmdarisProject.Application.Test.csproj" />
-    <ProjectReference Include="..\AmdarisProject.Domain\AmdarisProject.Domain.csproj" />
     <ProjectReference Include="..\AmdarisProject.Presentation\AmdarisProject.Presentation.csproj" />
   </ItemGroup>
 

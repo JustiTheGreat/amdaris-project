@@ -1,4 +1,5 @@
-﻿using AmdarisProject.Application.Dtos.DisplayDTOs;
+﻿using AmdarisProject.Application.Common.Models;
+using AmdarisProject.Application.Dtos.DisplayDTOs;
 using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
@@ -42,12 +43,12 @@ namespace AmdarisProject.Presentation.Controllers
             return Created();
         }
 
-        [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<CompetitionDisplayDTO>), StatusCodes.Status200OK)]
+        [HttpPost(nameof(GetPaginatedCompetitions))]
+        [ProducesResponseType(typeof(PaginatedResult<CompetitionDisplayDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> GetAllCompetitions()
+        public async Task<ActionResult> GetPaginatedCompetitions([FromBody] PagedRequest pagedRequest)
         {
-            IEnumerable<CompetitionDisplayDTO> response = await _mediator.Send(new GetAllCompetitions());
+            PaginatedResult<CompetitionDisplayDTO> response = await _mediator.Send(new GetPaginatedCompetitions(pagedRequest));
             return Ok(response);
         }
 
@@ -62,7 +63,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpGet("ranking/{competitionId}")]
+        [HttpGet(nameof(GetCompetitionRanking) + "/{competitionId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(IEnumerable<RankingItemDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -73,7 +74,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpGet("winners/{competitionId}")]
+        [HttpGet(nameof(GetCompetitionWinners) + "/{competitionId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(IEnumerable<CompetitorDisplayDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -85,7 +86,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpPut("stop_registration/{competitionId}")]
+        [HttpPut(nameof(StopCompetitionRegistration) + "stop_registration/{competitionId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -97,7 +98,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpPut("start/{competitionId}")]
+        [HttpPut(nameof(StartCompetition) + "/{competitionId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -109,7 +110,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpPut("end/{competitionId}")]
+        [HttpPut(nameof(EndCompetition) + "/{competitionId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -122,7 +123,7 @@ namespace AmdarisProject.Presentation.Controllers
         }
 
 
-        [HttpPut("cancel/{competitionId}")]
+        [HttpPut(nameof(CancelCompetition) + "/{competitionId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -134,7 +135,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpPut("add/{competitionId}/{competitorId}")]
+        [HttpPut(nameof(AddCompetitorToCompetition) + "/{competitionId}/{competitorId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -146,7 +147,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpPut("remove/{competitionId}/{competitorId}")]
+        [HttpPut(nameof(RemoveCompetitorFromCompetition) + "/{competitionId}/{competitorId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

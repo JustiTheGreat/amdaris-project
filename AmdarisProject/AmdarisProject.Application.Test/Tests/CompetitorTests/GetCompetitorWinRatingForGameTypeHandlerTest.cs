@@ -7,7 +7,7 @@ using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.CompetitorTests
 {
-    public class GetCompetitorWinRatingForGameTypeHandlerTest : MockObjectUser
+    public class GetCompetitorWinRatingForGameTypeHandlerTest : ApplicationTestBase
     {
         [Fact]
         public async Task Test_GetCompetitorWinRatingForGameTypeHandler_Success()

@@ -8,7 +8,7 @@ using System.Net;
 
 namespace AmdarisProject.Presentation.Test.Tests
 {
-    public class TeamPlayerControllerTests : ControllerTests<TeamPlayerController>
+    public class TeamPlayerControllerTests : PresentationTestBase<TeamPlayerController>
     {
         [Fact]
         public async Task Test_AddPlayerToTeam_OkStatus()

@@ -10,7 +10,7 @@ using System.Net;
 
 namespace AmdarisProject.Presentation.Test.Tests
 {
-    public class MatchControllerTests : ControllerTests<MatchController>
+    public class MatchControllerTests : PresentationTestBase<MatchController>
     {
         [Fact]
         public async Task Test_GetMatchById_OkStatus()

@@ -1,9 +1,8 @@
-﻿using AmdarisProject.Application.Common.Abstractions.RepositoryAbstractions;
+﻿using AmdarisProject.Application.Abstractions.RepositoryAbstractions;
+using AmdarisProject.Application.Common.Models;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using AmdarisProject.Infrastructure.Persistance.Contexts;
+using AmdarisProject.Infrastructure.Persistance.Extensions;
 using Microsoft.EntityFrameworkCore;
-using OnlineBookShop.Application.Common.Models;
-using OnlineBookShop.Application.Extensions;
 
 namespace AmdarisProject.Infrastructure.Persistance.Repositories
 {

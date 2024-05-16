@@ -24,8 +24,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\AmdarisProject.Application\AmdarisProject.Application.csproj" />
-		<ProjectReference Include="..\AmdarisProject.Infrastructure\AmdarisProject.Infrastructure.csproj" />
+	  <ProjectReference Include="..\AmdarisProject.Application\AmdarisProject.Application.csproj" />
+	  <ProjectReference Include="..\AmdarisProject.TestUtils\AmdarisProject.TestUtils.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

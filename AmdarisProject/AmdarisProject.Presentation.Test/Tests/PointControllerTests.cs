@@ -9,7 +9,7 @@ using System.Net;
 
 namespace AmdarisProject.Presentation.Test.Tests
 {
-    public class PointControllerTests : ControllerTests<PointController>
+    public class PointControllerTests : PresentationTestBase<PointController>
     {
         [Fact]
         public async Task Test_AddValueToPointValue_OkStatus()

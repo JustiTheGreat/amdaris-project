@@ -35,6 +35,11 @@ namespace AmdarisProject.Presentation.Middleware
                 LogError(httpContext, e);
                 await CreateResponse(httpContext, $"Unauthorized: {e.Message}", StatusCodes.Status401Unauthorized);
             }
+            catch (APConflictException e)
+            {
+                LogError(httpContext, e);
+                await CreateResponse(httpContext, $"Conflict: {e.Message}", StatusCodes.Status409Conflict);
+            }
             catch (Exception e)
             {
                 LogError(httpContext, e);

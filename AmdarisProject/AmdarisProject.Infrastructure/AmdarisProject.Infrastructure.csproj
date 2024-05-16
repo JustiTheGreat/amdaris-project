@@ -24,4 +24,8 @@
     <ProjectReference Include="..\AmdarisProject.Domain\AmdarisProject.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Persistance\Contexts\" />
+  </ItemGroup>
+
 </Project>

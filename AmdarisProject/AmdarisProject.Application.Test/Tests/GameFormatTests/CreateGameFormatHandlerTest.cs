@@ -5,23 +5,21 @@ using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
-using Mapster;
-using MapsterMapper;
+using AutoMapper;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.GameFormatTests
 {
-    public class CreateGameFormatHandlerTest : MockObjectUser
+    public class CreateGameFormatHandlerTest : ApplicationTestBase
     {
         [Fact]
         public async Task Test_CreateGameFormatHandler_Success()
         {
             GameFormat gameFormat = APBuilder.CreateBasicGameFormat().Get();
             _mapperMock.Setup(o => o.Map<GameFormat>(It.IsAny<GameFormatCreateDTO>())).Returns(gameFormat);
-            _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.Create(It.IsAny<GameFormat>())).Returns(Task.FromResult(gameFormat));
-            _mapperMock.Setup(o => o.Map<GameFormatGetDTO>(It.IsAny<GameFormat>())).Returns(gameFormat.Adapt<GameFormatGetDTO>());
-            CreateGameFormat command = new(gameFormat.Adapt<GameFormatCreateDTO>());
+            _mapperMock.Setup(o => o.Map<GameFormatGetDTO>(It.IsAny<GameFormat>())).Returns(_mapper.Map<GameFormatGetDTO>(gameFormat));
+            CreateGameFormat command = new(_mapper.Map<GameFormatCreateDTO>(gameFormat));
             CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<CreateGameFormatHandler>());
 
             GameFormatGetDTO response = await handler.Handle(command, default);
@@ -37,8 +35,8 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
         [Fact]
         public async Task Test_CreateGameFormatHandler_WinningConditions_throws_APArgumentException()
         {
-            GameFormatCreateDTO createDTO = APBuilder.CreateBasicGameFormat().SetWinAt(null).SetDurationInMinutes(null).Get().Adapt<GameFormatCreateDTO>();
-            CreateGameFormat command = new(createDTO);
+            GameFormat gameFormat = APBuilder.CreateBasicGameFormat().SetWinAt(null).SetDurationInMinutes(null).Get();
+            CreateGameFormat command = new(_mapper.Map<GameFormatCreateDTO>(gameFormat));
             CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), GetLogger<CreateGameFormatHandler>());
 
             await Assert.ThrowsAsync<APArgumentException>(async () => await handler.Handle(command, default));
@@ -53,10 +51,9 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
 
         [Theory]
         [MemberData(nameof(CompetitorTypeAndTeamSize))]
-        public async Task Test_CreateGameFormatHandler_CompetitorRequirements_throws_APArgumentException(GameFormat model)
+        public async Task Test_CreateGameFormatHandler_CompetitorRequirements_throws_APArgumentException(GameFormat gameFormat)
         {
-            GameFormatCreateDTO createDTO = model.Adapt<GameFormatCreateDTO>();
-            CreateGameFormat command = new(createDTO);
+            CreateGameFormat command = new(_mapper.Map<GameFormatCreateDTO>(gameFormat));
             CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), GetLogger<CreateGameFormatHandler>());
 
             await Assert.ThrowsAsync<APArgumentException>(async () => await handler.Handle(command, default));
@@ -67,8 +64,8 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
         {
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.Create(It.IsAny<GameFormat>())).Throws<Exception>();
-            GameFormatCreateDTO createDTO = APBuilder.CreateBasicGameFormat().Get().Adapt<GameFormatCreateDTO>();
-            CreateGameFormat command = new(createDTO);
+            GameFormat gameFormat = APBuilder.CreateBasicGameFormat().Get();
+            CreateGameFormat command = new(_mapper.Map<GameFormatCreateDTO>(gameFormat));
             CreateGameFormatHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object, GetLogger<CreateGameFormatHandler>());
 
             await Assert.ThrowsAsync<Exception>(async () => await handler.Handle(command, default));

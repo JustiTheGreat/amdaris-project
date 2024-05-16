@@ -1,8 +1,8 @@
-﻿using AmdarisProject.Application.Common.Abstractions;
+﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using MapsterMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

@@ -26,7 +26,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpPut("start/{matchId}")]
+        [HttpPut(nameof(StartMatch) + "/{matchId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(MatchGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -38,7 +38,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpPut("end/{matchId}")]
+        [HttpPut(nameof(EndMatch) + "/{matchId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(MatchGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -50,7 +50,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpPut("cancel/{matchId}")]
+        [HttpPut(nameof(CancelMatch) + "/{matchId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(MatchGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

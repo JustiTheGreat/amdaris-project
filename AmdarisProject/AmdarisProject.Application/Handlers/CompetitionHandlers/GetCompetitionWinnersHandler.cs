@@ -1,12 +1,11 @@
-﻿using AmdarisProject.Application.Common.Abstractions;
+﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
-using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using MapsterMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -43,7 +42,6 @@ namespace AmdarisProject.handlers.competition
             {
                 for (int j = i + 1; j < firstPlaceCompetitors.Count(); j++)
                 {
-                    //TODO call the repository or navigate on the object?
                     Match? match = await _unitOfWork.MatchRepository.GetMatchByCompetitionAndTheTwoCompetitors(competition.Id,
                         firstPlaceCompetitors.ElementAt(i).Id, firstPlaceCompetitors.ElementAt(j).Id);
 

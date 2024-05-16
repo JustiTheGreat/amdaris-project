@@ -1,10 +1,10 @@
-﻿using AmdarisProject.Domain.Models;
+﻿using AmdarisProject.Application.Common.Models;
+using AmdarisProject.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using OnlineBookShop.Application.Common.Models;
 using System.Linq.Dynamic.Core;
 using System.Text;
 
-namespace OnlineBookShop.Application.Extensions
+namespace AmdarisProject.Infrastructure.Persistance.Extensions
 {
     public static class QueryableExtensions
     {
@@ -29,7 +29,7 @@ namespace OnlineBookShop.Application.Extensions
                 if (i > 0)
                     predicate.Append($" {requestFilters.LogicalOperator} ");
 
-                predicate.Append(requestFilters.Filters[i].Path + $".{nameof(string.Contains)}(@{i})");
+                predicate.Append($"{requestFilters.Filters[i].Path}.{nameof(string.Contains)}(@{i})");
             }
 
             if (requestFilters.Filters.Any())

@@ -1,5 +1,5 @@
-﻿using AmdarisProject.Application.Common.Abstractions;
-using AmdarisProject.Application.Common.Abstractions.RepositoryAbstractions;
+﻿using AmdarisProject.Application.Abstractions;
+using AmdarisProject.Application.Abstractions.RepositoryAbstractions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using Microsoft.Extensions.Logging;

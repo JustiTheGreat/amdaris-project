@@ -1,11 +1,34 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using AmdarisProject.Application;
+using AmdarisProject.Application.Extensions;
+using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Infrastructure.Persistance.Extensions;
+using AmdarisProject.Presentation.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 
 namespace AmdarisProject.Presentation.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddSwaggerWithAuthorization(this IServiceCollection serviceCollection)
+        public static void AddServices(this WebApplicationBuilder builder)
+        {
+            JwtSettings jwtSettings = builder.Configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>()
+                ?? throw new AmdarisProjectException("Missing JWT settings!");
+
+            builder.Services.AddControllers();
+            builder.Services
+                .AddEndpointsApiExplorer()
+                .AddSwaggerWithAuthorization()
+                .AddAuthenticationService(jwtSettings)
+                .AddInfrastructure()
+                .AddApplication()
+                .AddAutoMapper(typeof(AutoMapperProfileAssemblyMarker))
+                .Configure<ConnectionStrings>(builder.Configuration.GetSection(nameof(ConnectionStrings)))
+                .Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
+
+        }
+
+        private static IServiceCollection AddSwaggerWithAuthorization(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddSwaggerGen(options =>
             {
@@ -36,7 +59,7 @@ namespace AmdarisProject.Presentation.Extensions
             return serviceCollection;
         }
 
-        public static IServiceCollection AddAuthenticationService(this IServiceCollection serviceCollection, JwtSettings jwtSettings)
+        private static IServiceCollection AddAuthenticationService(this IServiceCollection serviceCollection, JwtSettings jwtSettings)
         {
             serviceCollection
                 .AddAuthentication(authentication =>

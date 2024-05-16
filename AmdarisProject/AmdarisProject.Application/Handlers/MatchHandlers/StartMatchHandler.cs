@@ -1,10 +1,10 @@
-﻿using AmdarisProject.Application.Common.Abstractions;
+﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using MapsterMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -125,7 +125,6 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
 
         private async Task UpdateUnstartedMatchesStartTimes(Match match)
         {
-            //TODO call the repository or navigate on the object?
             IEnumerable<Match> matches = await _unitOfWork.MatchRepository
                 .GetNotStartedByCompetitionOrderedByStartTime(match.Competition.Id);
             int i = 0;

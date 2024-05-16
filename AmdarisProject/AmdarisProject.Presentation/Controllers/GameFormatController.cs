@@ -1,4 +1,5 @@
-﻿using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
+﻿using AmdarisProject.Application.Common.Models;
+using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Handlers.GameFormatHandlers;
 using AmdarisProject.Presentation.Filters;
@@ -27,12 +28,12 @@ namespace AmdarisProject.Presentation.Controllers
             return Created();
         }
 
-        [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<GameFormatGetDTO>), StatusCodes.Status200OK)]
+        [HttpPost(nameof(GetPaginatedGameFormats))]
+        [ProducesResponseType(typeof(PaginatedResult<GameFormatGetDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> GetAllGameFormats()
+        public async Task<ActionResult> GetPaginatedGameFormats([FromBody] PagedRequest pagedRequest)
         {
-            IEnumerable<GameFormatGetDTO> response = await _mediator.Send(new GetAllGameFormats());
+            PaginatedResult<GameFormatGetDTO> response = await _mediator.Send(new GetPaginatedGameFormats(pagedRequest));
             return Ok(response);
         }
     }

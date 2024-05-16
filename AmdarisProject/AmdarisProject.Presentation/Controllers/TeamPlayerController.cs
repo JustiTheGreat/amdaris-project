@@ -14,7 +14,7 @@ namespace AmdarisProject.Presentation.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
-        [HttpPost("{playerId}/{teamId}")]
+        [HttpPost(nameof(AddPlayerToTeam) + "{playerId}/{teamId}")]
         [ValidateGuid]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -26,7 +26,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Created();
         }
 
-        [HttpPut("{playerId}/{teamId}")]
+        [HttpPut(nameof(ChangeTeamPlayerStatus) + "{playerId}/{teamId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(TeamPlayerGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -38,7 +38,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpDelete("{playerId}/{teamId}")]
+        [HttpDelete(nameof(RemovePlayerFromTeam) + "{playerId}/{teamId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

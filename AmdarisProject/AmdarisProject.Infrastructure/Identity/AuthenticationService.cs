@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Application.Common.Abstractions;
+﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.RequestDTOs;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Presentation;
@@ -19,11 +19,15 @@ namespace AmdarisProject.Infrastructure.Identity
 
         public async Task<string> Register(UserRegisterDTO userRegisterDTO)
         {
+            if (await _userManager.FindByEmailAsync(userRegisterDTO.Email) is not null)
+                throw new APConflictException("Email already in use!");
+
             var identity = new IdentityUser
             {
                 Email = userRegisterDTO.Email,
                 UserName = userRegisterDTO.Email
             };
+
             await _userManager.CreateAsync(identity, userRegisterDTO.Password);
 
             var claims = new List<Claim>() {
@@ -58,7 +62,7 @@ namespace AmdarisProject.Infrastructure.Identity
         public async Task<string> Login(UserLoginDTO userLoginDTO)
         {
             IdentityUser user = await _userManager.FindByEmailAsync(userLoginDTO.Email)
-                ?? throw new APArgumentException(nameof(userLoginDTO.Email));
+                ?? throw new APNotFoundException(nameof(userLoginDTO.Email));
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, userLoginDTO.Password, false);
 

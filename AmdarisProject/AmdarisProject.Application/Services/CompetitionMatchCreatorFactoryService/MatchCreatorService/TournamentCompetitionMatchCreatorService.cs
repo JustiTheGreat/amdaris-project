@@ -1,6 +1,5 @@
-﻿using AmdarisProject.Application.Common.Abstractions;
+﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Domain.Exceptions;
-using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;

@@ -13,12 +13,14 @@ using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.handlers.competition;
 using AmdarisProject.handlers.point;
-using AmdarisProject.Infrastructure.Persistance.Contexts;
+using AmdarisProject.Infrastructure;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AmdarisProject.Presentation.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     [Route("[controller]")]
     public class ATestController(IMediator mediator, AmdarisProjectDBContext amdarisProjectDBContext) : ControllerBase

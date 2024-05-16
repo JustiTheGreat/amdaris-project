@@ -1,4 +1,5 @@
 ﻿using AmdarisProject.Domain.Enums;
+using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 
@@ -19,5 +20,14 @@ namespace AmdarisProject.Domain.Models
         public required uint? StageLevel { get; set; }
         public required uint? StageIndex { get; set; }
         public virtual required List<Point> Points { get; set; } = [];
+
+        public Competitor? GetWinner()
+            => Status is MatchStatus.SPECIAL_WIN_COMPETITOR_ONE ? CompetitorOne
+            : Status is MatchStatus.SPECIAL_WIN_COMPETITOR_TWO ? CompetitorTwo
+            : Status is MatchStatus.FINISHED ?
+                CompetitorOnePoints > CompetitorTwoPoints ? CompetitorOne
+                : CompetitorOnePoints < CompetitorTwoPoints ? CompetitorTwo
+                : null
+            : throw new APIllegalStatusException(Status);
     }
 }

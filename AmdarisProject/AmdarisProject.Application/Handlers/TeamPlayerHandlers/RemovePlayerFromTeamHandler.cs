@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Application.Common.Abstractions;
+﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using MediatR;

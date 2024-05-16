@@ -11,8 +11,8 @@ namespace AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs
         public required GameType GameType { get; set; }
         [Required(ErrorMessage = "Competitor type is required")]
         public required CompetitorType CompetitorType { get; set; }
-        public uint? TeamSize { get; set; }
-        public uint? WinAt { get; set; }
-        public ulong? DurationInMinutes { get; set; }
+        public required uint? TeamSize { get; set; }
+        public required uint? WinAt { get; set; }
+        public required ulong? DurationInMinutes { get; set; }
     }
 }

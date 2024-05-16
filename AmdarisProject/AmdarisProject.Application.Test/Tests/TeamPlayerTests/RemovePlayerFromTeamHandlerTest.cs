@@ -6,7 +6,7 @@ using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
 {
-    public class RemovePlayerFromTeamHandlerTest : MockObjectUser
+    public class RemovePlayerFromTeamHandlerTest : ApplicationTestBase
     {
         [Fact]
         public async Task Test_RemovePlayerFromTeamHandlerTest_Success()
