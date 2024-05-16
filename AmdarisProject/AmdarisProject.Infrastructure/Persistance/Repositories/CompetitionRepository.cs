@@ -1,5 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions.RepositoryAbstractions;
 using AmdarisProject.Domain.Models.CompetitionModels;
+using AmdarisProject.Infrastructure.Persistance.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace AmdarisProject.Infrastructure.Persistance.Repositories

@@ -1,30 +1,41 @@
-﻿using AmdarisProject.Application.Abstractions;
+﻿using AmdarisProject.Application;
+using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Abstractions.RepositoryAbstractions;
+using AmdarisProject.Application.Common.Models;
 using AmdarisProject.Application.Services;
 using AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryService.MatchCreatorService;
 using AmdarisProject.Application.Services.CompetitionMatchCreatorServices;
+using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Models;
-using AmdarisProject.Infrastructure;
 using AmdarisProject.Infrastructure.Persistance;
+using AmdarisProject.Infrastructure.Persistance.Contexts;
 using AmdarisProject.Infrastructure.Persistance.Repositories;
+using AmdarisProject.TestUtils;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace AmdarisProject.Presentation.Test.Tests
 {
     public abstract class PresentationTestBase<CONTROLLER> where CONTROLLER : class
     {
+        protected readonly IMapper _mapper = AutoMapperConfiguration.GetMapper();
         protected readonly int _numberOfModelsInAList = 5;
+        protected readonly PagedRequest _pagedRequest;
 
         protected AmdarisProjectDBContext _dbContext;
         protected CONTROLLER _controller;
 
-        private static bool _mapsterWasConfigured = false;
-
         protected PresentationTestBase()
         {
+            _pagedRequest = new PagedRequest()
+            {
+                PageIndex = 0,
+                PageSize = _numberOfModelsInAList,
+                ColumnNameForSorting = string.Empty,
+                SortDirection = SortDirection.ASC,
+            };
         }
 
         protected void Setup<RECORD, RETURN, HANDLER>()
@@ -33,20 +44,21 @@ namespace AmdarisProject.Presentation.Test.Tests
         {
             using AmdarisProjectDBContextBuilder builder = new();
             _dbContext = builder.GetContext();
-            IUnitOfWork unitOfWork = GetUnitOfWork(_dbContext);
             ServiceProvider serviceProvider = new ServiceCollection()
                 .AddMediatR(configuration =>
-                   configuration.RegisterServicesFromAssemblies(Assembly.Load("AmdarisProject.Application")))//TODO assembly
-                //.AddScoped<IMapper>(sp => new Mapper(MapsterConfiguration.GetMapsterConfiguration()))
-                .AddLogging()
-                .AddSingleton(sp => unitOfWork)
-                .AddScoped<IEndMatchService, EndMatchService>()
+                    configuration.RegisterServicesFromAssemblies(typeof(HandlerAssemblyMarker).Assembly))
+                .AddScoped<ICompetitionRankingService, CompetionRankingService>()
                 .AddScoped<ICompetitionMatchCreatorFactoryService, CompetitionMatchCreatorFactoryService>()
                 .AddScoped<IOneVsAllCompetitionMatchCreatorService, OneVsAllCompetitionMatchCreatorService>()
                 .AddScoped<ITournamentCompetitionMatchCreatorService, TournamentCompetitionMatchCreatorService>()
+                .AddScoped<IEndMatchService, EndMatchService>()
+                .AddSingleton<IUnitOfWork>(GetUnitOfWork(_dbContext))
+                .AddAutoMapper(typeof(AutoMapperProfileAssemblyMarker))
+                .AddLogging()
                 .AddScoped<IRequestHandler<RECORD, RETURN>, HANDLER>()
                 .AddScoped<CONTROLLER>()
                 .BuildServiceProvider();
+
             _controller = serviceProvider.GetRequiredService<CONTROLLER>();
         }
 

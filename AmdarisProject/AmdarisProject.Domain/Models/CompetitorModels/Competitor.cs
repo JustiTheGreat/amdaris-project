@@ -1,5 +1,4 @@
-﻿using AmdarisProject.Domain.Enums;
-using AmdarisProject.Domain.Models.CompetitionModels;
+﻿using AmdarisProject.Domain.Models.CompetitionModels;
 
 namespace AmdarisProject.Domain.Models.CompetitorModels
 {

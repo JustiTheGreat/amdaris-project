@@ -10,10 +10,10 @@ namespace AmdarisProject.Application.Profiles
         public MatchProfile()
         {
             CreateMap<Match, MatchDisplayDTO>()
-                    .ForMember(dest => dest.CompetitorOneName, opt => opt.MapFrom(src => src.CompetitorOne.Name))
-                    .ForMember(dest => dest.CompetitorTwoName, opt => opt.MapFrom(src => src.CompetitorTwo.Name))
-                    .ForMember(dest => dest.CompetitionName, opt => opt.MapFrom(src => src.Competition.Name))
-                    .ForMember(dest => dest.WinnerName, opt => opt.MapFrom(src => src.Winner == null ? null : src.Winner.Name));
+                .ForMember(dest => dest.CompetitorOneName, opt => opt.MapFrom(src => src.CompetitorOne.Name))
+                .ForMember(dest => dest.CompetitorTwoName, opt => opt.MapFrom(src => src.CompetitorTwo.Name))
+                .ForMember(dest => dest.CompetitionName, opt => opt.MapFrom(src => src.Competition.Name))
+                .ForMember(dest => dest.WinnerName, opt => opt.MapFrom(src => src.Winner == null ? null : src.Winner.Name));
 
             CreateMap<Match, MatchGetDTO>();
         }

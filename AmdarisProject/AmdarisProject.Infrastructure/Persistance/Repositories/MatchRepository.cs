@@ -2,6 +2,7 @@
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitorModels;
+using AmdarisProject.Infrastructure.Persistance.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace AmdarisProject.Infrastructure.Persistance.Repositories

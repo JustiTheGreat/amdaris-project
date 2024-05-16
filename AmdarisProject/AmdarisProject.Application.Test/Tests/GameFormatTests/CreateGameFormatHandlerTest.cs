@@ -1,10 +1,10 @@
 ﻿using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Handlers.GameFormatHandlers;
-using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
+using AmdarisProject.TestUtils.ModelBuilders;
 using AutoMapper;
 using Moq;
 
@@ -62,7 +62,6 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
         [Fact]
         public async Task Test_CreateGameFormatHandler_RollbackIsCalled_throws_Exception()
         {
-            _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
             _gameFormatRepositoryMock.Setup(o => o.Create(It.IsAny<GameFormat>())).Throws<Exception>();
             GameFormat gameFormat = APBuilder.CreateBasicGameFormat().Get();
             CreateGameFormat command = new(_mapper.Map<GameFormatCreateDTO>(gameFormat));

@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AmdarisProject.Presentation\AmdarisProject.Presentation.csproj" />
+    <ProjectReference Include="..\AmdarisProject.TestUtils\AmdarisProject.TestUtils.csproj" />
   </ItemGroup>
 
   <ItemGroup>

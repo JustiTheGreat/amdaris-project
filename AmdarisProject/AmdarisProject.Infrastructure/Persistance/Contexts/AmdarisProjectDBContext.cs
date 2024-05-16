@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace AmdarisProject.Infrastructure
+namespace AmdarisProject.Infrastructure.Persistance.Contexts
 {
     public class AmdarisProjectDBContext(DbContextOptions dbContextOptions, IOptions<ConnectionStrings> connectionStringsOptions)
         : IdentityDbContext<IdentityUser>(dbContextOptions)

@@ -13,7 +13,7 @@ using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.handlers.competition;
 using AmdarisProject.handlers.point;
-using AmdarisProject.Infrastructure;
+using AmdarisProject.Infrastructure.Persistance.Contexts;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,13 +37,17 @@ namespace AmdarisProject.Presentation.Controllers
             await _amdarisProjectDBContext.Database.EnsureCreatedAsync();
 
             uint myTeamSize = 2;
+            uint myWinAt = 3;
+            uint myDurationInMinutes = 5;
 
             Guid pingPongPlayer = _mediator.Send(new CreateGameFormat(new GameFormatCreateDTO()
             {
                 Name = "PingPongPlayerWinAt3",
                 GameType = GameType.PING_PONG,
                 CompetitorType = CompetitorType.PLAYER,
-                WinAt = 3,
+                TeamSize = null,
+                WinAt = myWinAt,
+                DurationInMinutes = null
             })).Result.Id;
 
             Guid pingPongTeam = _mediator.Send(new CreateGameFormat(new GameFormatCreateDTO()
@@ -52,7 +56,8 @@ namespace AmdarisProject.Presentation.Controllers
                 GameType = GameType.PING_PONG,
                 CompetitorType = CompetitorType.TEAM,
                 TeamSize = myTeamSize,
-                WinAt = 3,
+                WinAt = myWinAt,
+                DurationInMinutes = null
             })).Result.Id;
 
             Guid pingPongTeamTimed = _mediator.Send(new CreateGameFormat(new GameFormatCreateDTO()
@@ -62,7 +67,7 @@ namespace AmdarisProject.Presentation.Controllers
                 CompetitorType = CompetitorType.TEAM,
                 TeamSize = myTeamSize,
                 WinAt = 3,
-                DurationInMinutes = 5,
+                DurationInMinutes = myDurationInMinutes,
             })).Result.Id;
 
             Guid player1Id = _mediator.Send(new CreatePlayer(new CompetitorCreateDTO() { Name = "Player1" })).Result.Id;

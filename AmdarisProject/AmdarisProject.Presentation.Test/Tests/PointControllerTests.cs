@@ -1,9 +1,9 @@
 ﻿using AmdarisProject.Application.Dtos.ResponseDTOs;
-using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.handlers.point;
 using AmdarisProject.Presentation.Controllers;
+using AmdarisProject.TestUtils.ModelBuilders;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 

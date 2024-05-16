@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Infrastructure;
+﻿using AmdarisProject.Infrastructure.Persistance.Contexts;
 using AmdarisProject.Presentation.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -14,9 +14,9 @@ namespace AmdarisProject.Presentation.Test
         {
             DbContextOptions options = new DbContextOptionsBuilder<AmdarisProjectDBContext>()
                 .UseInMemoryDatabase(databaseName: dbName)
-                .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
                 .Options;
+
             _dbContext = new AmdarisProjectDBContext(options, GetConnectionStringsOptions());
         }
 

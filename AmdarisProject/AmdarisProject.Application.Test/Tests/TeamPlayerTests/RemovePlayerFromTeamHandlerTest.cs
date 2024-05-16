@@ -1,7 +1,7 @@
 ﻿using AmdarisProject.Application.Handlers.TeamPlayerHandlers;
-using AmdarisProject.Application.Test.ModelBuilders;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
+using AmdarisProject.TestUtils.ModelBuilders;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
@@ -12,8 +12,6 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
         public async Task Test_RemovePlayerFromTeamHandlerTest_Success()
         {
             TeamPlayer teamPlayer = APBuilder.CreateBasicTeamPlayer().Get();
-            _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
-            _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _teamPlayerRepositoryMock.Setup(o => o.GetByTeamAndPlayer(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .Returns(Task.FromResult((TeamPlayer?)teamPlayer));
             _matchRepositoryMock.Setup(o => o.CompetitorIsInAStartedMatch(It.IsAny<Guid>())).Returns(Task.FromResult(false));
@@ -30,7 +28,6 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
         public async Task Test_RemovePlayerFromTeamHandlerTest_TeamPlayerNotFound_throws_APNotFoundException()
         {
             TeamPlayer teamPlayer = APBuilder.CreateBasicTeamPlayer().Get();
-            _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
             _teamPlayerRepositoryMock.Setup(o => o.GetByTeamAndPlayer(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .Returns(Task.FromResult((TeamPlayer?)null));
             RemovePlayerFromTeam command = new(teamPlayer.Team.Id, teamPlayer.Player.Id);
@@ -43,8 +40,6 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
         public async Task Test_RemovePlayerFromTeamHandlerTest_TeamIsInAStartedMatch_throws_AmdarisProjectException()
         {
             TeamPlayer teamPlayer = APBuilder.CreateBasicTeamPlayer().Get();
-            _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
-            _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _teamPlayerRepositoryMock.Setup(o => o.GetByTeamAndPlayer(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .Returns(Task.FromResult((TeamPlayer?)teamPlayer));
             _matchRepositoryMock.Setup(o => o.CompetitorIsInAStartedMatch(It.IsAny<Guid>())).Returns(Task.FromResult(true));
@@ -58,8 +53,6 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
         public async Task Test_RemovePlayerFromTeamHandlerTest_RollbackIsCalled_throws_Exception()
         {
             TeamPlayer teamPlayer = APBuilder.CreateBasicTeamPlayer().Get();
-            _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
-            _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _teamPlayerRepositoryMock.Setup(o => o.GetByTeamAndPlayer(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .Returns(Task.FromResult((TeamPlayer?)teamPlayer));
             _matchRepositoryMock.Setup(o => o.CompetitorIsInAStartedMatch(It.IsAny<Guid>())).Returns(Task.FromResult(false));

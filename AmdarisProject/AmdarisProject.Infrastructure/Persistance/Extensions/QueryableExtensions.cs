@@ -16,7 +16,7 @@ namespace AmdarisProject.Infrastructure.Persistance.Extensions
             => query.Skip(pagedRequest.PageIndex * pagedRequest.PageSize).Take(pagedRequest.PageSize);
 
         private static IQueryable<T> Sort<T>(this IQueryable<T> query, PagedRequest pagedRequest)
-            => string.IsNullOrWhiteSpace(pagedRequest.ColumnNameForSorting) ? query
+            => string.IsNullOrEmpty(pagedRequest.ColumnNameForSorting) ? query
                 : query.OrderBy(pagedRequest.ColumnNameForSorting + " " + pagedRequest.SortDirection);
 
         private static IQueryable<T> ApplyFilters<T>(this IQueryable<T> query, PagedRequest pagedRequest)

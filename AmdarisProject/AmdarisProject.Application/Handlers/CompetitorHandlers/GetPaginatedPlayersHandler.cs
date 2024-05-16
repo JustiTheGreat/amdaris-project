@@ -9,16 +9,16 @@ using Microsoft.Extensions.Logging;
 namespace AmdarisProject.Application.Handlers.CompetitorHandlers
 {
     public record GetPaginatedPlayers(PagedRequest PagedRequest) : IRequest<PaginatedResult<PlayerDisplayDTO>>;
-    public class GetPagedPlayersHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GetPagedPlayersHandler> logger)
+    public class GetPaginatedPlayersHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GetPaginatedPlayersHandler> logger)
         : IRequestHandler<GetPaginatedPlayers, PaginatedResult<PlayerDisplayDTO>>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
-        private readonly ILogger<GetPagedPlayersHandler> _logger = logger;
+        private readonly ILogger<GetPaginatedPlayersHandler> _logger = logger;
 
         public async Task<PaginatedResult<PlayerDisplayDTO>> Handle(GetPaginatedPlayers request, CancellationToken cancellationToken)
         {
-            IEnumerable<Player> players = await _unitOfWork.CompetitorRepository.GetPagedPlayers(request.PagedRequest);
+            IEnumerable<Player> players = await _unitOfWork.CompetitorRepository.GetPaginatedPlayers(request.PagedRequest);
             IEnumerable<PlayerDisplayDTO> mapped = _mapper.Map<IEnumerable<PlayerDisplayDTO>>(players);
             PaginatedResult<PlayerDisplayDTO> response = new()
             {

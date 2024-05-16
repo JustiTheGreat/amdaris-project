@@ -9,15 +9,16 @@ namespace AmdarisProject.Presentation.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [AllowAnonymous]
+    [ValidateModelState]
     public class UserController(IMediator mediator)
         : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
 
-        [AllowAnonymous]
+
         [HttpPost]
         [Route(nameof(Register))]
-        [ValidateModelState]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

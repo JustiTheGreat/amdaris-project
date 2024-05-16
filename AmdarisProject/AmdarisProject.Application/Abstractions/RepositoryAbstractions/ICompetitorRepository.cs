@@ -9,9 +9,9 @@ namespace AmdarisProject.Application.Abstractions.RepositoryAbstractions
 
         Task<IEnumerable<Player>> GetAllPlayers();
 
-        Task<IEnumerable<Player>> GetPagedPlayers(PagedRequest pagedRequest);
+        Task<IEnumerable<Player>> GetPaginatedPlayers(PagedRequest pagedRequest);
 
-        Task<IEnumerable<Team>> GetPagedTeams(PagedRequest pagedRequest);
+        Task<IEnumerable<Team>> GetPaginatedTeams(PagedRequest pagedRequest);
 
         Task<Player?> GetPlayerById(Guid id);
 

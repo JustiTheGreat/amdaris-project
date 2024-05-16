@@ -1,6 +1,7 @@
 ﻿using AmdarisProject.Application.Abstractions.RepositoryAbstractions;
 using AmdarisProject.Application.Common.Models;
 using AmdarisProject.Domain.Models.CompetitorModels;
+using AmdarisProject.Infrastructure.Persistance.Contexts;
 using AmdarisProject.Infrastructure.Persistance.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,10 +38,10 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
         public async Task<IEnumerable<Team>> GetAllTeams()
             => await _dbContext.Set<Team>().ToListAsync();
 
-        public async Task<IEnumerable<Player>> GetPagedPlayers(PagedRequest pagedRequest)
+        public async Task<IEnumerable<Player>> GetPaginatedPlayers(PagedRequest pagedRequest)
             => await _dbContext.Set<Player>().CreatePaginatedResultAsync(pagedRequest);
 
-        public async Task<IEnumerable<Team>> GetPagedTeams(PagedRequest pagedRequest)
+        public async Task<IEnumerable<Team>> GetPaginatedTeams(PagedRequest pagedRequest)
             => await _dbContext.Set<Team>().CreatePaginatedResultAsync(pagedRequest);
 
         public async Task<bool> PlayerIsInATeam(Guid playerId)

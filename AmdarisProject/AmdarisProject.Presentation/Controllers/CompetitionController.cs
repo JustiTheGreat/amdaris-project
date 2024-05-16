@@ -16,7 +16,7 @@ namespace AmdarisProject.Presentation.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
+    [Authorize(Roles = nameof(UserRole.Administrator))]
     public class CompetitionController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
@@ -44,6 +44,7 @@ namespace AmdarisProject.Presentation.Controllers
         }
 
         [HttpPost(nameof(GetPaginatedCompetitions))]
+        [ValidateModelState]
         [ProducesResponseType(typeof(PaginatedResult<CompetitionDisplayDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetPaginatedCompetitions([FromBody] PagedRequest pagedRequest)

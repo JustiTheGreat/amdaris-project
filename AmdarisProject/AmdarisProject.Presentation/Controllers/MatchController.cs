@@ -10,7 +10,7 @@ namespace AmdarisProject.Presentation.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
+    [Authorize(Roles = nameof(UserRole.Administrator))]
     public class MatchController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;

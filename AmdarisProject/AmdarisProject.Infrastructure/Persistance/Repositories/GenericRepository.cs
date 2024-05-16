@@ -2,6 +2,7 @@
 using AmdarisProject.Application.Common.Models;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
+using AmdarisProject.Infrastructure.Persistance.Contexts;
 using AmdarisProject.Infrastructure.Persistance.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,7 +43,7 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
         public async Task<IEnumerable<T>> GetAll()
             => await _dbContext.Set<T>().ToListAsync();
 
-        public async Task<IEnumerable<T>> GetPagedData(PagedRequest pagedRequest)
+        public async Task<IEnumerable<T>> GetPaginatedData(PagedRequest pagedRequest)
             => await _dbContext.Set<T>().CreatePaginatedResultAsync<T>(pagedRequest);
 
         public async Task Delete(Guid id)

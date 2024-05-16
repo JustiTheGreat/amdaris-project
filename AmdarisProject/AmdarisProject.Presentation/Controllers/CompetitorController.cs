@@ -13,7 +13,7 @@ namespace AmdarisProject.Presentation.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
+    [Authorize(Roles = nameof(UserRole.Administrator))]
     public class CompetitorController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
@@ -40,6 +40,7 @@ namespace AmdarisProject.Presentation.Controllers
         }
 
         [HttpPost(nameof(GetPaginatedPlayers))]
+        [ValidateModelState]
         [ProducesResponseType(typeof(PaginatedResult<PlayerDisplayDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetPaginatedPlayers([FromBody] PagedRequest pagedRequest)
@@ -81,6 +82,7 @@ namespace AmdarisProject.Presentation.Controllers
         }
 
         [HttpPost(nameof(GetPaginatedTeams))]
+        [ValidateModelState]
         [ProducesResponseType(typeof(PaginatedResult<TeamDisplayDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetPaginatedTeams([FromBody] PagedRequest pagedRequest)

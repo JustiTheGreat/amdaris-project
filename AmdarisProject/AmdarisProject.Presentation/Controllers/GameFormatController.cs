@@ -11,7 +11,7 @@ namespace AmdarisProject.Presentation.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
+    [Authorize(Roles = nameof(UserRole.Administrator))]
     public class GameFormatController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
@@ -29,6 +29,7 @@ namespace AmdarisProject.Presentation.Controllers
         }
 
         [HttpPost(nameof(GetPaginatedGameFormats))]
+        [ValidateModelState]
         [ProducesResponseType(typeof(PaginatedResult<GameFormatGetDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetPaginatedGameFormats([FromBody] PagedRequest pagedRequest)

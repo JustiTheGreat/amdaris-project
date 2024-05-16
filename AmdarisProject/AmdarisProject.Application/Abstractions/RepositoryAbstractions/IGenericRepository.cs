@@ -8,7 +8,7 @@ namespace AmdarisProject.Application.Abstractions.RepositoryAbstractions
         Task<T?> GetById(Guid id);
         Task<IEnumerable<T>> GetByIds(IEnumerable<Guid> ids);
         Task<IEnumerable<T>> GetAll();
-        Task<IEnumerable<T>> GetPagedData(PagedRequest pagedRequest);
+        Task<IEnumerable<T>> GetPaginatedData(PagedRequest pagedRequest);
         Task Delete(Guid id);
         Task<T> Update(T item);
     }

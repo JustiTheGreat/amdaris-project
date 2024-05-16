@@ -1,6 +1,9 @@
 
 using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Abstractions.RepositoryAbstractions;
+using AmdarisProject.Application.Common.Models;
+using AmdarisProject.Domain.Enums;
+using AmdarisProject.TestUtils;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -17,8 +20,9 @@ namespace AmdarisProject.Application.Test.Tests
         protected readonly Mock<ITeamPlayerRepository> _teamPlayerRepositoryMock = new();
         protected readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
         protected readonly Mock<IMapper> _mapperMock = new();
-        protected readonly IMapper _mapper = null;
+        protected readonly IMapper _mapper = AutoMapperConfiguration.GetMapper();
         protected readonly int _numberOfModelsInAList = 2;
+        protected readonly PagedRequest _pagedRequest;
 
         protected ApplicationTestBase()
         {
@@ -28,6 +32,14 @@ namespace AmdarisProject.Application.Test.Tests
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.PointRepository).Returns(_pointRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);
+
+            _pagedRequest = new PagedRequest()
+            {
+                PageIndex = 0,
+                PageSize = _numberOfModelsInAList,
+                ColumnNameForSorting = string.Empty,
+                SortDirection = SortDirection.ASC,
+            };
         }
 
         protected ILogger<T> GetLogger<T>() => new Mock<ILogger<T>>().Object;
