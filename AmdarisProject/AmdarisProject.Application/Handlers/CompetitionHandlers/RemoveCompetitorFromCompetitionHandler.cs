@@ -1,6 +1,5 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
-using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
@@ -24,26 +23,16 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
 
-            if (competition.Status is not CompetitionStatus.ORGANIZING)
-                throw new APIllegalStatusException(competition.Status);
-
             Competitor competitor = await _unitOfWork.CompetitorRepository.GetById(request.CompetitorId)
-                    ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitorId), request.CompetitorId));
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitorId), request.CompetitorId));
 
-            if (competitor is Player && competition.GameFormat.CompetitorType is not CompetitorType.PLAYER
-                || competitor is Team && competition.GameFormat.CompetitorType is not CompetitorType.TEAM)
-                throw new AmdarisProjectException($"Tried to remove {competitor.GetType().Name} " +
-                    $"from competition with {competition.GameFormat.CompetitorType} competitor type!");
-
-            if (!competition.ContainsCompetitor(request.CompetitorId))
-                throw new AmdarisProjectException($"Competitor {competitor.Id} is not registered to competition {competition.Id}!");
+            competition.RemoveCompetitor(competitor);
 
             Competition updated;
 
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-                competition.Competitors = competition.Competitors.Where(c => !c.Id.Equals(competitor.Id)).ToList();
                 updated = await _unitOfWork.CompetitionRepository.Update(competition);
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();

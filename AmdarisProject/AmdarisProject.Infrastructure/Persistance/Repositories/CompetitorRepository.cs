@@ -19,6 +19,7 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
             .Include(o => o.Matches)
             .Include(o => o.WonMatches)
             .Include(o => o.Competitions)
+            .Include(o => o.TeamPlayers)
             .Include(o => o.Points)
             .Include(o => o.Teams)
             .FirstOrDefaultAsync(item => item.Id.Equals(id));
@@ -29,8 +30,15 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
             .Include(o => o.Matches)
             .Include(o => o.WonMatches)
             .Include(o => o.Competitions)
+            .Include(o => o.TeamPlayers)
             .Include(o => o.Players)
             .FirstOrDefaultAsync(item => item.Id.Equals(id));
+
+        //TODO throw exception if one id is not found?
+        public async Task<IEnumerable<Competitor>> GetByIds(IEnumerable<Guid> ids)
+            => (await Task.WhenAll(ids.Select(GetById)))
+            .Where(competitor => competitor is not null)
+            .ToList()!;
 
         public async Task<IEnumerable<Player>> GetAllPlayers()
             => await _dbContext.Set<Player>().ToListAsync();
@@ -44,9 +52,6 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
         public async Task<IEnumerable<Team>> GetPaginatedTeams(PagedRequest pagedRequest)
             => await _dbContext.Set<Team>().CreatePaginatedResultAsync(pagedRequest);
 
-        public async Task<bool> PlayerIsInATeam(Guid playerId)
-            => await _dbContext.Set<Team>().AnyAsync(team => team.Players.Any(player => player.Id.Equals(playerId)));
-
         public async Task<IEnumerable<Player>> GetPlayersNotInTeam(Guid teamId)
             => await _dbContext.Set<Player>()
             .Where(player => player.Teams.All(team => !team.Id.Equals(teamId)))
@@ -54,12 +59,15 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
 
         public async Task<IEnumerable<Player>> GetPlayersNotInCompetition(Guid competitionId)
             => await _dbContext.Set<Player>()
-            .Where(player => player.Competitions.All(competition => !competition.Id.Equals(competitionId)))
+            .Where(player => player.NotInCompetition(competitionId))
             .ToListAsync();
 
-        public async Task<IEnumerable<Team>> GetTeamsNotInCompetition(Guid competitionId)
+        public async Task<IEnumerable<Team>> GetTeamsThatCanBeAddedToCompetition(Guid competitionId, uint requiredTeamSize)
             => await _dbContext.Set<Team>()
-            .Where(team => team.Competitions.All(competition => !competition.Id.Equals(competitionId)))
+            .Where(team =>
+                team.HasTheRequiredNumberOfActivePlayers(requiredTeamSize)
+                && team.Competitions.All(competition => !competition.Id.Equals(competitionId))
+                && team.Players.All(player => player.NotInCompetition(competitionId)))
             .ToListAsync();
     }
 }

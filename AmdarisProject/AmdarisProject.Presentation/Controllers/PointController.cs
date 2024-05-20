@@ -10,19 +10,20 @@ namespace AmdarisProject.Presentation.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = nameof(UserRole.Administrator))]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public class PointController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
 
-        [HttpPut("{playerId}/{matchId}")]
+        [HttpPut("{matchId}/{playerId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(PointGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> AddValueToPointValue([FromRoute] Guid playerId, [FromRoute] Guid matchId, [FromBody] uint points)
+        public async Task<ActionResult> AddValueToPointValue([FromRoute] Guid matchId, [FromRoute] Guid playerId, [FromBody] uint points)
         {
-            PointGetDTO response = await _mediator.Send(new AddValueToPointValue(playerId, matchId, points));
+            PointGetDTO response = await _mediator.Send(new AddValueToPointValue(matchId, playerId, points));
             return Ok(response);
         }
     }

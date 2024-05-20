@@ -23,7 +23,8 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
 
             IEnumerable<Player> players = await _unitOfWork.CompetitorRepository.GetPlayersNotInTeam(request.TeamId);
 
-            _logger.LogInformation("Got all players not in team {TeamName} (Count = {Count})!", [team.Name, players.Count()]);
+            _logger.LogInformation("Got all players not in team {TeamName} (Count = {Count})!",
+                [team.Name, players.Count()]);
 
             IEnumerable<PlayerDisplayDTO> response = _mapper.Map<IEnumerable<PlayerDisplayDTO>>(players);
             return response;

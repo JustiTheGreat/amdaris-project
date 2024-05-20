@@ -17,6 +17,8 @@ namespace AmdarisProject.Presentation.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = nameof(UserRole.Administrator))]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public class CompetitionController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
@@ -25,7 +27,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ValidateModelState]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CreateOneVSAllCompetition([FromBody] CompetitionCreateDTO create)
         {
             await _mediator.Send(new CreateOneVSAllCompetition(create));
@@ -36,7 +37,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ValidateModelState]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CreateTournamentCompetition([FromBody] CompetitionCreateDTO create)
         {
             await _mediator.Send(new CreateTournamentCompetition(create));
@@ -46,7 +46,6 @@ namespace AmdarisProject.Presentation.Controllers
         [HttpPost(nameof(GetPaginatedCompetitions))]
         [ValidateModelState]
         [ProducesResponseType(typeof(PaginatedResult<CompetitionDisplayDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetPaginatedCompetitions([FromBody] PagedRequest pagedRequest)
         {
             PaginatedResult<CompetitionDisplayDTO> response = await _mediator.Send(new GetPaginatedCompetitions(pagedRequest));
@@ -57,7 +56,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ValidateGuid]
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetCompetitionById([FromRoute] Guid competitionId)
         {
             CompetitionGetDTO response = await _mediator.Send(new GetCompetitionById(competitionId));
@@ -68,7 +66,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ValidateGuid]
         [ProducesResponseType(typeof(IEnumerable<RankingItemDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetCompetitionRanking([FromRoute] Guid competitionId)
         {
             IEnumerable<RankingItemDTO> response = await _mediator.Send(new GetCompetitionRanking(competitionId));
@@ -80,7 +77,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(typeof(IEnumerable<CompetitorDisplayDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetCompetitionWinners([FromRoute] Guid competitionId)
         {
             IEnumerable<CompetitorDisplayDTO> response = await _mediator.Send(new GetCompetitionWinners(competitionId));
@@ -92,7 +88,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> StopCompetitionRegistration([FromRoute] Guid competitionId)
         {
             CompetitionGetDTO response = await _mediator.Send(new StopCompetitionRegistration(competitionId));
@@ -104,7 +99,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> StartCompetition([FromRoute] Guid competitionId)
         {
             CompetitionGetDTO response = await _mediator.Send(new StartCompetition(competitionId));
@@ -116,7 +110,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> EndCompetition([FromRoute] Guid competitionId)
         {
             CompetitionGetDTO response = await _mediator.Send(new EndCompetition(competitionId));
@@ -129,7 +122,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CancelCompetition([FromRoute] Guid competitionId)
         {
             CompetitionGetDTO response = await _mediator.Send(new CancelCompetition(competitionId));
@@ -141,7 +133,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> AddCompetitorToCompetition([FromRoute] Guid competitionId, [FromRoute] Guid competitorId)
         {
             CompetitionGetDTO response = await _mediator.Send(new AddCompetitorToCompetition(competitorId, competitionId));
@@ -153,7 +144,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> RemoveCompetitorFromCompetition([FromRoute] Guid competitionId, [FromRoute] Guid competitorId)
         {
             CompetitionGetDTO response = await _mediator.Send(new RemoveCompetitorFromCompetition(competitorId, competitionId));

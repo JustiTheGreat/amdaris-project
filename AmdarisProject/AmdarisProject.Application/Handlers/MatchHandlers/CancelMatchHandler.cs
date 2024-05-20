@@ -1,6 +1,5 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
-using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AutoMapper;
@@ -25,15 +24,14 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             Match match = await _unitOfWork.MatchRepository.GetById(request.MatchId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), request.MatchId));
 
-            if (match.Status is not MatchStatus.NOT_STARTED && match.Status is not MatchStatus.STARTED)
-                throw new APIllegalStatusException(match.Status);
+            match.Cancel();
 
             Match updated;
 
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-                match.Status = MatchStatus.CANCELED;
+
                 updated = await _unitOfWork.MatchRepository.Update(match);
 
                 await _competitionMatchCreatorFactoryService
@@ -48,9 +46,6 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
-
-            updated = await _unitOfWork.MatchRepository.GetById(updated.Id)
-                ?? throw new APNotFoundException(Tuple.Create(nameof(updated.Id), updated.Id));
 
             _logger.LogInformation("Match {CompetitorOneName}-{CompetitorTwoName} was cancelled!",
                 [match.CompetitorOne.Name, match.CompetitorTwo.Name]);

@@ -14,6 +14,8 @@ namespace AmdarisProject.Presentation.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = nameof(UserRole.Administrator))]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public class CompetitorController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
@@ -22,7 +24,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ValidateGuid]
         [ProducesResponseType(typeof(CompetitorGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetCompetitorById([FromRoute] Guid competitorId)
         {
             CompetitorGetDTO response = await _mediator.Send(new GetCompetitorById(competitorId));
@@ -32,7 +33,6 @@ namespace AmdarisProject.Presentation.Controllers
         [HttpPost(nameof(Player))]
         [ValidateModelState]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CreatePlayer([FromBody] CompetitorCreateDTO create)
         {
             await _mediator.Send(new CreatePlayer(create));
@@ -42,7 +42,6 @@ namespace AmdarisProject.Presentation.Controllers
         [HttpPost(nameof(GetPaginatedPlayers))]
         [ValidateModelState]
         [ProducesResponseType(typeof(PaginatedResult<PlayerDisplayDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetPaginatedPlayers([FromBody] PagedRequest pagedRequest)
         {
             PaginatedResult<PlayerDisplayDTO> response = await _mediator.Send(new GetPaginatedPlayers(pagedRequest));
@@ -53,7 +52,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ValidateGuid]
         [ProducesResponseType(typeof(IEnumerable<PlayerDisplayDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetPlayersNotInTeam([FromRoute] Guid teamId)
         {
             IEnumerable<PlayerDisplayDTO> response = await _mediator.Send(new GetPlayersNotInTeam(teamId));
@@ -64,7 +62,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ValidateGuid]
         [ProducesResponseType(typeof(IEnumerable<PlayerDisplayDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetPlayersNotInCompetition([FromRoute] Guid competitionId)
         {
             IEnumerable<PlayerDisplayDTO> response = await _mediator.Send(new GetPlayersNotInCompetition(competitionId));
@@ -74,7 +71,6 @@ namespace AmdarisProject.Presentation.Controllers
         [HttpPost(nameof(Team))]
         [ValidateModelState]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CreateTeam([FromBody] CompetitorCreateDTO create)
         {
             await _mediator.Send(new CreateTeam(create));
@@ -84,7 +80,6 @@ namespace AmdarisProject.Presentation.Controllers
         [HttpPost(nameof(GetPaginatedTeams))]
         [ValidateModelState]
         [ProducesResponseType(typeof(PaginatedResult<TeamDisplayDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetPaginatedTeams([FromBody] PagedRequest pagedRequest)
         {
             PaginatedResult<TeamDisplayDTO> response = await _mediator.Send(new GetPaginatedTeams(pagedRequest));
@@ -95,7 +90,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ValidateGuid]
         [ProducesResponseType(typeof(IEnumerable<TeamDisplayDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetTeamsThatCanBeAddedToCompetition([FromRoute] Guid competitionId)
         {
             IEnumerable<TeamDisplayDTO> response = await _mediator.Send(new GetTeamsThatCanBeAddedToCompetition(competitionId));

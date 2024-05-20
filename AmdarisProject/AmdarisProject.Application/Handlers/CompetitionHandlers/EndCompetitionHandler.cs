@@ -1,6 +1,5 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
-using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AutoMapper;
@@ -22,18 +21,13 @@ namespace AmdarisProject.handlers.competition
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
 
-            if (competition.Status is not CompetitionStatus.STARTED)
-                throw new APIllegalStatusException(competition.Status);
-
-            if (!competition.AllMatchesOfCompetitonAreDone())
-                throw new AmdarisProjectException($"Competition {competition.Id} still has unfinished matches!");
+            competition.End();
 
             Competition updated;
 
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-                competition.Status = CompetitionStatus.FINISHED;
                 //TODO move set winners here?
                 updated = await _unitOfWork.CompetitionRepository.Update(competition);
                 await _unitOfWork.SaveAsync();

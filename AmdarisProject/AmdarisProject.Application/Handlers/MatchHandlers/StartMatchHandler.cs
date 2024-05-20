@@ -23,31 +23,7 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             Match match = await _unitOfWork.MatchRepository.GetById(request.MatchId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), request.MatchId));
 
-            if (match.Competition.Status is not CompetitionStatus.STARTED)
-                throw new APIllegalStatusException(match.Competition.Status);
-
-            bool anotherMatchIsBeingPlayed = match.Competition.Matches.Any(match => match.Status is MatchStatus.STARTED);
-
-            if (anotherMatchIsBeingPlayed)
-                throw new AmdarisProjectException("Cannot start a match while another one is being played!");
-
-            if (match.Status is not MatchStatus.NOT_STARTED)
-                throw new APIllegalStatusException(match.Status);
-
-            if (match.Competition.GameFormat.CompetitorType is CompetitorType.TEAM)
-            {
-                bool teamOneHasTheRequiredNumberOfCompetitors = await _unitOfWork.TeamPlayerRepository
-                    .TeamHasTheRequiredNumberOfActivePlayers(match.CompetitorOne.Id, (uint)match.Competition.GameFormat.TeamSize!);
-                bool teamTwoHasTheRequiredNumberOfCompetitors = await _unitOfWork.TeamPlayerRepository
-                    .TeamHasTheRequiredNumberOfActivePlayers(match.CompetitorTwo.Id, (uint)match.Competition.GameFormat.TeamSize!);
-
-                match.Status =
-                    teamOneHasTheRequiredNumberOfCompetitors && teamTwoHasTheRequiredNumberOfCompetitors ? MatchStatus.STARTED
-                    : !teamOneHasTheRequiredNumberOfCompetitors && teamTwoHasTheRequiredNumberOfCompetitors ? MatchStatus.SPECIAL_WIN_COMPETITOR_TWO
-                    : teamOneHasTheRequiredNumberOfCompetitors && !teamTwoHasTheRequiredNumberOfCompetitors ? MatchStatus.SPECIAL_WIN_COMPETITOR_ONE
-                    : MatchStatus.CANCELED;
-            }
-            else match.Status = MatchStatus.STARTED;
+            bool lateStart = match.Start();
 
             Match updated;
 
@@ -55,21 +31,14 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             {
                 await _unitOfWork.BeginTransactionAsync();
 
+                updated = await _unitOfWork.MatchRepository.Update(match);
+
                 if (match.Status is MatchStatus.STARTED)
                 {
-                    DateTime now = DateTime.UtcNow;
-                    bool lateStart = match.StartTime is not null && now > match.StartTime;
-                    match.StartTime = now;
-                    match.CompetitorOnePoints = 0;
-                    match.CompetitorTwoPoints = 0;
-
-                    updated = await _unitOfWork.MatchRepository.Update(match);
-
                     await InitializePointsForMatchPlayers(match);
 
                     if (lateStart) await UpdateUnstartedMatchesStartTimes(match);
                 }
-                else updated = await _unitOfWork.MatchRepository.Update(match);
 
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();
@@ -79,9 +48,6 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
-
-            updated = await _unitOfWork.MatchRepository.GetById(match.Id)
-                ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), match.Id));
 
             _logger.LogInformation("Match {CompetitorOneName}-{CompetitorTwoName} has started!",
                 [updated.CompetitorOne.Name, updated.CompetitorTwo.Name]);

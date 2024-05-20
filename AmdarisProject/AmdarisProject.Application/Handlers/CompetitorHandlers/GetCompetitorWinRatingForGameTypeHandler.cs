@@ -20,8 +20,10 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitorId), request.CompetitorId));
 
             double rating = await _unitOfWork.MatchRepository.GetCompetitorWinRatingForGameType(competitor.Id, request.GameType);
+
             _logger.LogInformation("Got competitor {CompetitorName} win rating for game type {GameType}!",
                 [competitor.Name, request.GameType]);
+
             return rating;
         }
     }

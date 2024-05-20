@@ -11,6 +11,8 @@ namespace AmdarisProject.Presentation.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = nameof(UserRole.Administrator))]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public class MatchController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
@@ -19,7 +21,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ValidateGuid]
         [ProducesResponseType(typeof(MatchGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetMatchById([FromRoute] Guid matchId)
         {
             MatchGetDTO response = await _mediator.Send(new GetMatchById(matchId));
@@ -31,7 +32,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(typeof(MatchGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> StartMatch([FromRoute] Guid matchId)
         {
             MatchGetDTO response = await _mediator.Send(new StartMatch(matchId));
@@ -43,7 +43,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(typeof(MatchGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> EndMatch([FromRoute] Guid matchId, [FromBody] MatchStatus matchStatus)
         {
             MatchGetDTO response = await _mediator.Send(new EndMatch(matchId, matchStatus));
@@ -55,7 +54,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(typeof(MatchGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CancelMatch([FromRoute] Guid matchId)
         {
             MatchGetDTO response = await _mediator.Send(new CancelMatch(matchId));

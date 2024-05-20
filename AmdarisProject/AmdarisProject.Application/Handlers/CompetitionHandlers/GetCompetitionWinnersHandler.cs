@@ -1,5 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
@@ -32,8 +33,7 @@ namespace AmdarisProject.handlers.competition
             if (competition.CantContinue())
                 return [];
 
-            IEnumerable<Competitor> firstPlaceCompetitors =
-                await _competitionRankingService.GetCompetitionFirstPlaceCompetitors(request.CompetitionId);
+            IEnumerable<Competitor> firstPlaceCompetitors = await GetCompetitionFirstPlaceCompetitors(request.CompetitionId);
 
             Dictionary<Competitor, int> numberOfVictoriesOverTheOthers = [];
             firstPlaceCompetitors.ToList().ForEach(competitor => numberOfVictoriesOverTheOthers.Add(competitor, 0));
@@ -42,7 +42,7 @@ namespace AmdarisProject.handlers.competition
             {
                 for (int j = i + 1; j < firstPlaceCompetitors.Count(); j++)
                 {
-                    Match? match = await _unitOfWork.MatchRepository.GetMatchByCompetitionAndTheTwoCompetitors(competition.Id,
+                    Match? match = competition.GetMatchByTheTwoCompetitors(
                         firstPlaceCompetitors.ElementAt(i).Id, firstPlaceCompetitors.ElementAt(j).Id);
 
                     if (match is null || match.Winner is null)
@@ -71,6 +71,24 @@ namespace AmdarisProject.handlers.competition
                 : competition.GameFormat.CompetitorType is CompetitorType.TEAM ? _mapper.Map<IEnumerable<TeamDisplayDTO>>(winners)
                 : throw new AmdarisProjectException(nameof(winners));
             return response;
+        }
+
+        private async Task<IEnumerable<Competitor>> GetCompetitionFirstPlaceCompetitors(Guid competitionId)
+        {
+            IEnumerable<RankingItemDTO> ranking = await _competitionRankingService.GetCompetitionRanking(competitionId);
+            int maxWinsOnCompetition = ranking.First().Wins;
+            int maxPointsOnCompetition = ranking.First().Points;
+            IEnumerable<Guid> firstPlaceCompetitorIds = ranking
+                .Where(rankingItem => rankingItem.Wins == maxWinsOnCompetition && rankingItem.Points == maxPointsOnCompetition)
+                .Select(rankingItem => rankingItem.Competitor.Id)
+                .ToList();
+            IEnumerable<Competitor> firstPlaceCompetitors =
+                await _unitOfWork.CompetitorRepository.GetByIds(firstPlaceCompetitorIds);
+
+            _logger.LogInformation("Got competition {CompetitorId} first place competitors (Count = {Count})!",
+                [competitionId, firstPlaceCompetitors.Count()]);
+
+            return firstPlaceCompetitors;
         }
     }
 }

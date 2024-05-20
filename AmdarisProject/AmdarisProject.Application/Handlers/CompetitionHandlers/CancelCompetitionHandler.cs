@@ -1,6 +1,5 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
-using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AutoMapper;
@@ -22,17 +21,13 @@ namespace AmdarisProject.handlers.competition
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
 
-            if (competition.Status is not CompetitionStatus.ORGANIZING
-                && competition.Status is not CompetitionStatus.NOT_STARTED
-                && competition.Status is not CompetitionStatus.STARTED)
-                throw new APIllegalStatusException(competition.Status);
+            competition.Cancel();
 
             Competition updated;
 
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-                competition.Status = CompetitionStatus.FINISHED;
                 updated = await _unitOfWork.CompetitionRepository.Update(competition);
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();

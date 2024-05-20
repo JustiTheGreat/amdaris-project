@@ -17,12 +17,12 @@ namespace AmdarisProject.Application.Abstractions.RepositoryAbstractions
 
         Task<Team?> GetTeamById(Guid id);
 
-        Task<bool> PlayerIsInATeam(Guid playerId);
+        Task<IEnumerable<Competitor>> GetByIds(IEnumerable<Guid> ids);
 
         Task<IEnumerable<Player>> GetPlayersNotInTeam(Guid teamId);
 
         Task<IEnumerable<Player>> GetPlayersNotInCompetition(Guid competitionId);
 
-        Task<IEnumerable<Team>> GetTeamsNotInCompetition(Guid competitionId);
+        Task<IEnumerable<Team>> GetTeamsThatCanBeAddedToCompetition(Guid competitionId, uint requiredTeamSize);
     }
 }

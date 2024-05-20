@@ -10,6 +10,8 @@ namespace AmdarisProject.Presentation.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = nameof(UserRole.Administrator))]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public class TeamPlayerController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
@@ -19,7 +21,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> AddPlayerToTeam([FromRoute] Guid teamId, [FromRoute] Guid playerId)
         {
             await _mediator.Send(new AddPlayerToTeam(teamId, playerId));
@@ -31,7 +32,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(typeof(TeamPlayerGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> ChangeTeamPlayerStatus([FromRoute] Guid teamId, [FromRoute] Guid playerId, [FromBody] bool active)
         {
             TeamPlayerGetDTO response = await _mediator.Send(new ChangeTeamPlayerStatus(teamId, playerId, active));
@@ -42,7 +42,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> RemovePlayerFromTeam([FromRoute] Guid teamId, [FromRoute] Guid playerId)
         {
             await _mediator.Send(new RemovePlayerFromTeam(teamId, playerId));

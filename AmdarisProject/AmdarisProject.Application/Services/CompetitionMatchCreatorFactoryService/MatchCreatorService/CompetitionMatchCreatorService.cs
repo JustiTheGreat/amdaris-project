@@ -19,31 +19,22 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(competitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(competitionId), competitionId));
 
-            if (!ShouldCreateMatches((T)competition))
+            if (!competition.ShouldCreateMatches())
                 return [];
 
             IEnumerable<Match> createdMatches = await CreateMatches((T)competition);
+
             _logger.LogInformation("Created matches for competition {CompetitionName} (Count = {Count})!",
                 [competition.Name, createdMatches.Count()]);
+
             return createdMatches;
         }
 
-        protected abstract bool ShouldCreateMatches(T competition);
-
         protected abstract Task<IEnumerable<Match>> CreateMatches(T competiton);
 
-        protected async Task<Match> CreateMatch(string location, Guid competitorOneId,
-            Guid competitorTwoId, Guid competitionId, uint? stageLevel, uint? stageIndex)
+        protected async Task<Match> CreateMatch(string location, Competitor competitorOne, Competitor competitorTwo,
+            Competition competition, uint? stageLevel, uint? stageIndex)
         {
-            Competitor competitorOne = await _unitOfWork.CompetitorRepository.GetById(competitorOneId)
-                ?? throw new APNotFoundException(Tuple.Create(nameof(competitorOneId), competitorOneId));
-
-            Competitor competitorTwo = await _unitOfWork.CompetitorRepository.GetById(competitorTwoId)
-                ?? throw new APNotFoundException(Tuple.Create(nameof(competitorTwoId), competitorTwoId));
-
-            Competition competition = await _unitOfWork.CompetitionRepository.GetById(competitionId)
-                ?? throw new APNotFoundException(Tuple.Create(nameof(competitionId), competitionId));
-
             if (competition.GameFormat.CompetitorType is CompetitorType.PLAYER
                     && (competitorOne is not Player || competitorTwo is not Player)
                 || competition.GameFormat.CompetitorType is CompetitorType.TEAM
@@ -72,7 +63,7 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
                     DateTime lastStartTime = competition.Matches.Max(match => match.StartTime)
                         ?? throw new AmdarisProjectException("Null start time for a timed match!");
 
-                    matchStartTime = lastStartTime.AddSeconds(
+                    matchStartTime = lastStartTime.AddMinutes(
                         competition.GameFormat.DurationInMinutes! + competition.BreakInMinutes ?? 0);
                 }
             }

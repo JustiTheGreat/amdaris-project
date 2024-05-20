@@ -13,19 +13,13 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
         public new async Task<Match?> GetById(Guid id)
             => await _dbContext.Set<Match>()
             .AsSplitQuery()
-            .Include(o => o.CompetitorOne)
-            .Include(o => o.CompetitorTwo)
-            .Include(o => o.Competition)
+            .Include(o => o.CompetitorOne).ThenInclude(o => o.TeamPlayers).ThenInclude(o => o.Player)
+            .Include(o => o.CompetitorTwo).ThenInclude(o => o.TeamPlayers).ThenInclude(o => o.Player)
+            .Include(o => o.Competition).ThenInclude(o => o.GameFormat)
+            .Include(o => o.Competition).ThenInclude(o => o.Matches)
             .Include(o => o.Winner)
             .Include(o => o.Points)
             .FirstOrDefaultAsync(item => item.Id.Equals(id));
-
-        public async Task<Match?> GetMatchByCompetitionAndTheTwoCompetitors(Guid competitionId, Guid competitorId1, Guid competitorId2)
-            => await _dbContext.Set<Match>()
-            .Where(match => match.Competition.Id.Equals(competitionId)
-                && (match.CompetitorOne.Id.Equals(competitorId1) && match.CompetitorTwo.Id.Equals(competitorId2)
-                    || match.CompetitorOne.Id.Equals(competitorId2) && match.CompetitorTwo.Id.Equals(competitorId1)))
-            .FirstOrDefaultAsync();
 
         public async Task<IEnumerable<Match>> GetNotStartedByCompetitionOrderedByStartTime(Guid competitionId)
             => await _dbContext.Set<Match>()
@@ -54,9 +48,5 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
             double winRating = playedMatchesOfGameType == 0 ? 0 : wonMatchedOfGameType / (double)playedMatchesOfGameType;
             return winRating;
         }
-
-        public async Task<bool> CompetitorIsInAStartedMatch(Guid competitorId)
-            => await _dbContext.Set<Match>().AnyAsync(match => match.Status == MatchStatus.STARTED
-                && (match.CompetitorOne.Id.Equals(competitorId) || match.CompetitorTwo.Id.Equals(competitorId)));
     }
 }

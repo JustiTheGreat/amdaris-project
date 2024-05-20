@@ -12,6 +12,8 @@ namespace AmdarisProject.Presentation.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = nameof(UserRole.Administrator))]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public class GameFormatController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
@@ -21,7 +23,6 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CreateGameFormat([FromBody] GameFormatCreateDTO create)
         {
             await _mediator.Send(new CreateGameFormat(create));
@@ -31,7 +32,6 @@ namespace AmdarisProject.Presentation.Controllers
         [HttpPost(nameof(GetPaginatedGameFormats))]
         [ValidateModelState]
         [ProducesResponseType(typeof(PaginatedResult<GameFormatGetDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetPaginatedGameFormats([FromBody] PagedRequest pagedRequest)
         {
             PaginatedResult<GameFormatGetDTO> response = await _mediator.Send(new GetPaginatedGameFormats(pagedRequest));

@@ -8,10 +8,12 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
     public class PointRepository(AmdarisProjectDBContext dbContext)
         : GenericRepository<Point>(dbContext), IPointRepository
     {
-        public async Task<Point?> GetByPlayerAndMatch(Guid playerId, Guid matchId)
+        public async Task<Point?> GetByMatchAndPlayer(Guid playerId, Guid matchId)
             => await _dbContext.Set<Point>()
             .AsSplitQuery()
-            .Include(o => o.Match)
+            .Include(o => o.Match).ThenInclude(o => o.CompetitorOne).ThenInclude(o => o.TeamPlayers).ThenInclude(o => o.Player)
+            .Include(o => o.Match).ThenInclude(o => o.CompetitorTwo).ThenInclude(o => o.TeamPlayers).ThenInclude(o => o.Player)
+            .Include(o => o.Match).ThenInclude(o => o.Competition).ThenInclude(o => o.GameFormat)
             .Include(o => o.Player)
             .FirstOrDefaultAsync(point => point.Player.Id.Equals(playerId) && point.Match.Id.Equals(matchId));
     }

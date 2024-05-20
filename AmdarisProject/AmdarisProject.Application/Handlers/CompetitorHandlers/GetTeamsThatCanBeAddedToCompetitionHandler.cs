@@ -23,14 +23,12 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
             Competition competition = await _unitOfWork.CompetitionRepository.GetById(request.CompetitionId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionId), request.CompetitionId));
 
-            IEnumerable<Team> teams = (await _unitOfWork.CompetitorRepository
-                .GetTeamsNotInCompetition(request.CompetitionId))
-                .Where(team =>
-                    _unitOfWork.TeamPlayerRepository.TeamHasTheRequiredNumberOfActivePlayers(team.Id, (uint)competition.GameFormat.TeamSize!).Result
-                    && team.Players.All(player => competition.Competitors.All(competitor => !competitor.IsOrContainsCompetitor(player.Id))))
-                .ToList();
+            IEnumerable<Team> teams = await _unitOfWork.CompetitorRepository
+                .GetTeamsThatCanBeAddedToCompetition(request.CompetitionId, (uint)competition.GameFormat.TeamSize!);
+
             _logger.LogInformation("Got all teams that could be added to competition {CompetitionName} (Count = {Count})!",
                 [competition.Name, teams.Count()]);
+
             IEnumerable<TeamDisplayDTO> response = _mapper.Map<IEnumerable<TeamDisplayDTO>>(teams);
             return response;
         }

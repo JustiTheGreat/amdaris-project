@@ -10,20 +10,18 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
         ILogger<CompetitionMatchCreatorService<OneVSAllCompetition>> logger)
         : CompetitionMatchCreatorService<OneVSAllCompetition>(unitOfWork, logger), IOneVsAllCompetitionMatchCreatorService
     {
-        protected override bool ShouldCreateMatches(OneVSAllCompetition competition)
-            => competition.Matches.Count == 0;
-
-        protected override async Task<IEnumerable<Match>> CreateMatches(OneVSAllCompetition competiton)
+        protected override async Task<IEnumerable<Match>> CreateMatches(OneVSAllCompetition oneVSAllCompetition)
         {
             List<Match> matches = [];
-            int numberOfCompetitors = competiton.Competitors.Count;
+            int numberOfCompetitors = oneVSAllCompetition.Competitors.Count;
 
             for (int i = 0; i < numberOfCompetitors; i++)
             {
                 for (int j = i + 1; j < numberOfCompetitors; j++)
                 {
-                    Match created = await CreateMatch(competiton.Location, competiton.Competitors.ElementAt(i).Id,
-                        competiton.Competitors.ElementAt(j).Id, competiton.Id, null, null);
+                    Match created = await CreateMatch(oneVSAllCompetition.Location,
+                        oneVSAllCompetition.Competitors[i], oneVSAllCompetition.Competitors[j],
+                        oneVSAllCompetition, null, null);
                     matches.Add(created);
                 }
             }

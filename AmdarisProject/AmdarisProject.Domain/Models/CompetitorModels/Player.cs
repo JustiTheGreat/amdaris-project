@@ -7,5 +7,8 @@
 
         public override bool IsOrContainsCompetitor(Guid competitorId)
             => Id.Equals(competitorId);
+
+        public bool NotInCompetition(Guid competitionId)
+            => Competitions.All(competition => competition.Id.Equals(competitionId) && !competition.ContainsPlayer(Id));
     }
 }

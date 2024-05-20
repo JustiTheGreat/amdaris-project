@@ -18,7 +18,7 @@ namespace AmdarisProject.Presentation.Test.Tests
             uint pointsToAdd = 1;
             Seed_AddValueToPointValue(out Point point, pointsToAdd);
 
-            var requestResult = await _controller.AddValueToPointValue(point.Player.Id, point.Match.Id, pointsToAdd);
+            var requestResult = await _controller.AddValueToPointValue(point.Match.Id, point.Player.Id, pointsToAdd);
 
             var result = requestResult as OkObjectResult;
             var response = result?.Value as PointGetDTO;

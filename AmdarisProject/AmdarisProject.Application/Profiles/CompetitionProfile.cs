@@ -2,9 +2,9 @@
 using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Domain.Enums;
+using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
-using AmdarisProject.Domain.Models;
 using AutoMapper;
 
 namespace AmdarisProject.Application.Profiles

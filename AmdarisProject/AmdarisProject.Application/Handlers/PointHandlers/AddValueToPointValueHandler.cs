@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.handlers.point
 {
-    public record AddValueToPointValue(Guid PlayerId, Guid MatchId, uint ScoredPoints) : IRequest<PointGetDTO>;
+    public record AddValueToPointValue(Guid MatchId, Guid PlayerId, uint ScoredPoints) : IRequest<PointGetDTO>;
     public class AddValueToPointValueHandler(IUnitOfWork unitOfWork, IMapper mapper, IEndMatchService endMatchService
         , ILogger<AddValueToPointValueHandler> logger)
         : IRequestHandler<AddValueToPointValue, PointGetDTO>
@@ -21,24 +21,12 @@ namespace AmdarisProject.handlers.point
 
         public async Task<PointGetDTO> Handle(AddValueToPointValue request, CancellationToken cancellationToken)
         {
-            Match match = await _unitOfWork.MatchRepository.GetById(request.MatchId)
-                ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), request.MatchId));
-
-            if (match.Status is not MatchStatus.STARTED)
-                throw new APIllegalStatusException(match.Status);
-
-            bool matchHasACompetitorWithTheWinningScore = match.CompetitorOnePoints == match.Competition.GameFormat.WinAt
-                || match.CompetitorTwoPoints == match.Competition.GameFormat.WinAt;
-
-            if (matchHasACompetitorWithTheWinningScore)
-                throw new AmdarisProjectException($"A competitor of match {match.Id} already has the winning number of points!");
-
-            Point point = await _unitOfWork.PointRepository.GetByPlayerAndMatch(request.PlayerId, request.MatchId)
+            Point point = await _unitOfWork.PointRepository.GetByMatchAndPlayer(request.MatchId, request.PlayerId)
                 ?? throw new APNotFoundException(
-                    [Tuple.Create(nameof(request.PlayerId), request.PlayerId),
-                    Tuple.Create(nameof(request.MatchId), request.MatchId)]);
+                    [Tuple.Create(nameof(request.MatchId), request.MatchId),
+                    Tuple.Create(nameof(request.PlayerId), request.PlayerId)]);
 
-            point.Value += request.ScoredPoints;
+            point.AddValue(request.ScoredPoints);
 
             Point updated;
 
@@ -47,16 +35,7 @@ namespace AmdarisProject.handlers.point
                 await _unitOfWork.BeginTransactionAsync();
                 updated = await _unitOfWork.PointRepository.Update(point);
 
-                if (match.CompetitorOne.IsOrContainsCompetitor(request.PlayerId))
-                    match.CompetitorOnePoints += request.ScoredPoints;
-                else if (match.CompetitorTwo.IsOrContainsCompetitor(request.PlayerId))
-                    match.CompetitorTwoPoints += request.ScoredPoints;
-
-                match = await _unitOfWork.MatchRepository.Update(match);
-
-                if (match.Competition.GameFormat.WinAt != null
-                    && (match.CompetitorOnePoints == match.Competition.GameFormat.WinAt
-                        || match.CompetitorTwoPoints == match.Competition.GameFormat.WinAt))
+                if (point.Match.ACompetitorHasTheWinningScore())
                     await _endMatchService.End(request.MatchId, MatchStatus.FINISHED);
 
                 await _unitOfWork.SaveAsync();

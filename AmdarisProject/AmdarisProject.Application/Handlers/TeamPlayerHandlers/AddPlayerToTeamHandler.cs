@@ -24,20 +24,19 @@ namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
             Player player = await _unitOfWork.CompetitorRepository.GetPlayerById(request.PlayerId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.PlayerId), request.PlayerId));
 
-            if (team.ContainsPlayer(request.PlayerId))
+            if (team.ContainsPlayer(player.Id))
                 throw new AmdarisProjectException($"Player {player.Id} is already a member of team {team.Id}!");
 
-            if (await _unitOfWork.CompetitorRepository.PlayerIsInATeam(player.Id))
-                throw new AmdarisProjectException($"Player {player.Id} is already a member of a team!");
+            if (player.Teams.Any())
+                throw new AmdarisProjectException($"Player {player.Id} is already a member of another team!");
 
             TeamPlayer created;
 
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-                //TODO use create DTO to respect convention?
-                TeamPlayer teamPlayer = new() { Team = team, Player = player, IsActive = false };
-                created = await _unitOfWork.TeamPlayerRepository.Create(teamPlayer);
+                created = await _unitOfWork.TeamPlayerRepository.Create(
+                    new() { Team = team, Player = player, IsActive = false });
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();
             }

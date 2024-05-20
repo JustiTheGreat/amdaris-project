@@ -6,11 +6,6 @@ using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AmdarisProject.Application.Profiles
 {
@@ -24,7 +19,8 @@ namespace AmdarisProject.Application.Profiles
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.Empty))
                 .ForMember(dest => dest.Matches, opt => opt.MapFrom(src => new List<Match>()))
                 .ForMember(dest => dest.WonMatches, opt => opt.MapFrom(src => new List<Match>()))
-                .ForMember(dest => dest.Competitions, opt => opt.MapFrom(src => new List<Competition>()));
+                .ForMember(dest => dest.Competitions, opt => opt.MapFrom(src => new List<Competition>()))
+                .ForMember(dest => dest.TeamPlayers, opt => opt.MapFrom(src => new List<TeamPlayer>()));
 
             CreateMap<CompetitorCreateDTO, Player>()
                .ForMember(dest => dest.Points, opt => opt.MapFrom(src => new List<Point>()))

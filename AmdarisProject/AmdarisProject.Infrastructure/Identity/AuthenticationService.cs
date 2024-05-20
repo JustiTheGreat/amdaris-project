@@ -75,8 +75,8 @@ namespace AmdarisProject.Infrastructure.Identity
             var claims = await _userManager.GetClaimsAsync(user);
             claimsIdentity.AddClaims(claims);
 
-            var roles = await _userManager.GetClaimsAsync(user);
-            roles.ToList().ForEach(claimsIdentity.AddClaim);
+            var roles = await _userManager.GetRolesAsync(user);
+            roles.ToList().ForEach(role => claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role)));
 
             var token = _tokenService.GenerateAccessToken(claimsIdentity);
             return token;

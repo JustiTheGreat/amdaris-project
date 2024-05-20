@@ -1,10 +1,11 @@
-﻿namespace AmdarisProject.Application.Dtos.ResponseDTOs
+﻿using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
+
+namespace AmdarisProject.Application.Dtos.ResponseDTOs
 {
-    public class RankingItemDTO(Guid competitorId, string competitorName, int wins, int points)
+    public class RankingItemDTO()
     {
-        public Guid CompetitorId { get; set; } = competitorId;
-        public string CompetitorName { get; set; } = competitorName;
-        public int Wins { get; set; } = wins;
-        public int Points { get; set; } = points;
+        public required CompetitorDisplayDTO Competitor { get; set; }
+        public required int Wins { get; set; }
+        public required int Points { get; set; }
     }
 }

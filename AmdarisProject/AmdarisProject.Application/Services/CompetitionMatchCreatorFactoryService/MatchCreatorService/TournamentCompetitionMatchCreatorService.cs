@@ -11,12 +11,6 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
         ILogger<CompetitionMatchCreatorService<TournamentCompetition>> logger)
         : CompetitionMatchCreatorService<TournamentCompetition>(unitOfWork, logger), ITournamentCompetitionMatchCreatorService
     {
-        protected override bool ShouldCreateMatches(TournamentCompetition competition)
-            => competition.StageLevel < Math.Log2(competition.Competitors.Count)
-            && (competition.Matches.Count == 0
-                || competition.AllMatchesOfCompetitonAreDone()
-                    && competition.AtLeastTwoMatchesFromTheCurrentStageHaveAWinner());
-
         protected override async Task<IEnumerable<Match>> CreateMatches(TournamentCompetition tournamentCompetition)
         {
             IEnumerable<Match> currentStageMatches = tournamentCompetition.GetCurrentStageLevelMatches();
@@ -36,8 +30,8 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
 
                 for (int i = 0; i < competitors.Count; i += 2)
                 {
-                    Match created = await CreateMatch(tournamentCompetition.Location, competitors[i].Id, competitors[i + 1].Id,
-                        tournamentCompetition.Id, newStageLevel, (uint?)(i / 2));
+                    Match created = await CreateMatch(tournamentCompetition.Location, competitors[i], competitors[i + 1],
+                        tournamentCompetition, newStageLevel, (uint?)(i / 2));
                     createdMatches.Add(created);
                 }
             }
@@ -62,18 +56,14 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
 
                     if (matchTwo.Winner is null) throw new AmdarisProjectException("Match without winner!");
 
-                    Match created = await CreateMatch(tournamentCompetition.Location, matchOne.Winner.Id, matchTwo.Winner.Id,
-                        tournamentCompetition.Id, newStageLevel, stageIndex);
+                    Match created = await CreateMatch(tournamentCompetition.Location, matchOne.Winner, matchTwo.Winner,
+                        tournamentCompetition, newStageLevel, stageIndex);
                     createdMatches.Add(created);
                 }
             }
 
-            tournamentCompetition = (TournamentCompetition)(await _unitOfWork.CompetitionRepository.GetById(tournamentCompetition.Id)
-                ?? throw new APNotFoundException(Tuple.Create(nameof(tournamentCompetition.Id), tournamentCompetition.Id)));
-
             tournamentCompetition.StageLevel = newStageLevel;
             await _unitOfWork.CompetitionRepository.Update(tournamentCompetition);
-
             return createdMatches;
         }
     }

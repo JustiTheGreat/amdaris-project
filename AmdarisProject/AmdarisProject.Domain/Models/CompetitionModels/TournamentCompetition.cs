@@ -1,4 +1,5 @@
 ﻿using AmdarisProject.Domain.Enums;
+using AmdarisProject.Domain.Exceptions;
 
 namespace AmdarisProject.Domain.Models.CompetitionModels
 {
@@ -12,6 +13,26 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
             && Matches
                 .Where(match => match.StageLevel == StageLevel)
                 .All(match => match.Status is MatchStatus.CANCELED);
+
+        public override void CheckCompetitionCompetitorNumber()
+        {
+            int competitorNumber = Competitors.Count;
+
+            if (competitorNumber < 2)
+                throw new AmdarisProjectException($"Tournament competition {Id} has only {competitorNumber} competitors!");
+
+            while (competitorNumber != 1)
+            {
+                if (competitorNumber % 2 == 1)
+                    throw new AmdarisProjectException($"Tournament competition {Id} has an unfit number of competitors: {competitorNumber}!");
+
+                competitorNumber /= 2;
+            }
+        }
+
+        public override bool ShouldCreateMatches()
+            => StageLevel < Math.Log2(Competitors.Count)
+            && (Matches.Count == 0 || AllMatchesOfCompetitonAreDone() && AtLeastTwoMatchesFromTheCurrentStageHaveAWinner());
 
         public bool AtLeastTwoMatchesFromTheCurrentStageHaveAWinner()
             => Matches.Count(match => match.StageLevel == StageLevel
