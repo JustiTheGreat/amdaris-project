@@ -30,7 +30,7 @@ namespace AmdarisProject.TestUtils
             Assert.Equal(model.Competition.Id, response.Competition.Id);
             Assert.Equal(model.Competition.Name, response.Competition.Name);
             Assert.Equal(model.Competition.Status, response.Competition.Status);
-            Assert.Equal(model.Competition.GameFormat.GameType, response.Competition.GameType);
+            Assert.Equal(model.Competition.GameFormat.GameType.Name, response.Competition.GameType);
             Assert.Equal(model.Competition.GameFormat.CompetitorType, response.Competition.CompetitorType);
             Assert.Equal(model.CompetitorOnePoints, response.CompetitorOnePoints);
             Assert.Equal(model.CompetitorTwoPoints, response.CompetitorTwoPoints);
@@ -92,7 +92,7 @@ namespace AmdarisProject.TestUtils
 
                 Assert.Equal(competition.Name, competitionDisplayDTO.Name);
                 Assert.Equal(competition.Status, competitionDisplayDTO.Status);
-                Assert.Equal(competition.GameFormat.GameType, competitionDisplayDTO.GameType);
+                Assert.Equal(competition.GameFormat.GameType.Name, competitionDisplayDTO.GameType);
                 Assert.Equal(competition.GameFormat.CompetitorType, competitionDisplayDTO.CompetitorType);
             }
 
@@ -153,7 +153,7 @@ namespace AmdarisProject.TestUtils
 
                 Assert.Equal(competition.Name, competitionDisplayDTO.Name);
                 Assert.Equal(competition.Status, competitionDisplayDTO.Status);
-                Assert.Equal(competition.GameFormat.GameType, competitionDisplayDTO.GameType);
+                Assert.Equal(competition.GameFormat.GameType.Name, competitionDisplayDTO.GameType);
                 Assert.Equal(competition.GameFormat.CompetitorType, competitionDisplayDTO.CompetitorType);
             }
 
@@ -182,7 +182,8 @@ namespace AmdarisProject.TestUtils
             Assert.Equal(model.StartTime, response.StartTime);
             Assert.Equal(model.Status, response.Status);
             Assert.Equal(model.BreakInMinutes, response.BreakInMinutes);
-            Assert.Equal(model.GameFormat.GameType, response.GameType);
+            Assert.Equal(model.GameFormat.GameType.Id, response.GameType.Id);
+            Assert.Equal(model.GameFormat.GameType.Name, response.GameType.Name);
             Assert.Equal(model.GameFormat.CompetitorType, response.CompetitorType);
             Assert.Equal(model.GameFormat.TeamSize, response.TeamSize);
             Assert.Equal(model.GameFormat.WinAt, response.WinAt);
@@ -235,7 +236,8 @@ namespace AmdarisProject.TestUtils
             Assert.Equal(model.StartTime, response.StartTime);
             Assert.Equal(model.Status, response.Status);
             Assert.Equal(model.BreakInMinutes, response.BreakInMinutes);
-            Assert.Equal(model.GameFormat.GameType, response.GameType);
+            Assert.Equal(model.GameFormat.GameType.Id, response.GameType.Id);
+            Assert.Equal(model.GameFormat.GameType.Name, response.GameType.Name);
             Assert.Equal(model.GameFormat.CompetitorType, response.CompetitorType);
             Assert.Equal(model.GameFormat.TeamSize, response.TeamSize);
             Assert.Equal(model.GameFormat.WinAt, response.WinAt);

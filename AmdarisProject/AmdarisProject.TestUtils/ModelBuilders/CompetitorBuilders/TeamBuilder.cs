@@ -1,4 +1,5 @@
-﻿using AmdarisProject.Domain.Models.CompetitorModels;
+﻿using AmdarisProject.Domain.Models;
+using AmdarisProject.Domain.Models.CompetitorModels;
 
 namespace AmdarisProject.TestUtils.ModelBuilders.CompetitorBuilders
 {
@@ -11,6 +12,7 @@ namespace AmdarisProject.TestUtils.ModelBuilders.CompetitorBuilders
             Matches = [],
             WonMatches = [],
             Competitions = [],
+            TeamPlayers = [],
             Players = []
         })
         { }
@@ -31,8 +33,11 @@ namespace AmdarisProject.TestUtils.ModelBuilders.CompetitorBuilders
 
         public TeamBuilder AddPlayer(Player player)
         {
+            TeamPlayer teamPlayer = APBuilder.CreateBasicTeamPlayer().SetTeam(_model).SetPlayer(player).SetIsActive(false).Get();
             _model.Players.Add(player);
+            _model.TeamPlayers.Add(teamPlayer);
             player.Teams.Add(_model);
+            player.TeamPlayers.Add(teamPlayer);
             return this;
         }
     }

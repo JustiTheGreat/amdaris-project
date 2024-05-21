@@ -35,7 +35,7 @@ namespace AmdarisProject.handlers.point
                 await _unitOfWork.BeginTransactionAsync();
                 updated = await _unitOfWork.PointRepository.Update(point);
 
-                if (point.Match.ACompetitorHasTheWinningScore())
+                if (updated.Match.ACompetitorHasTheWinningScore())
                     await _endMatchService.End(request.MatchId, MatchStatus.FINISHED);
 
                 await _unitOfWork.SaveAsync();

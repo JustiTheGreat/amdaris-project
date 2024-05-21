@@ -44,7 +44,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
                 Assert.Equal(competition.Id, competitionDisplayDTO.Id);
                 Assert.Equal(competition.Name, competitionDisplayDTO.Name);
                 Assert.Equal(competition.Status, competitionDisplayDTO.Status);
-                Assert.Equal(competition.GameFormat.GameType, competitionDisplayDTO.GameType);
+                Assert.Equal(competition.GameFormat.GameType.Name, competitionDisplayDTO.GameType);
                 Assert.Equal(competition.GameFormat.CompetitorType, competitionDisplayDTO.CompetitorType);
             }
         }

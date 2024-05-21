@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Domain.Models.CompetitorModels;
+﻿using AmdarisProject.Domain.Models;
 
 namespace AmdarisProject.Application.Abstractions.RepositoryAbstractions
 {

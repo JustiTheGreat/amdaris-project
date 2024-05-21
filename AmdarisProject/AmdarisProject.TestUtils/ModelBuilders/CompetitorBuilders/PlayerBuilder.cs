@@ -12,6 +12,7 @@ namespace AmdarisProject.TestUtils.ModelBuilders.CompetitorBuilders
             Matches = [],
             WonMatches = [],
             Competitions = [],
+            TeamPlayers = [],
             Points = [],
             Teams = [],
         })

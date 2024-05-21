@@ -25,7 +25,7 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
                 competitors = tournamentCompetition.Competitors
                     .OrderByDescending(competitor =>
                         _unitOfWork.MatchRepository
-                            .GetCompetitorWinRatingForGameType(competitor.Id, tournamentCompetition.GameFormat.GameType).Result)
+                            .GetCompetitorWinRatingForGameType(competitor.Id, tournamentCompetition.GameFormat.GameType.Id).Result)
                     .ToList();
 
                 for (int i = 0; i < competitors.Count; i += 2)

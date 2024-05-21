@@ -1,4 +1,6 @@
-﻿using AmdarisProject.Domain.Enums;
+﻿using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
+using AmdarisProject.Domain.Enums;
+using AmdarisProject.Domain.Models;
 
 namespace AmdarisProject.Application.Dtos.DisplayDTOs
 {
@@ -6,7 +8,7 @@ namespace AmdarisProject.Application.Dtos.DisplayDTOs
     {
         public required string Name { get; set; }
         public required CompetitionStatus Status { get; set; }
-        public required GameType GameType { get; set; }
+        public required string GameType { get; set; }
         public required CompetitorType CompetitorType { get; set; }
     }
 }

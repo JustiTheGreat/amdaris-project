@@ -7,6 +7,6 @@ namespace AmdarisProject.Application.Abstractions.RepositoryAbstractions
     {
         Task<IEnumerable<Match>> GetNotStartedByCompetitionOrderedByStartTime(Guid competitionId);
 
-        Task<double> GetCompetitorWinRatingForGameType(Guid competitorId, GameType gameType);
+        Task<double> GetCompetitorWinRatingForGameType(Guid competitorId, Guid gameTypeId);
     }
 }

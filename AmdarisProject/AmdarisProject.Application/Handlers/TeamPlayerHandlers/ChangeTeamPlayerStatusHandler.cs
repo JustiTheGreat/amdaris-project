@@ -1,14 +1,14 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
 using AmdarisProject.Domain.Exceptions;
-using AmdarisProject.Domain.Models.CompetitorModels;
+using AmdarisProject.Domain.Models;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
 {
-    public record ChangeTeamPlayerStatus(Guid TeamId, Guid PlayerId, bool Active) : IRequest<TeamPlayerGetDTO>;
+    public record ChangeTeamPlayerStatus(Guid TeamId, Guid PlayerId) : IRequest<TeamPlayerGetDTO>;
     public class ChangeTeamPlayerStatusHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<ChangeTeamPlayerStatusHandler> logger)
         : IRequestHandler<ChangeTeamPlayerStatus, TeamPlayerGetDTO>
     {
@@ -22,15 +22,13 @@ namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
                 ?? throw new APNotFoundException(
                     [Tuple.Create(nameof(request.TeamId), request.TeamId), Tuple.Create(nameof(request.PlayerId), request.PlayerId)]);
 
-            if (teamPlayer.Team.IsInAStartedMatch())
-                throw new AmdarisProjectException($"Team {request.TeamId} is in a started match!");
+            teamPlayer.ChangeStatus();
 
             TeamPlayer updated;
 
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-                teamPlayer.IsActive = request.Active;
                 updated = await _unitOfWork.TeamPlayerRepository.Update(teamPlayer);
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();

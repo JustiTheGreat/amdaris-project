@@ -42,7 +42,7 @@ namespace AmdarisProject.Presentation.Test.Tests
             where HANDLER : class, IRequestHandler<RECORD, RETURN>
             where RECORD : IRequest<RETURN>
         {
-            using AmdarisProjectDBContextBuilder builder = new();
+            using AmdarisProjectDBContextBuilder builder = new(Guid.NewGuid().ToString());
             _dbContext = builder.GetContext();
             ServiceProvider serviceProvider = new ServiceCollection()
                 .AddMediatR(configuration =>
@@ -67,6 +67,7 @@ namespace AmdarisProject.Presentation.Test.Tests
                 new CompetitionRepository(dbContext),
                 new CompetitorRepository(dbContext),
                 new GameFormatRepository(dbContext),
+                new GameTypeRepository(dbContext),
                 new MatchRepository(dbContext),
                 new PointRepository(dbContext),
                 new TeamPlayerRepository(dbContext));

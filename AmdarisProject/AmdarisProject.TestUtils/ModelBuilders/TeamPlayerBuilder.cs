@@ -1,4 +1,5 @@
-﻿using AmdarisProject.Domain.Models.CompetitorModels;
+﻿using AmdarisProject.Domain.Models;
+using AmdarisProject.Domain.Models.CompetitorModels;
 
 namespace AmdarisProject.TestUtils.ModelBuilders
 {

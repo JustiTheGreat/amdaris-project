@@ -16,12 +16,20 @@ namespace AmdarisProject.Presentation.Test.Tests
         public async Task Test_CreateGameFormat_CreatedStatus()
         {
             Setup<CreateGameFormat, GameFormatGetDTO, CreateGameFormatHandler>();
-            GameFormat gameFormat = APBuilder.CreateBasicGameFormat().Get();
+            Seed_CreateGameFormat(out GameFormat gameFormat);
 
             var requestResult = await _controller.CreateGameFormat(_mapper.Map<GameFormatCreateDTO>(gameFormat));
 
             var result = requestResult as CreatedResult;
             Assert.NotNull(result);
+        }
+
+        private void Seed_CreateGameFormat(out GameFormat gameFormat)
+        {
+            GameType gameType = APBuilder.CreateBasicGameType().Get();
+            _dbContext.Add(gameType);
+            _dbContext.SaveChanges();
+            gameFormat = APBuilder.CreateBasicGameFormat().SetGameType(gameType).Get();
         }
 
         [Fact]
@@ -47,7 +55,8 @@ namespace AmdarisProject.Presentation.Test.Tests
 
                 Assert.Equal(gameFormat.Id, gameFormatGetDTO.Id);
                 Assert.Equal(gameFormat.Name, gameFormatGetDTO.Name);
-                Assert.Equal(gameFormat.GameType, gameFormatGetDTO.GameType);
+                Assert.Equal(gameFormat.GameType.Id, gameFormatGetDTO.GameType.Id);
+                Assert.Equal(gameFormat.GameType.Name, gameFormatGetDTO.GameType.Name);
                 Assert.Equal(gameFormat.CompetitorType, gameFormatGetDTO.CompetitorType);
                 Assert.Equal(gameFormat.TeamSize, gameFormatGetDTO.TeamSize);
                 Assert.Equal(gameFormat.WinAt, gameFormatGetDTO.WinAt);

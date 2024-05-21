@@ -1,5 +1,5 @@
 ﻿using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
-using AmdarisProject.Domain.Models.CompetitorModels;
+using AmdarisProject.Domain.Models;
 using AutoMapper;
 
 namespace AmdarisProject.Application.Profiles

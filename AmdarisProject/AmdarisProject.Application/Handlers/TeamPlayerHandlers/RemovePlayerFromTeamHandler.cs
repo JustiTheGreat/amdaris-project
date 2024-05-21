@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Domain.Exceptions;
-using AmdarisProject.Domain.Models.CompetitorModels;
+using AmdarisProject.Domain.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

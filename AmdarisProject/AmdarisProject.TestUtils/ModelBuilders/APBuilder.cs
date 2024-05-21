@@ -11,6 +11,8 @@ namespace AmdarisProject.TestUtils.ModelBuilders
 
         public static GameFormatBuilder CreateBasicGameFormat() => new();
 
+        public static GameTypeBuilder CreateBasicGameType() => new();
+
         public static OneVSAllCompetitionBuilder CreateBasicOneVSAllCompetition() => new();
 
         public static TournamentCompetitionBuilder CreateBasicTournamentCompetition() => new();

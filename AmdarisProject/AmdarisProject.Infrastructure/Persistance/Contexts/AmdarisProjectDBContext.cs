@@ -16,6 +16,7 @@ namespace AmdarisProject.Infrastructure.Persistance.Contexts
         public DbSet<Competitor> Competitors { get; set; }
         public DbSet<Competition> Competitions { get; set; }
         public DbSet<GameFormat> GameFormats { get; set; }
+        public DbSet<GameType> GameTypes { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<Point> Points { get; set; }
         public DbSet<TeamPlayer> TeamPlayers { get; set; }

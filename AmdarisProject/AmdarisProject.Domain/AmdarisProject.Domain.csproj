@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenXmlPowerTools" Version="4.5.3.2" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.5" />
   </ItemGroup>
 
 </Project>

@@ -20,7 +20,8 @@ namespace AmdarisProject.TestUtils
                     .ForMember(dest => dest.GameFormat, opt => opt.MapFrom(src => src.GameFormat.Id));
                 cfg.CreateMap<Player, CompetitorCreateDTO>();
                 cfg.CreateMap<Team, CompetitorCreateDTO>();
-                cfg.CreateMap<GameFormat, GameFormatCreateDTO>();
+                cfg.CreateMap<GameFormat, GameFormatCreateDTO>()
+                    .ForMember(dest => dest.GameType, opt => opt.MapFrom(src => src.GameType.Id)); ;
             }).CreateMapper();
     }
 }

@@ -21,6 +21,8 @@ namespace AmdarisProject.Application.Handlers.GameFormatHandlers
         public async Task<GameFormatGetDTO> Handle(CreateGameFormat request, CancellationToken cancellationToken)
         {
             GameFormat mapped = _mapper.Map<GameFormat>(request.GameFormatCreateDTO);
+            mapped.GameType = await _unitOfWork.GameTypeRepository.GetById(request.GameFormatCreateDTO.GameType)
+                ?? throw new APNotFoundException(Tuple.Create(nameof(request.GameFormatCreateDTO.GameType), request.GameFormatCreateDTO.GameType));
 
             if (!mapped.HasValidWinningConditions())
                 throw new APArgumentException(

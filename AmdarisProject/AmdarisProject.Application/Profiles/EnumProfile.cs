@@ -7,7 +7,6 @@ namespace AmdarisProject.Application.Profiles
     {
         public EnumProfile()
         {
-            CreateMap<GameType, GameType>();
             CreateMap<CompetitorType, CompetitorType>();
             CreateMap<CompetitionStatus, CompetitionStatus>();
             CreateMap<MatchStatus, MatchStatus>();

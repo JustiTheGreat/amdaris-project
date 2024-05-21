@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmdarisProject.Infrastructure.Migrations
 {
     [DbContext(typeof(AmdarisProjectDBContext))]
-    [Migration("20240516095525_AP")]
+    [Migration("20240521082710_AP")]
     partial class AP
     {
         /// <inheritdoc />
@@ -129,9 +129,8 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.Property<decimal?>("DurationInMinutes")
                         .HasColumnType("decimal(20,0)");
 
-                    b.Property<string>("GameType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("GameTypeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -145,12 +144,29 @@ namespace AmdarisProject.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GameTypeId");
+
                     b.ToTable("GameFormats", t =>
                         {
                             t.HasCheckConstraint("CK_CompetitorType", "[CompetitorType] = 'PLAYER' AND [TeamSize] = NULL OR [CompetitorType] = 'TEAM' AND [TeamSize] <> NULL");
 
                             t.HasCheckConstraint("CK_WinRules", "[WinAt] <> NULL OR [DurationInMinutes] <> NULL");
                         });
+                });
+
+            modelBuilder.Entity("AmdarisProject.Domain.Models.GameType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GameTypes");
                 });
 
             modelBuilder.Entity("AmdarisProject.Domain.Models.Match", b =>
@@ -497,13 +513,13 @@ namespace AmdarisProject.Infrastructure.Migrations
             modelBuilder.Entity("AmdarisProject.Domain.Models.CompetitorModels.TeamPlayer", b =>
                 {
                     b.HasOne("AmdarisProject.Domain.Models.CompetitorModels.Player", "Player")
-                        .WithMany()
+                        .WithMany("TeamPlayers")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("AmdarisProject.Domain.Models.CompetitorModels.Team", "Team")
-                        .WithMany()
+                        .WithMany("TeamPlayers")
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -511,6 +527,17 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.Navigation("Player");
 
                     b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("AmdarisProject.Domain.Models.GameFormat", b =>
+                {
+                    b.HasOne("AmdarisProject.Domain.Models.GameType", "GameType")
+                        .WithMany()
+                        .HasForeignKey("GameTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GameType");
                 });
 
             modelBuilder.Entity("AmdarisProject.Domain.Models.Match", b =>
@@ -652,6 +679,13 @@ namespace AmdarisProject.Infrastructure.Migrations
             modelBuilder.Entity("AmdarisProject.Domain.Models.CompetitorModels.Player", b =>
                 {
                     b.Navigation("Points");
+
+                    b.Navigation("TeamPlayers");
+                });
+
+            modelBuilder.Entity("AmdarisProject.Domain.Models.CompetitorModels.Team", b =>
+                {
+                    b.Navigation("TeamPlayers");
                 });
 #pragma warning restore 612, 618
         }

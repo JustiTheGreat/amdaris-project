@@ -30,7 +30,6 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-
                 updated = await _unitOfWork.MatchRepository.Update(match);
 
                 if (match.Status is MatchStatus.STARTED)
@@ -73,8 +72,10 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
 
             async Task CreatePoints(Team team)
             {
-                foreach (Player player in team.Players)
-                    await CreatePoint(player);
+                foreach (TeamPlayer teamPlayer in team.TeamPlayers)
+                    if (teamPlayer.IsActive)
+                        await CreatePoint(teamPlayer.Player);
+
             }
 
             if (match.Competition.GameFormat.CompetitorType is CompetitorType.PLAYER)

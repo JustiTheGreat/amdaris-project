@@ -35,7 +35,8 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
                 GameFormatGetDTO gameFormatGetDTO = response.Items.ElementAt(i);
 
                 Assert.Equal(gameFormat.Name, gameFormatGetDTO.Name);
-                Assert.Equal(gameFormat.GameType, gameFormatGetDTO.GameType);
+                Assert.Equal(gameFormat.GameType.Id, gameFormatGetDTO.GameType.Id);
+                Assert.Equal(gameFormat.GameType.Name, gameFormatGetDTO.GameType.Name);
                 Assert.Equal(gameFormat.CompetitorType, gameFormatGetDTO.CompetitorType);
                 Assert.Equal(gameFormat.TeamSize, gameFormatGetDTO.TeamSize);
                 Assert.Equal(gameFormat.WinAt, gameFormatGetDTO.WinAt);

@@ -7,6 +7,7 @@ namespace AmdarisProject.Application.Abstractions
         ICompetitionRepository CompetitionRepository { get; }
         ICompetitorRepository CompetitorRepository { get; }
         IGameFormatRepository GameFormatRepository { get; }
+        IGameTypeRepository GameTypeRepository { get; }
         IMatchRepository MatchRepository { get; }
         IPointRepository PointRepository { get; }
         ITeamPlayerRepository TeamPlayerRepository { get; }

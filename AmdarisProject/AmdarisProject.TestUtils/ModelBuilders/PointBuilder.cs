@@ -42,6 +42,7 @@ namespace AmdarisProject.TestUtils.ModelBuilders
         public PointBuilder AddValue(uint value)
         {
             _model.Value += value;
+            _model.Match.CompetitorOnePoints += value;
             return this;
         }
     }

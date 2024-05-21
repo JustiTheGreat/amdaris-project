@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -63,22 +64,15 @@ namespace AmdarisProject.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GameFormats",
+                name: "GameTypes",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GameType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CompetitorType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TeamSize = table.Column<long>(type: "bigint", nullable: true),
-                    WinAt = table.Column<long>(type: "bigint", nullable: true),
-                    DurationInMinutes = table.Column<decimal>(type: "decimal(20,0)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameFormats", x => x.Id);
-                    table.CheckConstraint("CK_CompetitorType", "[CompetitorType] = 'PLAYER' AND [TeamSize] = NULL OR [CompetitorType] = 'TEAM' AND [TeamSize] <> NULL");
-                    table.CheckConstraint("CK_WinRules", "[WinAt] <> NULL OR [DurationInMinutes] <> NULL");
+                    table.PrimaryKey("PK_GameTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -208,6 +202,31 @@ namespace AmdarisProject.Infrastructure.Migrations
                         name: "FK_TeamPlayers_Competitors_TeamId",
                         column: x => x.TeamId,
                         principalTable: "Competitors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GameFormats",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GameTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CompetitorType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TeamSize = table.Column<long>(type: "bigint", nullable: true),
+                    WinAt = table.Column<long>(type: "bigint", nullable: true),
+                    DurationInMinutes = table.Column<decimal>(type: "decimal(20,0)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameFormats", x => x.Id);
+                    table.CheckConstraint("CK_CompetitorType", "[CompetitorType] = 'PLAYER' AND [TeamSize] = NULL OR [CompetitorType] = 'TEAM' AND [TeamSize] <> NULL");
+                    table.CheckConstraint("CK_WinRules", "[WinAt] <> NULL OR [DurationInMinutes] <> NULL");
+                    table.ForeignKey(
+                        name: "FK_GameFormats_GameTypes_GameTypeId",
+                        column: x => x.GameTypeId,
+                        principalTable: "GameTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -382,6 +401,11 @@ namespace AmdarisProject.Infrastructure.Migrations
                 column: "GameFormatId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GameFormats_GameTypeId",
+                table: "GameFormats",
+                column: "GameTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Matches_CompetitionId",
                 table: "Matches",
                 column: "CompetitionId");
@@ -466,6 +490,9 @@ namespace AmdarisProject.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "GameFormats");
+
+            migrationBuilder.DropTable(
+                name: "GameTypes");
         }
     }
 }

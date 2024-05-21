@@ -5,6 +5,7 @@ using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.TestUtils.ModelBuilders;
+using MediatR;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.CompetitorTests
@@ -20,8 +21,8 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             List<Team> teams = [];
             for (int i = 0; i < _numberOfModelsInAList; i++) teams.Add(APBuilder.CreateBasicTeam().Get());
             _competitionRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competition?)competition));
-            _competitorRepositoryMock.Setup(o => o.GetTeamsNotInCompetitionWithTheRequiredNumberOfActivePlayers(It.IsAny<Guid>())).Returns(Task.FromResult((IEnumerable<Team>)teams));
-            _teamPlayerRepositoryMock.Setup(o => o.TeamHasTheRequiredNumberOfActivePlayers(It.IsAny<Guid>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
+            _competitorRepositoryMock.Setup(o => o.GetTeamsThatCanBeAddedToCompetition(It.IsAny<Guid>(), It.IsAny<uint>()))
+                .Returns(Task.FromResult((IEnumerable<Team>)teams));
             _mapperMock.Setup(o => o.Map<IEnumerable<TeamDisplayDTO>>(It.IsAny<IEnumerable<Team>>()))
                 .Returns(_mapper.Map<IEnumerable<TeamDisplayDTO>>(teams));
             GetTeamsThatCanBeAddedToCompetition command = new(competition.Id);
@@ -30,8 +31,7 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
 
             IEnumerable<TeamDisplayDTO> response = await handler.Handle(command, default);
 
-            _competitorRepositoryMock.Verify(o => o.GetTeamsNotInCompetitionWithTheRequiredNumberOfActivePlayers(It.IsAny<Guid>()), Times.Once);
-            _teamPlayerRepositoryMock.Verify(o => o.TeamHasTheRequiredNumberOfActivePlayers(It.IsAny<Guid>(), It.IsAny<uint>()), Times.Exactly(_numberOfModelsInAList));
+            _competitorRepositoryMock.Verify(o => o.GetTeamsThatCanBeAddedToCompetition(It.IsAny<Guid>(), It.IsAny<uint>()), Times.Once);
             Assert.Equal(teams.Count, response.Count());
             for (int i = 0; i < teams.Count; i++)
             {

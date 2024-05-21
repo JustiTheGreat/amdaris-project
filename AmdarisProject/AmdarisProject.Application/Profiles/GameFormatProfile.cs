@@ -10,7 +10,8 @@ namespace AmdarisProject.Application.Profiles
         public GameFormatProfile()
         {
             CreateMap<GameFormatCreateDTO, GameFormat>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.Empty));
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.Empty))
+                .ForMember(dest => dest.GameType, opt => opt.MapFrom(src => (GameType?)null));
 
             CreateMap<GameFormat, GameFormatGetDTO>();
         }

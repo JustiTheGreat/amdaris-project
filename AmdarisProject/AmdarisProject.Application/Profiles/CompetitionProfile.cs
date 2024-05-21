@@ -30,7 +30,7 @@ namespace AmdarisProject.Application.Profiles
             CreateMap<Competition, CompetitionDisplayDTO>()
                 .Include<OneVSAllCompetition, CompetitionDisplayDTO>()
                 .Include<TournamentCompetition, CompetitionDisplayDTO>()
-                .ForMember(dest => dest.GameType, opt => opt.MapFrom(src => src.GameFormat.GameType))
+                .ForMember(dest => dest.GameType, opt => opt.MapFrom(src => src.GameFormat.GameType.Name))
                 .ForMember(dest => dest.CompetitorType, opt => opt.MapFrom(src => src.GameFormat.CompetitorType));
 
             CreateMap<OneVSAllCompetition, CompetitionDisplayDTO>();

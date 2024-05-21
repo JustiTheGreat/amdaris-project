@@ -15,6 +15,7 @@ namespace AmdarisProject.Application.Test.Tests
         protected readonly Mock<ICompetitionRepository> _competitionRepositoryMock = new();
         protected readonly Mock<ICompetitorRepository> _competitorRepositoryMock = new();
         protected readonly Mock<IGameFormatRepository> _gameFormatRepositoryMock = new();
+        protected readonly Mock<IGameTypeRepository> _gameTypeRepositoryMock = new();
         protected readonly Mock<IMatchRepository> _matchRepositoryMock = new();
         protected readonly Mock<IPointRepository> _pointRepositoryMock = new();
         protected readonly Mock<ITeamPlayerRepository> _teamPlayerRepositoryMock = new();
@@ -29,6 +30,7 @@ namespace AmdarisProject.Application.Test.Tests
             _unitOfWorkMock.Setup(o => o.CompetitionRepository).Returns(_competitionRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.CompetitorRepository).Returns(_competitorRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.GameFormatRepository).Returns(_gameFormatRepositoryMock.Object);
+            _unitOfWorkMock.Setup(o => o.GameTypeRepository).Returns(_gameTypeRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.MatchRepository).Returns(_matchRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.PointRepository).Returns(_pointRepositoryMock.Object);
             _unitOfWorkMock.Setup(o => o.TeamPlayerRepository).Returns(_teamPlayerRepositoryMock.Object);

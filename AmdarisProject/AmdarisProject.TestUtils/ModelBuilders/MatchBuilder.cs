@@ -70,12 +70,14 @@ namespace AmdarisProject.TestUtils.ModelBuilders
         public MatchBuilder SetCompetitorOne(Competitor competitor)
         {
             _model.CompetitorOne = competitor;
+            competitor.Matches.Add(_model);
             return this;
         }
 
         public MatchBuilder SetCompetitorTwo(Competitor competitor)
         {
-            _model.CompetitorOne = competitor;
+            _model.CompetitorTwo = competitor;
+            competitor.Matches.Add(_model);
             return this;
         }
 
@@ -126,7 +128,11 @@ namespace AmdarisProject.TestUtils.ModelBuilders
             void CreatePoint(Player player)
                 => _model.Points.Add(APBuilder.CreateBasicPoint().SetPlayer(player).SetMatch(_model).SetValue(0).Get());
 
-            void CreatePoints(Team team) => team.Players.ForEach(CreatePoint);
+            void CreatePoints(Team team)
+                => team.TeamPlayers.ForEach(teamPlayer =>
+                {
+                    if (teamPlayer.IsActive) CreatePoint(teamPlayer.Player);
+                });
 
             if (_model.Competition.GameFormat.CompetitorType is CompetitorType.PLAYER)
             {

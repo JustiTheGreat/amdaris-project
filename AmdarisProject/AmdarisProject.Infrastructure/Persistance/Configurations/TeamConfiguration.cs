@@ -1,4 +1,5 @@
-﻿using AmdarisProject.Domain.Models.CompetitorModels;
+﻿using AmdarisProject.Domain.Models;
+using AmdarisProject.Domain.Models.CompetitorModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

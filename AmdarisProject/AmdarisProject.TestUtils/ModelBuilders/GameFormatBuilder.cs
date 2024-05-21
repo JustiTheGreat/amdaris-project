@@ -9,7 +9,7 @@ namespace AmdarisProject.TestUtils.ModelBuilders
         {
             Id = Guid.NewGuid(),
             Name = "Test",
-            GameType = GameType.PING_PONG,
+            GameType = APBuilder.CreateBasicGameType().Get(),
             CompetitorType = CompetitorType.PLAYER,
             TeamSize = null,
             WinAt = 3,

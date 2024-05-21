@@ -14,7 +14,7 @@ namespace AmdarisProject.Application.Dtos.RequestDTOs
         public required string FirstName { get; set; }
         [Required(ErrorMessage = "Last name is required")]
         public required string LastName { get; set; }
-        [Required(ErrorMessage = "Role is required")]
-        public required UserRole Role { get; set; }
+        [Required(ErrorMessage = "Username is required")]
+        public required string Username { get; set; }
     }
 }

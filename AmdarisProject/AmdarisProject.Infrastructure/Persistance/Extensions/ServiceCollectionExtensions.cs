@@ -18,6 +18,7 @@ namespace AmdarisProject.Infrastructure.Persistance.Extensions
                 .AddScoped<ICompetitionRepository, CompetitionRepository>()
                 .AddScoped<ICompetitorRepository, CompetitorRepository>()
                 .AddScoped<IGameFormatRepository, GameFormatRepository>()
+                .AddScoped<IGameTypeRepository, GameTypeRepository>()
                 .AddScoped<IMatchRepository, MatchRepository>()
                 .AddScoped<IPointRepository, PointRepository>()
                 .AddScoped<ITeamPlayerRepository, TeamPlayerRepository>()

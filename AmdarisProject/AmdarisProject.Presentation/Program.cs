@@ -1,3 +1,4 @@
+using AmdarisProject.Infrastructure.Persistance.Extensions;
 using AmdarisProject.Presentation.Extensions;
 using AmdarisProject.Presentation.Middleware;
 
@@ -6,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServices();
 
 var app = builder.Build();
+
+await app.SeedData();
 
 if (app.Environment.IsDevelopment())
 {

@@ -13,8 +13,8 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
         public new async Task<Match?> GetById(Guid id)
             => await _dbContext.Set<Match>()
             .AsSplitQuery()
-            .Include(o => o.CompetitorOne).ThenInclude(o => o.TeamPlayers).ThenInclude(o => o.Player)
-            .Include(o => o.CompetitorTwo).ThenInclude(o => o.TeamPlayers).ThenInclude(o => o.Player)
+            .Include(o => o.CompetitorOne).ThenInclude(o => ((Team)o).TeamPlayers).ThenInclude(o => o.Player)
+            .Include(o => o.CompetitorTwo).ThenInclude(o => ((Team)o).TeamPlayers).ThenInclude(o => o.Player)
             .Include(o => o.Competition).ThenInclude(o => o.GameFormat)
             .Include(o => o.Competition).ThenInclude(o => o.Matches)
             .Include(o => o.Winner)
@@ -27,10 +27,10 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
                 .OrderBy(match => match.StartTime)
                 .ToListAsync();
 
-        public async Task<double> GetCompetitorWinRatingForGameType(Guid competitorId, GameType gameType)
+        public async Task<double> GetCompetitorWinRatingForGameType(Guid competitorId, Guid gameTypeId)
         {
             int playedMatchesOfGameType = await _dbContext.Set<Match>()
-                .CountAsync(match => match.Competition.GameFormat.GameType == gameType
+                .CountAsync(match => match.Competition.GameFormat.GameType.Id.Equals(gameTypeId)
                     && (match.CompetitorOne.Id.Equals(competitorId)
                         || match.CompetitorTwo.Id.Equals(competitorId)
                         || match.CompetitorOne is Team
@@ -39,7 +39,7 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
                             && ((Team)match.CompetitorTwo).Players.Any(player => player.Id.Equals(competitorId))));
 
             int wonMatchedOfGameType = await _dbContext.Set<Match>()
-                .CountAsync(match => match.Competition.GameFormat.GameType == gameType
+                .CountAsync(match => match.Competition.GameFormat.GameType.Id.Equals(gameTypeId)
                     && match.Winner != null
                     && (match.Winner.Id.Equals(competitorId)
                         || match.Winner is Team

@@ -10,7 +10,7 @@ namespace AmdarisProject.Infrastructure.Persistance.Configurations
         public void Configure(EntityTypeBuilder<GameFormat> builder)
         {
             builder.Property(gameFormat => gameFormat.Name).IsRequired().HasConversion<string>();
-            builder.Property(gameFormat => gameFormat.GameType).IsRequired().HasConversion<string>();
+            builder.HasOne(gameFormat => gameFormat.GameType).WithMany().IsRequired();
             builder.Property(gameFormat => gameFormat.CompetitorType).IsRequired().HasConversion<string>();
             builder.ToTable(table => table.HasCheckConstraint(
                 $"CK_{nameof(GameFormat.CompetitorType)}",

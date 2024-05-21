@@ -1,5 +1,6 @@
 ﻿using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
 using AmdarisProject.Application.Handlers.TeamPlayerHandlers;
+using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.Presentation.Controllers;
 using AmdarisProject.TestUtils.ModelBuilders;

@@ -11,7 +11,17 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
         : GenericRepository<Competitor>(dbContext), ICompetitorRepository
     {
         public new async Task<Competitor?> GetById(Guid id)
-            => (Competitor?)await GetPlayerById(id) ?? await GetTeamById(id);
+            => await _dbContext.Set<Competitor>()
+            .AsSplitQuery()
+            .Include(o => o.Matches)
+            .Include(o => o.WonMatches)
+            .Include(o => o.Competitions)
+
+            .Include(o => ((Player)o).Points)
+            .Include(o => ((Player)o).Teams)
+            .Include(o => ((Team)o).Players)
+            .Include(o => ((Team)o).TeamPlayers)
+            .FirstOrDefaultAsync(item => item.Id.Equals(id));
 
         public async Task<Player?> GetPlayerById(Guid id)
             => await _dbContext.Set<Player>()
@@ -19,7 +29,6 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
             .Include(o => o.Matches)
             .Include(o => o.WonMatches)
             .Include(o => o.Competitions)
-            .Include(o => o.TeamPlayers)
             .Include(o => o.Points)
             .Include(o => o.Teams)
             .FirstOrDefaultAsync(item => item.Id.Equals(id));
@@ -59,15 +68,26 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
 
         public async Task<IEnumerable<Player>> GetPlayersNotInCompetition(Guid competitionId)
             => await _dbContext.Set<Player>()
-            .Where(player => player.NotInCompetition(competitionId))
+            .AsSplitQuery()
+            .Where(player => player.Competitions.All(competition =>
+                competition.Id.Equals(competitionId)
+                && !competition.Competitors.Any(competitor => competitor.Id.Equals(player.Id))
+            ))
             .ToListAsync();
 
         public async Task<IEnumerable<Team>> GetTeamsThatCanBeAddedToCompetition(Guid competitionId, uint requiredTeamSize)
             => await _dbContext.Set<Team>()
+            .AsSplitQuery()
             .Where(team =>
-                team.HasTheRequiredNumberOfActivePlayers(requiredTeamSize)
+                team.TeamPlayers.Count(teamPlayer => teamPlayer.IsActive) == requiredTeamSize
                 && team.Competitions.All(competition => !competition.Id.Equals(competitionId))
-                && team.Players.All(player => player.NotInCompetition(competitionId)))
+                && team.Players.All(player => player.Competitions.All(competition =>
+                    competition.Id.Equals(competitionId)
+                    && !competition.Competitors.Any(competitor =>
+                        competitor.Id.Equals(player.Id)
+                        || competitor is Team
+                        && ((Team)competitor).Players.Any(p => p.Id.Equals(player.Id)))
+                )))
             .ToListAsync();
     }
 }
