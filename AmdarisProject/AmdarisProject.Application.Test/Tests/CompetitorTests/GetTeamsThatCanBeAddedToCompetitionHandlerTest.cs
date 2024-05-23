@@ -5,7 +5,6 @@ using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.TestUtils.ModelBuilders;
-using MediatR;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.CompetitorTests

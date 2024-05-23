@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 {
-    public record RemoveCompetitorFromCompetition(Guid CompetitorId, Guid CompetitionId) : IRequest<CompetitionGetDTO>;
+    public record RemoveCompetitorFromCompetition(Guid CompetitionId, Guid CompetitorId) : IRequest<CompetitionGetDTO>;
     public class RemoveCompetitorFromCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper,
         ILogger<RemoveCompetitorFromCompetitionHandler> logger)
         : IRequestHandler<RemoveCompetitorFromCompetition, CompetitionGetDTO>
@@ -48,7 +48,7 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 
             CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionGetDTO>(updated)
                 : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionGetDTO>(updated)
-                : throw new AmdarisProjectException(nameof(updated));
+                : throw new APException(nameof(updated));
 
             return response;
         }

@@ -38,11 +38,10 @@ namespace AmdarisProject.Presentation.Test.Tests
         public async Task Test_ChangeTeamPlayerStatus_OkStatus()
         {
             Setup<AddPlayerToTeam, TeamPlayerGetDTO, AddPlayerToTeamHandler>();
-            bool newStatus = true;
             Seed_ChangeTeamPlayerStatus(out TeamPlayer teamPlayer);
 
             var requestResult =
-                await _controller.ChangeTeamPlayerStatus(teamPlayer.Team.Id, teamPlayer.Player.Id, newStatus);
+                await _controller.ChangeTeamPlayerStatus(teamPlayer.Team.Id, teamPlayer.Player.Id);
 
             var result = requestResult as OkObjectResult;
             var response = result?.Value as TeamPlayerGetDTO;
@@ -50,7 +49,7 @@ namespace AmdarisProject.Presentation.Test.Tests
             Assert.NotNull(response);
             Assert.Equal(teamPlayer.Team.Id, response.TeamId);
             Assert.Equal(teamPlayer.Player.Id, response.PlayerId);
-            Assert.Equal(newStatus, response.IsActive);
+            Assert.Equal(!teamPlayer.IsActive, response.IsActive);
         }
 
         private void Seed_ChangeTeamPlayerStatus(out TeamPlayer teamPlayer)

@@ -1,6 +1,7 @@
 ﻿using AmdarisProject.Application;
 using AmdarisProject.Application.Extensions;
 using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Infrastructure.Options;
 using AmdarisProject.Infrastructure.Persistance.Extensions;
 using AmdarisProject.Presentation.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,7 +14,7 @@ namespace AmdarisProject.Presentation.Extensions
         public static void AddServices(this WebApplicationBuilder builder)
         {
             JwtSettings jwtSettings = builder.Configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>()
-                ?? throw new AmdarisProjectException("Missing JWT settings!");
+                ?? throw new APException("Missing JWT settings!");
 
             builder.Services.AddControllers();
             builder.Services
@@ -24,8 +25,8 @@ namespace AmdarisProject.Presentation.Extensions
                 .AddApplication()
                 .AddAutoMapper(typeof(AutoMapperProfileAssemblyMarker))
                 .Configure<ConnectionStrings>(builder.Configuration.GetSection(nameof(ConnectionStrings)))
-                .Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
-
+                .Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)))
+                .Configure<AdministratorData>(builder.Configuration.GetSection(nameof(AdministratorData)));
         }
 
         private static IServiceCollection AddSwaggerWithAuthorization(this IServiceCollection serviceCollection)

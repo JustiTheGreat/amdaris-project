@@ -39,16 +39,16 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
                     && (competitorOne is not Player || competitorTwo is not Player)
                 || competition.GameFormat.CompetitorType is CompetitorType.TEAM
                     && (competitorOne is not Team || competitorTwo is not Team))
-                throw new AmdarisProjectException("Competiors not matching the competition type!");
+                throw new APException("Competiors not matching the competition type!");
 
             if (competitorOne.Id.Equals(competitorTwo.Id))
-                throw new AmdarisProjectException($"Trying to create a match with the same competitor on both sides!");
+                throw new APException($"Trying to create a match with the same competitor on both sides!");
 
             if (!competition.ContainsCompetitor(competitorOne.Id))
-                throw new AmdarisProjectException($"Competitor {competitorOne.Id} not registered to competition {competition.Id}!");
+                throw new APException($"Competitor {competitorOne.Id} not registered to competition {competition.Id}!");
 
             if (!competition.ContainsCompetitor(competitorTwo.Id))
-                throw new AmdarisProjectException($"Competitor {competitorTwo.Id} not registered to competition {competition.Id}!");
+                throw new APException($"Competitor {competitorTwo.Id} not registered to competition {competition.Id}!");
 
             DateTime? matchStartTime = null;
 
@@ -61,7 +61,7 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
                 else
                 {
                     DateTime lastStartTime = competition.Matches.Max(match => match.StartTime)
-                        ?? throw new AmdarisProjectException("Null start time for a timed match!");
+                        ?? throw new APException("Null start time for a timed match!");
 
                     matchStartTime = lastStartTime.AddMinutes(
                         competition.GameFormat.DurationInMinutes! + competition.BreakInMinutes ?? 0);

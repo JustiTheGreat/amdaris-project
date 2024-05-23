@@ -27,17 +27,20 @@ namespace AmdarisProject.Infrastructure.Identity
             if (await _userManager.FindByEmailAsync(userRegisterDTO.Email) is not null)
                 throw new APConflictException("Email already in use!");
 
+            if (await _userManager.FindByNameAsync(userRegisterDTO.Username) is not null)
+                throw new APConflictException("Username already in use!");
+
             var identity = new IdentityUser()
             {
                 Email = userRegisterDTO.Email,
                 UserName = userRegisterDTO.Username
             };
 
-            //tried transactions, but changes needed to be save midway
             var player = _mapper.Map<Player>(new CompetitorCreateDTO() { Name = userRegisterDTO.Username });
             await _unitOfWork.CompetitorRepository.Create(player);
 
             await _userManager.CreateAsync(identity, userRegisterDTO.Password);
+
             var claims = new List<Claim>() {
                 new(ClaimIndetifiers.FirstName, userRegisterDTO.FirstName),
                 new(ClaimIndetifiers.LastName, userRegisterDTO.LastName),
@@ -47,14 +50,6 @@ namespace AmdarisProject.Infrastructure.Identity
             await _userManager.AddClaimsAsync(identity, claims);
 
             var roleName = nameof(UserRole.User);
-            var role = await _roleManager.FindByNameAsync(roleName);
-
-            if (role is null)
-            {
-                role = new IdentityRole(roleName);
-                await _roleManager.CreateAsync(role);//TODO can't register user
-            }
-
             await _userManager.AddToRoleAsync(identity, roleName);
             claims.Add(new(ClaimTypes.Role, roleName));
 
@@ -75,7 +70,7 @@ namespace AmdarisProject.Infrastructure.Identity
 
             if (!result.Succeeded) throw new APUnauthorizedException("Login failed!");
 
-            if (user.Email is null) throw new AmdarisProjectException("Missing stored email!");
+            if (user.Email is null) throw new APException("Missing stored email!");
 
             var claimsIdentity = new ClaimsIdentity();
             claimsIdentity.AddClaim(new(JwtRegisteredClaimNames.Email, user.Email));

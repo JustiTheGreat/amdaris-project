@@ -1,5 +1,4 @@
-﻿using AmdarisProject.Domain.Enums;
-using AmdarisProject.Domain.Models;
+﻿using AmdarisProject.Domain.Models;
 
 namespace AmdarisProject.Application.Abstractions.RepositoryAbstractions
 {

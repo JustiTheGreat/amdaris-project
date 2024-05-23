@@ -91,7 +91,7 @@ namespace AmdarisProject.Application.Test.Tests.PointHandlers
             AddValueToPointValueHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), It.IsAny<IEndMatchService>(),
                 GetLogger<AddValueToPointValueHandler>());
 
-            await Assert.ThrowsAsync<AmdarisProjectException>(async () => await handler.Handle(command, default));
+            await Assert.ThrowsAsync<APException>(async () => await handler.Handle(command, default));
         }
 
         [Fact]

@@ -26,10 +26,10 @@ namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.PlayerId), request.PlayerId));
 
             if (team.ContainsPlayer(player.Id))
-                throw new AmdarisProjectException($"Player {player.Id} is already a member of team {team.Id}!");
+                throw new APException($"Player {player.Id} is already a member of team {team.Id}!");
 
             if (player.Teams.Any())
-                throw new AmdarisProjectException($"Player {player.Id} is already a member of another team!");
+                throw new APException($"Player {player.Id} is already a member of another team!");
 
             TeamPlayer created;
 

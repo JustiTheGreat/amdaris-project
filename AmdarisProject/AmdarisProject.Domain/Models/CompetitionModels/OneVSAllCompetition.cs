@@ -13,7 +13,7 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
             int competitorNumber = Competitors.Count;
 
             if (competitorNumber < 2)
-                throw new AmdarisProjectException($"OneVSAllCompetition {Id} has only {competitorNumber} competitors!");
+                throw new APException($"OneVSAllCompetition {Id} has only {competitorNumber} competitors!");
         }
 
         public override bool ShouldCreateMatches()

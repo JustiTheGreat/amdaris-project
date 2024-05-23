@@ -69,7 +69,7 @@ namespace AmdarisProject.handlers.competition
             IEnumerable<CompetitorDisplayDTO> response =
                 competition.GameFormat.CompetitorType is CompetitorType.PLAYER ? _mapper.Map<IEnumerable<PlayerDisplayDTO>>(winners)
                 : competition.GameFormat.CompetitorType is CompetitorType.TEAM ? _mapper.Map<IEnumerable<TeamDisplayDTO>>(winners)
-                : throw new AmdarisProjectException(nameof(winners));
+                : throw new APException(nameof(winners));
             return response;
         }
 

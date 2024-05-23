@@ -1,5 +1,4 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitorModels;

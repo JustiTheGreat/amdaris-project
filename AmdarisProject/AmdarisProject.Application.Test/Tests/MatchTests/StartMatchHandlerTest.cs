@@ -77,7 +77,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
             StartMatch command = new(match.Id);
             StartMatchHandler handler = new(_unitOfWorkMock.Object, It.IsAny<IMapper>(), GetLogger<StartMatchHandler>());
 
-            await Assert.ThrowsAsync<AmdarisProjectException>(async () => await handler.Handle(command, default));
+            await Assert.ThrowsAsync<APException>(async () => await handler.Handle(command, default));
         }
 
         public static TheoryData<MatchStatus> MatchStatuses => new()

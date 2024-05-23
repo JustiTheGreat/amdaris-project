@@ -47,14 +47,14 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
 
                     if (matchOne is null) continue;
 
-                    if (matchOne.Winner is null) throw new AmdarisProjectException("Match without winner!");
+                    if (matchOne.Winner is null) throw new APException("Match without winner!");
 
                     Match? matchTwo = tournamentCompetition.GetMatchFromWhichToTakeTheWinnerToTakePartInThisStageLevelAndStageIndex(
                         tournamentCompetition.StageLevel, stageIndex * 2 + 1);
 
                     if (matchTwo is null) continue;
 
-                    if (matchTwo.Winner is null) throw new AmdarisProjectException("Match without winner!");
+                    if (matchTwo.Winner is null) throw new APException("Match without winner!");
 
                     Match created = await CreateMatch(tournamentCompetition.Location, matchOne.Winner, matchTwo.Winner,
                         tournamentCompetition, newStageLevel, stageIndex);

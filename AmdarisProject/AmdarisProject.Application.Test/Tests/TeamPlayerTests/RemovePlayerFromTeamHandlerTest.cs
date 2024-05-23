@@ -46,7 +46,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
             RemovePlayerFromTeam command = new(teamPlayer.Team.Id, teamPlayer.Player.Id);
             RemovePlayerFromTeamHandler handler = new(_unitOfWorkMock.Object, GetLogger<RemovePlayerFromTeamHandler>());
 
-            await Assert.ThrowsAsync<AmdarisProjectException>(async () => await handler.Handle(command, default));
+            await Assert.ThrowsAsync<APException>(async () => await handler.Handle(command, default));
         }
 
         [Fact]

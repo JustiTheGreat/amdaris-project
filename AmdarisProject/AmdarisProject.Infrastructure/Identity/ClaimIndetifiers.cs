@@ -1,5 +1,4 @@
-﻿using AmdarisProject.Application.Dtos.RequestDTOs;
-using AmdarisProject.Domain.Models.CompetitorModels;
+﻿using AmdarisProject.Domain.Models.CompetitorModels;
 
 namespace AmdarisProject.Infrastructure.Identity
 {

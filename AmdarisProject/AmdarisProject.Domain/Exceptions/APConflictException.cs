@@ -1,6 +1,6 @@
 ﻿namespace AmdarisProject.Domain.Exceptions
 {
-    public class APConflictException(string name) : AmdarisProjectException(name)
+    public class APConflictException(string name) : APException(name)
     {
     }
 }

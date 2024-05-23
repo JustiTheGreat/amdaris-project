@@ -2,7 +2,7 @@
 
 namespace AmdarisProject.Domain.Exceptions
 {
-    public class APIllegalStatusException : AmdarisProjectException
+    public class APIllegalStatusException : APException
     {
         public APIllegalStatusException(CompetitionStatus status)
             : base(status.ToString()) { }

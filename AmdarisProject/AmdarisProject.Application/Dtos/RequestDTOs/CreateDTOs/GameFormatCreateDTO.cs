@@ -1,5 +1,4 @@
 ﻿using AmdarisProject.Domain.Enums;
-using AmdarisProject.Domain.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs

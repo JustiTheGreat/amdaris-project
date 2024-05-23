@@ -1,5 +1,4 @@
 ﻿using AmdarisProject.Application.Abstractions.RepositoryAbstractions;
-using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.Infrastructure.Persistance.Contexts;

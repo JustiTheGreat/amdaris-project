@@ -5,7 +5,6 @@ using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.TestUtils.ModelBuilders;
-using AutoMapper;
 using Moq;
 
 namespace AmdarisProject.Application.Test.Tests.GameFormatTests

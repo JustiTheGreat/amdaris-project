@@ -1,5 +1,4 @@
 ﻿using AmdarisProject.Infrastructure.Persistance.Contexts;
-using AmdarisProject.Presentation.Controllers;
 
 namespace AmdarisProject.Presentation.Middleware
 {

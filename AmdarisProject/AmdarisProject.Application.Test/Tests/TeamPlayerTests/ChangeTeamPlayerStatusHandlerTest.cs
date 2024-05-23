@@ -54,7 +54,7 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
             ChangeTeamPlayerStatusHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
                 GetLogger<ChangeTeamPlayerStatusHandler>());
 
-            await Assert.ThrowsAsync<AmdarisProjectException>(async () => await handler.Handle(command, default));
+            await Assert.ThrowsAsync<APException>(async () => await handler.Handle(command, default));
         }
 
         [Fact]

@@ -20,7 +20,7 @@ namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
                     [Tuple.Create(nameof(request.TeamId), request.TeamId), Tuple.Create(nameof(request.PlayerId), request.PlayerId)]);
 
             if (teamPlayer.Team.IsInAStartedMatch())
-                throw new AmdarisProjectException($"Team {request.TeamId} is in a started match!");
+                throw new APException($"Team {request.TeamId} is in a started match!");
 
             try
             {

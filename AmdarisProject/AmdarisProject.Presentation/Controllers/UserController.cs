@@ -16,7 +16,7 @@ namespace AmdarisProject.Presentation.Controllers
         : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
-        
+
         [HttpPost]
         [Route(nameof(Register))]
         [ProducesResponseType(StatusCodes.Status200OK)]

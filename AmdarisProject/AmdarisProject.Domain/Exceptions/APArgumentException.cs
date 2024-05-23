@@ -2,7 +2,7 @@
 
 namespace AmdarisProject.Domain.Exceptions
 {
-    public class APArgumentException : AmdarisProjectException
+    public class APArgumentException : APException
     {
         public APArgumentException(string name) : base(name) { }
 

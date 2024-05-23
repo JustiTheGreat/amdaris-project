@@ -25,7 +25,7 @@ namespace AmdarisProject.handlers.competition
 
             CompetitionGetDTO response = competition is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionGetDTO>(competition)
                 : competition is TournamentCompetition ? _mapper.Map<TournamentCompetitionGetDTO>(competition)
-                : throw new AmdarisProjectException("Unexpected competition type!");
+                : throw new APException("Unexpected competition type!");
             return response;
         }
     }

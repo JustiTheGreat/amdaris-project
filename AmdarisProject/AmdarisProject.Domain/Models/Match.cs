@@ -52,7 +52,7 @@ namespace AmdarisProject.Domain.Models
                 throw new APIllegalStatusException(Competition.Status);
 
             if (Competition.AMatchIsBeignPlayed())
-                throw new AmdarisProjectException("Cannot start a match while another one is being played!");
+                throw new APException("Cannot start a match while another one is being played!");
 
             if (Status is not MatchStatus.NOT_STARTED)
                 throw new APIllegalStatusException(Status);
@@ -98,10 +98,10 @@ namespace AmdarisProject.Domain.Models
                 throw new APIllegalStatusException(Status);
 
             if (CompetitorOnePoints is null || CompetitorTwoPoints is null || Competition.GameFormat.WinAt is null)
-                throw new AmdarisProjectException("Cannot end this type of match!");
+                throw new APException("Cannot end this type of match!");
 
             if (endStatus is MatchStatus.FINISHED && !ACompetitorHasTheWinningScore())
-                throw new AmdarisProjectException($"Match {CompetitorOne.Name}-{CompetitorTwo.Name} doesn't have a competitor with the winning number of points!");
+                throw new APException($"Match {CompetitorOne.Name}-{CompetitorTwo.Name} doesn't have a competitor with the winning number of points!");
 
             EndTime = DateTime.UtcNow;
             Status = endStatus;

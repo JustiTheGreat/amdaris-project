@@ -1,7 +1,7 @@
-using AmdarisProject.Application.Dtos.RequestDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
 using AmdarisProject.Application.Handlers.TeamPlayerHandlers;
 using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.Infrastructure.Identity;
 using AmdarisProject.Presentation.Filters;
 using MediatR;
@@ -11,7 +11,6 @@ using System.Security.Claims;
 
 namespace AmdarisProject.Presentation.Controllers
 {
-    [Authorize(Roles = $"{nameof(UserRole.Administrator)}, {nameof(UserRole.User)}")]
     [ApiController]
     [Route("[controller]")]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -20,7 +19,23 @@ namespace AmdarisProject.Presentation.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
-        [HttpPost(nameof(AddPlayerToTeam) + "/{playerId}/{teamId}")]
+        [Authorize(Roles = nameof(UserRole.User))]
+        [HttpPost(nameof(AddPlayerToTeam) + $"/{nameof(Team)}" + "/{teamId}")]
+        [ValidateGuid]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> AddPlayerToTeam([FromRoute] Guid teamId)
+        {
+            Guid userPlayerId = Guid.Parse(User.FindFirstValue(ClaimIndetifiers.PlayerId)
+                    ?? throw new APException(nameof(User.Claims)));
+
+            await _mediator.Send(new AddPlayerToTeam(teamId, userPlayerId));
+            return Created();
+        }
+
+        [Authorize(Roles = nameof(UserRole.Administrator))]
+        [HttpPost(nameof(AddPlayerToTeam) + $"/{nameof(Team)}" + "/{teamId}" + $"/{nameof(Player)}" + "/{playerId}")]
         [ValidateGuid]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -31,7 +46,23 @@ namespace AmdarisProject.Presentation.Controllers
             return Created();
         }
 
-        [HttpPut(nameof(ChangeTeamPlayerStatus) + "/{playerId}/{teamId}")]
+        [Authorize(Roles = nameof(UserRole.User))]
+        [HttpPut(nameof(ChangeTeamPlayerStatus) + $"/{nameof(Team)}" + "/{teamId}")]
+        [ValidateGuid]
+        [ProducesResponseType(typeof(TeamPlayerGetDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> ChangeTeamPlayerStatus([FromRoute] Guid teamId)
+        {
+            Guid userPlayerId = Guid.Parse(User.FindFirstValue(ClaimIndetifiers.PlayerId)
+                    ?? throw new APException(nameof(User.Claims)));
+
+            TeamPlayerGetDTO response = await _mediator.Send(new ChangeTeamPlayerStatus(teamId, userPlayerId));
+            return Ok(response);
+        }
+
+        [Authorize(Roles = nameof(UserRole.Administrator))]
+        [HttpPut(nameof(ChangeTeamPlayerStatus) + $"/{nameof(Team)}" + "/{teamId}" + $"/{nameof(Player)}" + "/{playerId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(TeamPlayerGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -42,31 +73,29 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpDelete(nameof(RemovePlayerFromTeam))]
+        [Authorize(Roles = nameof(UserRole.User))]
+        [HttpDelete(nameof(RemovePlayerFromTeam) + $"/{nameof(Team)}" + "/{teamId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> RemovePlayerFromTeam([FromBody] UserRequestDTO userRequestDTO)
+        public async Task<ActionResult> RemovePlayerFromTeam([FromRoute] Guid teamId)
         {
-            if (User.IsInRole(nameof(UserRole.Administrator)) && userRequestDTO.PlayerId is null)
-                throw new APArgumentException(nameof(userRequestDTO.PlayerId));
+            Guid userPlayerId = Guid.Parse(User.FindFirstValue(ClaimIndetifiers.PlayerId)
+                    ?? throw new APException(nameof(User.Claims)));
 
-            Guid playerId = User.IsInRole(nameof(UserRole.Administrator))
-                ? (Guid)userRequestDTO.PlayerId!
-                : Guid.Parse(User.FindFirstValue(ClaimIndetifiers.PlayerId) ?? throw new APArgumentException(nameof(User.Claims)));
-
-            await _mediator.Send(new RemovePlayerFromTeam(userRequestDTO.OtherId, playerId));
+            await _mediator.Send(new RemovePlayerFromTeam(teamId, userPlayerId));
             return NoContent();
         }
 
-        //[HttpDelete(nameof(RemovePlayerFromTeam) + "/{playerId}/{teamId}")]
-        //[ProducesResponseType(StatusCodes.Status204NoContent)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //public async Task<ActionResult> RemovePlayerFromTeam([FromRoute] Guid teamId, [FromRoute] Guid playerId)
-        //{
-        //    await _mediator.Send(new RemovePlayerFromTeam(teamId, playerId));
-        //    return NoContent();
-        //}
+        [Authorize(Roles = nameof(UserRole.Administrator))]
+        [HttpDelete(nameof(RemovePlayerFromTeam) + $"/{nameof(Team)}" + "/{teamId}" + $"/{nameof(Player)}" + "/{playerId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> RemovePlayerFromTeam([FromRoute] Guid teamId, [FromRoute] Guid playerId)
+        {
+            await _mediator.Send(new RemovePlayerFromTeam(teamId, playerId));
+            return NoContent();
+        }
     }
 }

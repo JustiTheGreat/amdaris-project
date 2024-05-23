@@ -13,13 +13,13 @@ namespace AmdarisProject.Presentation.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = nameof(UserRole.Administrator))]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public class CompetitorController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
 
+        [Authorize(Roles = $"{nameof(UserRole.Administrator)}, {nameof(UserRole.User)}")]
         [HttpGet("{competitorId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(CompetitorGetDTO), StatusCodes.Status200OK)]
@@ -30,6 +30,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = $"{nameof(UserRole.Administrator)}, {nameof(UserRole.User)}")]
         [HttpPost(nameof(Player))]
         [ValidateModelState]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -39,6 +40,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Created();
         }
 
+        [Authorize(Roles = $"{nameof(UserRole.Administrator)}, {nameof(UserRole.User)}")]
         [HttpPost(nameof(GetPaginatedPlayers))]
         [ValidateModelState]
         [ProducesResponseType(typeof(PaginatedResult<PlayerDisplayDTO>), StatusCodes.Status200OK)]
@@ -48,6 +50,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = nameof(UserRole.Administrator))]
         [HttpGet(nameof(GetPlayersNotInTeam) + "/{teamId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(IEnumerable<PlayerDisplayDTO>), StatusCodes.Status200OK)]
@@ -58,6 +61,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = nameof(UserRole.Administrator))]
         [HttpGet(nameof(GetPlayersNotInCompetition) + "/{competitionId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(IEnumerable<PlayerDisplayDTO>), StatusCodes.Status200OK)]
@@ -68,6 +72,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = nameof(UserRole.Administrator))]
         [HttpPost(nameof(Team))]
         [ValidateModelState]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -77,6 +82,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Created();
         }
 
+        [Authorize(Roles = $"{nameof(UserRole.Administrator)}, {nameof(UserRole.User)}")]
         [HttpPost(nameof(GetPaginatedTeams))]
         [ValidateModelState]
         [ProducesResponseType(typeof(PaginatedResult<TeamDisplayDTO>), StatusCodes.Status200OK)]
@@ -86,6 +92,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = nameof(UserRole.Administrator))]
         [HttpGet(nameof(GetTeamsThatCanBeAddedToCompetition) + "/{competitionId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(IEnumerable<TeamDisplayDTO>), StatusCodes.Status200OK)]

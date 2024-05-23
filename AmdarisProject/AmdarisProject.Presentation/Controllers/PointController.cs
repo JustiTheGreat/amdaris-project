@@ -1,4 +1,6 @@
 ﻿using AmdarisProject.Application.Dtos.ResponseDTOs;
+using AmdarisProject.Domain.Models;
+using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.handlers.point;
 using AmdarisProject.Presentation.Filters;
 using MediatR;
@@ -16,7 +18,7 @@ namespace AmdarisProject.Presentation.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
-        [HttpPut("{matchId}/{playerId}")]
+        [HttpPut($"/{nameof(Match)}" + "/{matchId}" + $"{nameof(Player)}" + "/{playerId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(PointGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

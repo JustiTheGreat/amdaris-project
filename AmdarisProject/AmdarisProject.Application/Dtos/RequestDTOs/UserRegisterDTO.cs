@@ -1,5 +1,4 @@
-﻿using AmdarisProject.Presentation;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace AmdarisProject.Application.Dtos.RequestDTOs
 {

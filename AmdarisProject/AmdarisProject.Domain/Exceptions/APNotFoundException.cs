@@ -2,7 +2,7 @@
 
 namespace AmdarisProject.Domain.Exceptions
 {
-    public class APNotFoundException : AmdarisProjectException
+    public class APNotFoundException : APException
     {
         public APNotFoundException(string message) : base(message) { }
 

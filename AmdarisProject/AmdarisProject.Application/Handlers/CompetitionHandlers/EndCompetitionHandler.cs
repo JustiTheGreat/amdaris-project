@@ -43,7 +43,7 @@ namespace AmdarisProject.handlers.competition
 
             CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionGetDTO>(updated)
                 : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionGetDTO>(updated)
-                : throw new AmdarisProjectException(nameof(updated));
+                : throw new APException(nameof(updated));
             return response;
         }
     }

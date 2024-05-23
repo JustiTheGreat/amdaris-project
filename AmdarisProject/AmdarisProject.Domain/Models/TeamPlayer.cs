@@ -12,7 +12,7 @@ namespace AmdarisProject.Domain.Models
         public void ChangeStatus()
         {
             if (Team.IsInAStartedMatch())
-                throw new AmdarisProjectException($"Team {Team.Id} is in a started match!");
+                throw new APException($"Team {Team.Id} is in a started match!");
 
             IsActive = !IsActive;
         }

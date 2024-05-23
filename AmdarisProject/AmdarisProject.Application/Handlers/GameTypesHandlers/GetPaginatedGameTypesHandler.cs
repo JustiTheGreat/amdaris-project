@@ -1,16 +1,10 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Common.Models;
-using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
 using AmdarisProject.Domain.Models;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AmdarisProject.Application.Handlers.GameTypesHandlers
 {

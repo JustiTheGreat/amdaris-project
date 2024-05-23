@@ -1,6 +1,4 @@
-﻿using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
-using AmdarisProject.Domain.Enums;
-using AmdarisProject.Domain.Models;
+﻿using AmdarisProject.Domain.Enums;
 
 namespace AmdarisProject.Application.Dtos.DisplayDTOs
 {

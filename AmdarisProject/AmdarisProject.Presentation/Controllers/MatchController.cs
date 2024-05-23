@@ -17,6 +17,7 @@ namespace AmdarisProject.Presentation.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
+        [Authorize(Roles = $"{nameof(UserRole.Administrator)}, {nameof(UserRole.User)}")]
         [HttpGet("{matchId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(MatchGetDTO), StatusCodes.Status200OK)]
@@ -27,6 +28,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = nameof(UserRole.Administrator))]
         [HttpPut(nameof(StartMatch) + "/{matchId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(MatchGetDTO), StatusCodes.Status200OK)]
@@ -38,6 +40,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = nameof(UserRole.Administrator))]
         [HttpPut(nameof(EndMatch) + "/{matchId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(MatchGetDTO), StatusCodes.Status200OK)]
@@ -49,6 +52,7 @@ namespace AmdarisProject.Presentation.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = nameof(UserRole.Administrator))]
         [HttpPut(nameof(CancelMatch) + "/{matchId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(MatchGetDTO), StatusCodes.Status200OK)]

@@ -1,8 +1,10 @@
-﻿using AmdarisProject.Infrastructure.Persistance.Contexts;
+﻿using AmdarisProject.Infrastructure.Options;
+using AmdarisProject.Infrastructure.Persistance.Contexts;
 using AmdarisProject.Infrastructure.Persistance.DataSeed;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace AmdarisProject.Infrastructure.Persistance.Extensions
 {
@@ -17,14 +19,16 @@ namespace AmdarisProject.Infrastructure.Persistance.Extensions
                 var context = services.GetRequiredService<AmdarisProjectDBContext>();
                 var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                var administratorData = services.GetService<IOptions<AdministratorData>>()!.Value;
 
-                await SeedFacade.SeedData(context, userManager, roleManager);
+                await SeedFacade.SeedData(context, userManager, roleManager, administratorData);
             }
             catch (Exception)
             {
                 //TODO program.cs class
                 //var logger = services.GetRequiredService<ILogger<Program>>();
                 //logger.LogError(ex, "An error occured during migration");
+                throw;
             }
         }
     }

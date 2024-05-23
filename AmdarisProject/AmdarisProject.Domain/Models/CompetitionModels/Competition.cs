@@ -45,7 +45,7 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
                 throw new APIllegalStatusException(Status);
 
             if (!AllMatchesOfCompetitonAreDone())
-                throw new AmdarisProjectException($"Competition {Id} still has unfinished matches!");
+                throw new APException($"Competition {Id} still has unfinished matches!");
 
             Status = CompetitionStatus.FINISHED;
         }
@@ -58,7 +58,7 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
                 throw new APIllegalStatusException(Status);
 
             if (AMatchIsBeignPlayed())
-                throw new AmdarisProjectException($"A match is from competition {Name} is being played!");
+                throw new APException($"A match is from competition {Name} is being played!");
 
             Status = CompetitionStatus.FINISHED;
 
@@ -99,19 +99,19 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
 
             if (competitor is Player && GameFormat.CompetitorType is not CompetitorType.PLAYER
                 || competitor is Team && GameFormat.CompetitorType is not CompetitorType.TEAM)
-                throw new AmdarisProjectException($"Tried to add {competitor.GetType().Name} " +
+                throw new APException($"Tried to add {competitor.GetType().Name} " +
                     $"to competition with {GameFormat.CompetitorType} competitor type!");
 
             if (ContainsCompetitor(Id))
-                throw new AmdarisProjectException($"Competitor {competitor.Id} is already registered to competition {Id}!");
+                throw new APException($"Competitor {competitor.Id} is already registered to competition {Id}!");
 
             if (competitor is Team team)
             {
                 if (team.ContainsAPlayerPartOfAnotherTeamFromCompetition(this))
-                    throw new AmdarisProjectException($"Team {competitor.Id} is contains a player part of another team from competition {Id}!");
+                    throw new APException($"Team {competitor.Id} is contains a player part of another team from competition {Id}!");
 
                 if (!team.HasTheRequiredNumberOfActivePlayers((uint)GameFormat.TeamSize!))
-                    throw new AmdarisProjectException($"Team {competitor.Id} doesn't have the required number of active competitors!");
+                    throw new APException($"Team {competitor.Id} doesn't have the required number of active competitors!");
             }
 
             Competitors.Add(competitor);
@@ -124,11 +124,11 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
 
             if (competitor is Player && GameFormat.CompetitorType is not CompetitorType.PLAYER
                 || competitor is Team && GameFormat.CompetitorType is not CompetitorType.TEAM)
-                throw new AmdarisProjectException($"Tried to remove {competitor.GetType().Name} " +
+                throw new APException($"Tried to remove {competitor.GetType().Name} " +
                     $"from competition with {GameFormat.CompetitorType} competitor type!");
 
             if (!ContainsCompetitor(competitor.Id))
-                throw new AmdarisProjectException($"Competitor {competitor.Id} is not registered to competition {Id}!");
+                throw new APException($"Competitor {competitor.Id} is not registered to competition {Id}!");
 
             Competitors = Competitors.Where(c => !c.Id.Equals(competitor.Id)).ToList();
         }
