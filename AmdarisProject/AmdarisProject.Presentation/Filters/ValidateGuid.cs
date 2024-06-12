@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Text;
 
 namespace AmdarisProject.Presentation.Filters
@@ -23,7 +24,7 @@ namespace AmdarisProject.Presentation.Filters
             if (stringBuilder.Length > 0)
             {
                 context.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-                context.HttpContext.Response.ContentType = "text/plain";
+                context.HttpContext.Response.ContentType = ContentType.TextPlain.ToString();
                 await context.HttpContext.Response.WriteAsync(stringBuilder.ToString());
             }
         }

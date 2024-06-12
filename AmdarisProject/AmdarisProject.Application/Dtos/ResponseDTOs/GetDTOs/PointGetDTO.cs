@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
+﻿using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 
 namespace AmdarisProject.Application.Dtos.ResponseDTOs
 {
@@ -6,6 +6,6 @@ namespace AmdarisProject.Application.Dtos.ResponseDTOs
     {
         public required uint Value { get; set; }
         public required Guid Match { get; set; }
-        public required PlayerDisplayDTO Player { get; set; }
+        public required CompetitorDisplayDTO Player { get; set; }
     }
 }

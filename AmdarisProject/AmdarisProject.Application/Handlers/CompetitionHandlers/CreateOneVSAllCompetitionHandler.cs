@@ -25,7 +25,7 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
             mapped.GameFormat = await _unitOfWork.GameFormatRepository.GetById(request.CompetitionCreateDTO.GameFormat)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.CompetitionCreateDTO.GameFormat), request.CompetitionCreateDTO.GameFormat));
 
-            if (mapped.DurationAndBreakTimesAreMatching())
+            if (!mapped.DurationAndBreakTimesAreMatching())
                 throw new APArgumentException([nameof(mapped.BreakInMinutes), nameof(mapped.GameFormat.DurationInMinutes)]);
 
             Competition competition;

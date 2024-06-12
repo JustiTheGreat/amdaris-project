@@ -48,5 +48,31 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
             double winRating = playedMatchesOfGameType == 0 ? 0 : wonMatchedOfGameType / (double)playedMatchesOfGameType;
             return winRating;
         }
+
+        //public async Task<Dictionary<Guid, Tuple<int, int>>> GetCompetitorWinRatings(Guid competitorId, List<Guid> gameTypeIds)
+        //{
+        //    return _dbContext.Set<Match>().Aggregate(new Dictionary<Guid, Tuple<int, int>>(),
+        //    (result, match) =>
+        //    {
+        //        if (match.CompetitorOne.Id.Equals(competitorId)
+        //            || match.CompetitorTwo.Id.Equals(competitorId)
+        //            || match.CompetitorOne is Team
+        //                && ((Team)match.CompetitorOne).Players.Any(player => player.Id.Equals(competitorId))
+        //            || match.CompetitorTwo is Team
+        //                && ((Team)match.CompetitorTwo).Players.Any(player => player.Id.Equals(competitorId)))
+        //        {
+        //            bool wonIt = match.Winner != null
+        //                && (match.Winner.Id.Equals(competitorId)
+        //                    || match.Winner is Team
+        //                        && ((Team)match.Winner).Players.Any(player => player.Id.Equals(competitorId)));
+
+        //            Guid matchGameTypeId = match.Competition.GameFormat.GameType.Id;
+        //            Tuple<int, int>? value = result.GetValueOrDefault(matchGameTypeId);
+        //            result.Add(matchGameTypeId, value == null ? Tuple.Create(1, wonIt ? 1 : 0)
+        //                : Tuple.Create(value.Item1 + 1, value.Item2 + (wonIt ? 1 : 0)));
+        //        }
+        //        return result;
+        //    });
+        //}
     }
 }

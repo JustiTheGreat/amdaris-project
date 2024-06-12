@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Application.Dtos.ResponseDTOs;
+﻿using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 
 namespace AmdarisProject.Application.Abstractions
 {

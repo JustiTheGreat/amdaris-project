@@ -1,6 +1,4 @@
-﻿using AmdarisProject.Application.Dtos.DisplayDTOs;
-using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
-using AmdarisProject.Domain.Enums;
+﻿using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 
 namespace AmdarisProject.Application.Dtos.ResponseDTOs
 {
@@ -9,7 +7,7 @@ namespace AmdarisProject.Application.Dtos.ResponseDTOs
         public required string Location { get; set; }
         public required DateTime? StartTime { get; set; }
         public required DateTime? EndTime { get; set; }
-        public required MatchStatus Status { get; set; }
+        public required string Status { get; set; }
         public required CompetitorDisplayDTO CompetitorOne { get; set; }
         public required CompetitorDisplayDTO CompetitorTwo { get; set; }
         public required CompetitionDisplayDTO Competition { get; set; }

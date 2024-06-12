@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
+﻿using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Application.Handlers.TeamPlayerHandlers;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
@@ -20,13 +20,13 @@ namespace AmdarisProject.Application.Test.Tests.TeamPlayerTests
             _competitorRepositoryMock.Setup(o => o.GetPlayerById(It.IsAny<Guid>()))
                 .Returns(Task.FromResult((Player?)teamPlayer.Player));
             _teamPlayerRepositoryMock.Setup(o => o.Create(It.IsAny<TeamPlayer>())).Returns(Task.FromResult(teamPlayer));
-            _mapperMock.Setup(o => o.Map<TeamPlayerGetDTO>(It.IsAny<TeamPlayer>()))
-                .Returns(_mapper.Map<TeamPlayerGetDTO>(teamPlayer));
+            _mapperMock.Setup(o => o.Map<TeamPlayerDisplayDTO>(It.IsAny<TeamPlayer>()))
+                .Returns(_mapper.Map<TeamPlayerDisplayDTO>(teamPlayer));
             AddPlayerToTeam command = new(teamPlayer.Team.Id, teamPlayer.Player.Id);
             AddPlayerToTeamHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
                 GetLogger<AddPlayerToTeamHandler>());
 
-            TeamPlayerGetDTO response = await handler.Handle(command, default);
+            TeamPlayerDisplayDTO response = await handler.Handle(command, default);
 
             Assert.Equal(teamPlayer.Team.Id, response.TeamId);
             Assert.Equal(teamPlayer.Player.Id, response.PlayerId);

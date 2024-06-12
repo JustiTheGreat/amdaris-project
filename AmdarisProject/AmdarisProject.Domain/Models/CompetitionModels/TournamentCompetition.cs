@@ -19,12 +19,12 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
             int competitorNumber = Competitors.Count;
 
             if (competitorNumber < 2)
-                throw new APException($"Tournament competition {Id} has only {competitorNumber} competitors!");
+                throw new APConflictException($"Competition {Name} needs a power of 2 number of competitors bigger than 1 (current number: {competitorNumber})!");
 
             while (competitorNumber != 1)
             {
                 if (competitorNumber % 2 == 1)
-                    throw new APException($"Tournament competition {Id} has an unfit number of competitors: {competitorNumber}!");
+                    throw new APConflictException($"Competition {Name} needs a power of 2 number of competitors bigger than 1 (current number: {competitorNumber})!");
 
                 competitorNumber /= 2;
             }

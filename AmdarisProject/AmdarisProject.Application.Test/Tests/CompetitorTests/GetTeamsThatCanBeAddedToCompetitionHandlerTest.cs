@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
+﻿using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
@@ -22,25 +22,23 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             _competitionRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Competition?)competition));
             _competitorRepositoryMock.Setup(o => o.GetTeamsThatCanBeAddedToCompetition(It.IsAny<Guid>(), It.IsAny<uint>()))
                 .Returns(Task.FromResult((IEnumerable<Team>)teams));
-            _mapperMock.Setup(o => o.Map<IEnumerable<TeamDisplayDTO>>(It.IsAny<IEnumerable<Team>>()))
-                .Returns(_mapper.Map<IEnumerable<TeamDisplayDTO>>(teams));
+            _mapperMock.Setup(o => o.Map<IEnumerable<CompetitorDisplayDTO>>(It.IsAny<IEnumerable<Team>>()))
+                .Returns(_mapper.Map<IEnumerable<CompetitorDisplayDTO>>(teams));
             GetTeamsThatCanBeAddedToCompetition command = new(competition.Id);
             GetTeamsThatCanBeAddedToCompetitionHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
                 GetLogger<GetTeamsThatCanBeAddedToCompetitionHandler>());
 
-            IEnumerable<TeamDisplayDTO> response = await handler.Handle(command, default);
+            IEnumerable<CompetitorDisplayDTO> response = await handler.Handle(command, default);
 
             _competitorRepositoryMock.Verify(o => o.GetTeamsThatCanBeAddedToCompetition(It.IsAny<Guid>(), It.IsAny<uint>()), Times.Once);
             Assert.Equal(teams.Count, response.Count());
             for (int i = 0; i < teams.Count; i++)
             {
                 Team team = teams[i];
-                TeamDisplayDTO teamDisplayDTO = response.ElementAt(i);
+                CompetitorDisplayDTO competitorDisplayDTO = response.ElementAt(i);
 
-                Assert.Equal(team.Id, teamDisplayDTO.Id);
-                Assert.Equal(team.Name, teamDisplayDTO.Name);
-                Assert.Equal(team.Players.Count, teamDisplayDTO.PlayerNames.Count);
-                team.Players.ForEach(player => Assert.Contains(player.Name, teamDisplayDTO.PlayerNames));
+                Assert.Equal(team.Id, competitorDisplayDTO.Id);
+                Assert.Equal(team.Name, competitorDisplayDTO.Name);
             }
         }
 

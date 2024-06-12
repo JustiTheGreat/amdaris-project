@@ -45,10 +45,10 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
                 throw new APException($"Trying to create a match with the same competitor on both sides!");
 
             if (!competition.ContainsCompetitor(competitorOne.Id))
-                throw new APException($"Competitor {competitorOne.Id} not registered to competition {competition.Id}!");
+                throw new APException($"Competitor {competitorOne.Name} not registered to competition {competition.Name}!");
 
             if (!competition.ContainsCompetitor(competitorTwo.Id))
-                throw new APException($"Competitor {competitorTwo.Id} not registered to competition {competition.Id}!");
+                throw new APException($"Competitor {competitorTwo.Name} not registered to competition {competition.Name}!");
 
             DateTime? matchStartTime = null;
 

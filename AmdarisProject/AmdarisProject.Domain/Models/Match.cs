@@ -32,8 +32,8 @@ namespace AmdarisProject.Domain.Models
 
         public bool ACompetitorHasTheWinningScore()
             => Competition.GameFormat.WinAt != null
-            && (CompetitorOnePoints == Competition.GameFormat.WinAt
-            || CompetitorTwoPoints == Competition.GameFormat.WinAt);
+            && (CompetitorOnePoints >= Competition.GameFormat.WinAt
+            || CompetitorTwoPoints >= Competition.GameFormat.WinAt);
 
         public void AddPointsForPlayerSide(Guid playerId, uint points)
         {

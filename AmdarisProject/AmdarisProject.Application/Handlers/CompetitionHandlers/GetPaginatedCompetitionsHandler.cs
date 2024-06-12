@@ -1,6 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Common.Models;
-using AmdarisProject.Application.Dtos.DisplayDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AutoMapper;
 using MediatR;
@@ -18,14 +18,14 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 
         public async Task<PaginatedResult<CompetitionDisplayDTO>> Handle(GetPaginatedCompetitions request, CancellationToken cancellationToken)
         {
-            IEnumerable<Competition> competitions = await _unitOfWork.CompetitionRepository.GetPaginatedData(request.PagedRequest);
-            IEnumerable<CompetitionDisplayDTO> mapped = _mapper.Map<IEnumerable<CompetitionDisplayDTO>>(competitions);
+            Tuple<IEnumerable<Competition>, int> competitions = await _unitOfWork.CompetitionRepository.GetPaginatedData(request.PagedRequest);
+            IEnumerable<CompetitionDisplayDTO> mapped = _mapper.Map<IEnumerable<CompetitionDisplayDTO>>(competitions.Item1);
             PaginatedResult<CompetitionDisplayDTO> response = new()
             {
                 Items = mapped,
                 PageSize = request.PagedRequest.PageSize,
                 PageIndex = request.PagedRequest.PageIndex,
-                Total = mapped.Count()
+                Total = competitions.Item2
             };
 
             _logger.LogInformation("Got paged competitions (Count = {Count})!", [response.Items.Count()]);

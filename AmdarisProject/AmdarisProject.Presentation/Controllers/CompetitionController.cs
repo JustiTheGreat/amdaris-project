@@ -1,9 +1,7 @@
 ﻿using AmdarisProject.Application.Common.Models;
-using AmdarisProject.Application.Dtos.DisplayDTOs;
-using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
-using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Application.Handlers.CompetitionHandlers;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
@@ -93,7 +91,7 @@ namespace AmdarisProject.Presentation.Controllers
         }
 
         [Authorize(Roles = nameof(UserRole.Administrator))]
-        [HttpPut(nameof(StopCompetitionRegistration) + "stop_registration/{competitionId}")]
+        [HttpPut(nameof(StopCompetitionRegistration) + "/{competitionId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -141,7 +139,7 @@ namespace AmdarisProject.Presentation.Controllers
         }
 
         [Authorize(Roles = nameof(UserRole.User))]
-        [HttpPut(nameof(AddCompetitorToCompetition) + $"/{nameof(Competition)}" + "/{competitionId}")]
+        [HttpPut(nameof(AddCompetitorToCompetition) + "/{competitionId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -156,19 +154,19 @@ namespace AmdarisProject.Presentation.Controllers
         }
 
         [Authorize(Roles = nameof(UserRole.Administrator))]
-        [HttpPut(nameof(AddCompetitorToCompetition) + $"/{nameof(Competition)}" + "/{competitionId}" + $"{nameof(Competitor)}" + "/{competitorId}")]
+        [HttpPut(nameof(AddCompetitorToCompetition) + $"/{nameof(Competition)}" + "/{competitionId}/" + $"{nameof(Competitor)}" + "/{competitorId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> AddCompetitorToCompetition([FromRoute] Guid competitionId, [FromRoute] Guid competitorId)
         {
-            CompetitionGetDTO response = await _mediator.Send(new AddCompetitorToCompetition(competitorId, competitionId));
+            CompetitionGetDTO response = await _mediator.Send(new AddCompetitorToCompetition(competitionId, competitorId));
             return Ok(response);
         }
 
         [Authorize(Roles = nameof(UserRole.User))]
-        [HttpPut(nameof(RemoveCompetitorFromCompetition) + $"/{nameof(Competition)}" + "/{competitionId}")]
+        [HttpPut(nameof(RemoveCompetitorFromCompetition) + "/{competitionId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -183,14 +181,14 @@ namespace AmdarisProject.Presentation.Controllers
         }
 
         [Authorize(Roles = nameof(UserRole.Administrator))]
-        [HttpPut(nameof(RemoveCompetitorFromCompetition) + $"/{nameof(Competition)}" + "/{competitionId}" + $"{nameof(Competitor)}" + "/{competitorId}")]
+        [HttpPut(nameof(RemoveCompetitorFromCompetition) + $"/{nameof(Competition)}" + "/{competitionId}/" + $"{nameof(Competitor)}" + "/{competitorId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> RemoveCompetitorFromCompetition([FromRoute] Guid competitionId, [FromRoute] Guid competitorId)
         {
-            CompetitionGetDTO response = await _mediator.Send(new RemoveCompetitorFromCompetition(competitorId, competitionId));
+            CompetitionGetDTO response = await _mediator.Send(new RemoveCompetitorFromCompetition(competitionId, competitorId));
             return Ok(response);
         }
     }

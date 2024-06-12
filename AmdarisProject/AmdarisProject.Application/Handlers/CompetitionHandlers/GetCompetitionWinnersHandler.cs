@@ -1,6 +1,5 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
-using AmdarisProject.Application.Dtos.ResponseDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
@@ -66,10 +65,7 @@ namespace AmdarisProject.handlers.competition
             _logger.LogInformation("Got competition {CompetitorName} winners (Count = {Count})!",
                 [competition.Name, winners.Count()]);
 
-            IEnumerable<CompetitorDisplayDTO> response =
-                competition.GameFormat.CompetitorType is CompetitorType.PLAYER ? _mapper.Map<IEnumerable<PlayerDisplayDTO>>(winners)
-                : competition.GameFormat.CompetitorType is CompetitorType.TEAM ? _mapper.Map<IEnumerable<TeamDisplayDTO>>(winners)
-                : throw new APException(nameof(winners));
+            IEnumerable<CompetitorDisplayDTO> response = _mapper.Map<IEnumerable<CompetitorDisplayDTO>>(winners);
             return response;
         }
 
@@ -80,7 +76,7 @@ namespace AmdarisProject.handlers.competition
             int maxPointsOnCompetition = ranking.First().Points;
             IEnumerable<Guid> firstPlaceCompetitorIds = ranking
                 .Where(rankingItem => rankingItem.Wins == maxWinsOnCompetition && rankingItem.Points == maxPointsOnCompetition)
-                .Select(rankingItem => rankingItem.Competitor.Id)
+                .Select(rankingItem => rankingItem.Id)
                 .ToList();
             IEnumerable<Competitor> firstPlaceCompetitors =
                 await _unitOfWork.CompetitorRepository.GetByIds(firstPlaceCompetitorIds);

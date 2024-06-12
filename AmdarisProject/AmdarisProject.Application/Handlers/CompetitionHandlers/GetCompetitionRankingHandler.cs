@@ -1,5 +1,5 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Dtos.ResponseDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using MediatR;
 
 namespace AmdarisProject.handlers.competition

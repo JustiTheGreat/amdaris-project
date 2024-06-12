@@ -1,15 +1,12 @@
-﻿using AmdarisProject.Domain.Enums;
-
-namespace AmdarisProject.Application.Dtos.DisplayDTOs
+﻿namespace AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs
 {
     public class MatchDisplayDTO : DisplayDTO
     {
-        public required MatchStatus Status { get; set; }
-        public required string CompetitorOneName { get; set; }
-        public required string CompetitorTwoName { get; set; }
-        public required string CompetitionName { get; set; }
-        public required uint? CompetitorOnePoints { get; set; }
-        public required uint? CompetitorTwoPoints { get; set; }
-        public required string? WinnerName { get; set; }
+        public required string Status { get; set; }
+        public required DateTime? StartTime { get; set; }
+        public required string Competitors { get; set; }
+        public required string Score { get; set; }
+        public required string Competition { get; set; }
+        public required string Winner { get; set; }
     }
 }

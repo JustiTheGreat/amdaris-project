@@ -1,7 +1,9 @@
 ﻿using AmdarisProject.Application.Abstractions.RepositoryAbstractions;
+using AmdarisProject.Application.Common.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.Infrastructure.Persistance.Contexts;
+using AmdarisProject.Infrastructure.Persistance.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace AmdarisProject.Infrastructure.Persistance.Repositories
@@ -15,9 +17,15 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
             .Include(o => o.GameFormat).ThenInclude(o => o.GameType)
             .Include(o => o.Competitors).ThenInclude(o => o.Matches)
             .Include(o => o.Competitors).ThenInclude(o => ((Team)o).Players)
+            .Include(o => o.Competitors).ThenInclude(o => ((Team)o).TeamPlayers)
             .Include(o => o.Matches).ThenInclude(o => o.CompetitorOne)
             .Include(o => o.Matches).ThenInclude(o => o.CompetitorTwo)
             .Include(o => o.Matches).ThenInclude(o => o.Winner)
             .FirstOrDefaultAsync(item => item.Id.Equals(id));
+
+        public new async Task<Tuple<IEnumerable<Competition>, int>> GetPaginatedData(PagedRequest pagedRequest)
+            => await _dbContext.Set<Competition>()
+            .Include(o => o.GameFormat).ThenInclude(o => o.GameType)
+            .CreatePaginatedResultAsync(pagedRequest);
     }
 }

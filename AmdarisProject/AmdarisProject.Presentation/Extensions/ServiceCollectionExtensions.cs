@@ -15,9 +15,12 @@ namespace AmdarisProject.Presentation.Extensions
         {
             JwtSettings jwtSettings = builder.Configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>()
                 ?? throw new APException("Missing JWT settings!");
+            string allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string>()
+                ?? throw new APException("Missing CORS settings!");
 
             builder.Services.AddControllers();
             builder.Services
+                .ConfigureCors(allowedOrigins)
                 .AddEndpointsApiExplorer()
                 .AddSwaggerWithAuthorization()
                 .AddAuthenticationService(jwtSettings)
@@ -27,6 +30,13 @@ namespace AmdarisProject.Presentation.Extensions
                 .Configure<ConnectionStrings>(builder.Configuration.GetSection(nameof(ConnectionStrings)))
                 .Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)))
                 .Configure<AdministratorData>(builder.Configuration.GetSection(nameof(AdministratorData)));
+        }
+
+        private static IServiceCollection ConfigureCors(this IServiceCollection serviceCollection, string allowedOrigins)
+        {
+            serviceCollection.AddCors(options => options.AddDefaultPolicy(builder =>
+                builder.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod()));
+            return serviceCollection;
         }
 
         private static IServiceCollection AddSwaggerWithAuthorization(this IServiceCollection serviceCollection)

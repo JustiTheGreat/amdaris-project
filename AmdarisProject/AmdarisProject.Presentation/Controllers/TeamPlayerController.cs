@@ -1,4 +1,4 @@
-using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Application.Handlers.TeamPlayerHandlers;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
@@ -49,7 +49,7 @@ namespace AmdarisProject.Presentation.Controllers
         [Authorize(Roles = nameof(UserRole.User))]
         [HttpPut(nameof(ChangeTeamPlayerStatus) + $"/{nameof(Team)}" + "/{teamId}")]
         [ValidateGuid]
-        [ProducesResponseType(typeof(TeamPlayerGetDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TeamPlayerDisplayDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> ChangeTeamPlayerStatus([FromRoute] Guid teamId)
@@ -57,19 +57,19 @@ namespace AmdarisProject.Presentation.Controllers
             Guid userPlayerId = Guid.Parse(User.FindFirstValue(ClaimIndetifiers.PlayerId)
                     ?? throw new APException(nameof(User.Claims)));
 
-            TeamPlayerGetDTO response = await _mediator.Send(new ChangeTeamPlayerStatus(teamId, userPlayerId));
+            TeamPlayerDisplayDTO response = await _mediator.Send(new ChangeTeamPlayerStatus(teamId, userPlayerId));
             return Ok(response);
         }
 
         [Authorize(Roles = nameof(UserRole.Administrator))]
         [HttpPut(nameof(ChangeTeamPlayerStatus) + $"/{nameof(Team)}" + "/{teamId}" + $"/{nameof(Player)}" + "/{playerId}")]
         [ValidateGuid]
-        [ProducesResponseType(typeof(TeamPlayerGetDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TeamPlayerDisplayDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> ChangeTeamPlayerStatus([FromRoute] Guid teamId, [FromRoute] Guid playerId)
         {
-            TeamPlayerGetDTO response = await _mediator.Send(new ChangeTeamPlayerStatus(teamId, playerId));
+            TeamPlayerDisplayDTO response = await _mediator.Send(new ChangeTeamPlayerStatus(teamId, playerId));
             return Ok(response);
         }
 

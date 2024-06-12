@@ -1,5 +1,5 @@
 ﻿using AmdarisProject.Application.Common.Models;
-using AmdarisProject.Application.Dtos.DisplayDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Application.Handlers.CompetitionHandlers;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.TestUtils.ModelBuilders;
@@ -21,8 +21,9 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
                 else
                     competitions.Add(APBuilder.CreateBasicTournamentCompetition().Get());
             }
+            var paginatedResult = Tuple.Create((IEnumerable<Competition>)competitions, competitions.Count());
             _competitionRepositoryMock.Setup(o => o.GetPaginatedData(It.IsAny<PagedRequest>()))
-                .Returns(Task.FromResult((IEnumerable<Competition>)competitions));
+                .Returns(Task.FromResult(paginatedResult));
             _mapperMock.Setup(o => o.Map<IEnumerable<CompetitionDisplayDTO>>(It.IsAny<IEnumerable<Competition>>()))
                 .Returns(_mapper.Map<IEnumerable<CompetitionDisplayDTO>>(competitions));
             GetPaginatedCompetitions command = new(_pagedRequest);
@@ -43,9 +44,9 @@ namespace AmdarisProject.Application.Test.Tests.CompetitionTests
 
                 Assert.Equal(competition.Id, competitionDisplayDTO.Id);
                 Assert.Equal(competition.Name, competitionDisplayDTO.Name);
-                Assert.Equal(competition.Status, competitionDisplayDTO.Status);
+                Assert.Equal(competition.Status.ToString(), competitionDisplayDTO.Status);
                 Assert.Equal(competition.GameFormat.GameType.Name, competitionDisplayDTO.GameType);
-                Assert.Equal(competition.GameFormat.CompetitorType, competitionDisplayDTO.CompetitorType);
+                Assert.Equal(competition.GameFormat.CompetitorType.ToString(), competitionDisplayDTO.CompetitorType);
             }
         }
     }

@@ -1,6 +1,5 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
-using AmdarisProject.Application.Dtos.ResponseDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AutoMapper;
@@ -23,13 +22,14 @@ namespace AmdarisProject.Application.Services
             IEnumerable<RankingItemDTO> ranking = competition.Competitors
                 .Select(competitor => new RankingItemDTO()
                 {
-                    Competitor = _mapper.Map<CompetitorDisplayDTO>(competitor),
+                    Id = competitor.Id,
+                    Competitor = competitor.Name,
                     Wins = competition.GetCompetitorWins(competitor.Id),
                     Points = competition.GetCompetitorPoints(competitor.Id)
                 })
                 .OrderByDescending(entry => entry.Wins)
                 .ThenByDescending(entry => entry.Points)
-                .ThenBy(entry => entry.Competitor.Name)
+                .ThenBy(entry => entry.Competitor)
                 .ToList();
 
             _logger.LogInformation("Got competition {CompetitorName} ranking (Count = {Count})!",

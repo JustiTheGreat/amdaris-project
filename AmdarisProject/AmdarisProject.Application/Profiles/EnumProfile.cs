@@ -7,9 +7,12 @@ namespace AmdarisProject.Application.Profiles
     {
         public EnumProfile()
         {
-            CreateMap<CompetitorType, CompetitorType>();
-            CreateMap<CompetitionStatus, CompetitionStatus>();
-            CreateMap<MatchStatus, MatchStatus>();
+            CreateMap<CompetitorType, string>()
+                .ConvertUsing(src => src.ToString());
+            CreateMap<CompetitionStatus, string>()
+                .ConvertUsing(src => src.ToString());
+            CreateMap<MatchStatus, string>()
+                .ConvertUsing(src => src.ToString());
         }
     }
 }

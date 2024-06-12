@@ -27,7 +27,7 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
             Assert.Equal(gameFormat.Name, response.Name);
             Assert.Equal(gameFormat.GameType.Id, response.GameType.Id);
             Assert.Equal(gameFormat.GameType.Name, response.GameType.Name);
-            Assert.Equal(gameFormat.CompetitorType, response.CompetitorType);
+            Assert.Equal(gameFormat.CompetitorType.ToString(), response.CompetitorType);
             Assert.Equal(gameFormat.TeamSize, response.TeamSize);
             Assert.Equal(gameFormat.WinAt, response.WinAt);
             Assert.Equal(gameFormat.DurationInMinutes, response.DurationInMinutes);

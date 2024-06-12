@@ -1,9 +1,9 @@
-﻿using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
+﻿using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 
 namespace AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs
 {
     public class TeamGetDTO : CompetitorGetDTO
     {
-        public required List<PlayerDisplayDTO> Players { get; set; } = [];
+        public required List<CompetitorDisplayDTO> Players { get; set; } = [];
     }
 }

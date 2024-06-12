@@ -11,12 +11,11 @@ using System.Security.Claims;
 
 namespace AmdarisProject.Infrastructure.Identity
 {
-    internal class AuthenticationService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager,
-        SignInManager<IdentityUser> signInManager, ITokenService tokenService, IUnitOfWork unitOfWork, IMapper mapper)
+    internal class AuthenticationService(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,
+        ITokenService tokenService, IUnitOfWork unitOfWork, IMapper mapper)
         : IAuthenticationService
     {
         private readonly UserManager<IdentityUser> _userManager = userManager;
-        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly SignInManager<IdentityUser> _signInManager = signInManager;
         private readonly ITokenService _tokenService = tokenService;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -55,7 +54,9 @@ namespace AmdarisProject.Infrastructure.Identity
 
             var claimsIdentity = new ClaimsIdentity();
             claimsIdentity.AddClaim(new(JwtRegisteredClaimNames.Email, identity.Email));
-            claimsIdentity.AddClaims(claims);
+            claimsIdentity.AddClaim(claims[2]);
+            claimsIdentity.AddClaim(claims[3]);
+            //claimsIdentity.AddClaims(claims);//TODO does not work
 
             var token = _tokenService.GenerateAccessToken(claimsIdentity);
             return token;
@@ -64,11 +65,11 @@ namespace AmdarisProject.Infrastructure.Identity
         public async Task<string> Login(UserLoginDTO userLoginDTO)
         {
             IdentityUser user = await _userManager.FindByEmailAsync(userLoginDTO.Email)
-                ?? throw new APNotFoundException(nameof(userLoginDTO.Email));
+                ?? throw new APConflictException("Incorrect credentials!");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, userLoginDTO.Password, false);
 
-            if (!result.Succeeded) throw new APUnauthorizedException("Login failed!");
+            if (!result.Succeeded) throw new APConflictException("Incorrect credentials!");
 
             if (user.Email is null) throw new APException("Missing stored email!");
 

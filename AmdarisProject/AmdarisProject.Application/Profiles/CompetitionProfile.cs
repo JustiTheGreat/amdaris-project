@@ -1,6 +1,6 @@
-﻿using AmdarisProject.Application.Dtos.DisplayDTOs;
-using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
+﻿using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
@@ -30,6 +30,10 @@ namespace AmdarisProject.Application.Profiles
             CreateMap<Competition, CompetitionDisplayDTO>()
                 .Include<OneVSAllCompetition, CompetitionDisplayDTO>()
                 .Include<TournamentCompetition, CompetitionDisplayDTO>()
+                .ForMember(dest => dest.CompetitionType, opt => opt.MapFrom(src =>
+                    src is OneVSAllCompetition ? CompetitionType.ONE_VS_ALL.ToString()
+                    : src is TournamentCompetition ? CompetitionType.TOURNAMENT.ToString()
+                    : "UNKNOWN"))
                 .ForMember(dest => dest.GameType, opt => opt.MapFrom(src => src.GameFormat.GameType.Name))
                 .ForMember(dest => dest.CompetitorType, opt => opt.MapFrom(src => src.GameFormat.CompetitorType));
 

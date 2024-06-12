@@ -1,6 +1,8 @@
 ﻿using AmdarisProject.Application.Common.Models;
-using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
+using AmdarisProject.Domain.Enums;
+using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.TestUtils.ModelBuilders;
 using Moq;
@@ -15,15 +17,16 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
 
             List<Player> players = [];
             for (int i = 0; i < _numberOfModelsInAList; i++) players.Add(APBuilder.CreateBasicPlayer().Get());
+            var paginatedResult = Tuple.Create((IEnumerable<Player>)players, players.Count());
             _competitorRepositoryMock.Setup(o => o.GetPaginatedPlayers(It.IsAny<PagedRequest>()))
-                .Returns(Task.FromResult((IEnumerable<Player>)players));
-            _mapperMock.Setup(o => o.Map<IEnumerable<PlayerDisplayDTO>>(It.IsAny<IEnumerable<Player>>()))
-                .Returns(_mapper.Map<IEnumerable<PlayerDisplayDTO>>(players));
+                .Returns(Task.FromResult(paginatedResult));
+            _mapperMock.Setup(o => o.Map<IEnumerable<CompetitorDisplayDTO>>(It.IsAny<IEnumerable<Player>>()))
+                .Returns(_mapper.Map<IEnumerable<CompetitorDisplayDTO>>(players));
             GetPaginatedPlayers command = new(_pagedRequest);
             GetPaginatedPlayersHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
                 GetLogger<GetPaginatedPlayersHandler>());
 
-            PaginatedResult<PlayerDisplayDTO> response = await handler.Handle(command, default);
+            PaginatedResult<CompetitorDisplayDTO> response = await handler.Handle(command, default);
 
             _competitorRepositoryMock.Verify(o => o.GetPaginatedPlayers(It.IsAny<PagedRequest>()), Times.Once);
             Assert.Equal(_pagedRequest.PageIndex, response.PageIndex);
@@ -33,10 +36,15 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
             for (int i = 0; i < players.Count; i++)
             {
                 Player player = players[i];
-                PlayerDisplayDTO playerDisplayDTO = response.Items.ElementAt(i);
+                CompetitorDisplayDTO competitorDisplayDTO = response.Items.ElementAt(i);
 
-                Assert.Equal(player.Id, playerDisplayDTO.Id);
-                Assert.Equal(player.Name, playerDisplayDTO.Name);
+                Assert.Equal(player.Name, competitorDisplayDTO.Name);
+                Assert.Equal(CompetitorType.PLAYER.ToString(), competitorDisplayDTO.CompetitorType);
+                Assert.Equal(player.Competitions.Count(), competitorDisplayDTO.NumberOfCompetitions);
+                Assert.Equal(player.Matches.Count(), competitorDisplayDTO.NumberOfMatches);
+                Assert.Equal(player.Teams.Count(), competitorDisplayDTO.NumberOfTeams);
+                Assert.Null(competitorDisplayDTO.NumberOfPlayers);
+                Assert.Null(competitorDisplayDTO.NumberOfActivePlayers);
             }
         }
     }

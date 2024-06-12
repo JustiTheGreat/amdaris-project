@@ -19,14 +19,14 @@ namespace AmdarisProject.Application.Handlers.GameFormatHandlers
 
         public async Task<PaginatedResult<GameFormatGetDTO>> Handle(GetPaginatedGameFormats request, CancellationToken cancellationToken)
         {
-            IEnumerable<GameFormat> gameFormats = await _unitOfWork.GameFormatRepository.GetPaginatedData(request.PagedRequest);
-            IEnumerable<GameFormatGetDTO> mapped = _mapper.Map<IEnumerable<GameFormatGetDTO>>(gameFormats);
+            Tuple<IEnumerable<GameFormat>, int> gameFormats = await _unitOfWork.GameFormatRepository.GetPaginatedData(request.PagedRequest);
+            IEnumerable<GameFormatGetDTO> mapped = _mapper.Map<IEnumerable<GameFormatGetDTO>>(gameFormats.Item1);
             PaginatedResult<GameFormatGetDTO> response = new()
             {
                 Items = mapped,
                 PageSize = request.PagedRequest.PageSize,
                 PageIndex = request.PagedRequest.PageIndex,
-                Total = mapped.Count()
+                Total = gameFormats.Item2
             };
 
             _logger.LogInformation("Got paged game formats (Count = {Count})!", [response.Items.Count()]);

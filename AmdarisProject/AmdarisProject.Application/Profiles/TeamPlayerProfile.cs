@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
+﻿using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Domain.Models;
 using AutoMapper;
 
@@ -8,9 +8,11 @@ namespace AmdarisProject.Application.Profiles
     {
         public TeamPlayerProfile()
         {
-            CreateMap<TeamPlayer, TeamPlayerGetDTO>()
-                    .ForMember(dest => dest.TeamId, opt => opt.MapFrom(src => src.Team.Id))
-                    .ForMember(dest => dest.PlayerId, opt => opt.MapFrom(src => src.Player.Id));
+            CreateMap<TeamPlayer, TeamPlayerDisplayDTO>()
+                .ForMember(dest => dest.TeamId, opt => opt.MapFrom(src => src.Team.Id))
+                .ForMember(dest => dest.Team, opt => opt.MapFrom(src => src.Team.Name))
+                .ForMember(dest => dest.PlayerId, opt => opt.MapFrom(src => src.Player.Id))
+                .ForMember(dest => dest.Player, opt => opt.MapFrom(src => src.Player.Name));
         }
     }
 }

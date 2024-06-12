@@ -1,7 +1,7 @@
 ﻿using AmdarisProject.Application.Common.Models;
-using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
 using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
@@ -93,13 +93,13 @@ namespace AmdarisProject.Presentation.Test.Tests
             [Fact]
             public async Task Test_GetPaginatedPlayers_OkStatus()
             {
-                Setup<GetPaginatedPlayers, PaginatedResult<PlayerDisplayDTO>, GetPaginatedPlayersHandler>();
+                Setup<GetPaginatedPlayers, PaginatedResult<CompetitorDisplayDTO>, GetPaginatedPlayersHandler>();
                 Seed_GetPaginatedPlayers(out List<Player> players);
 
                 var requestResult = await _controller.GetPaginatedPlayers(_pagedRequest);
 
                 var result = requestResult as OkObjectResult;
-                var response = result?.Value as PaginatedResult<PlayerDisplayDTO>;
+                var response = result?.Value as PaginatedResult<CompetitorDisplayDTO>;
                 Assert.Equal((int)HttpStatusCode.OK, result!.StatusCode);
                 Assert.NotNull(response);
                 Assert.Equal(_pagedRequest.PageIndex, response.PageIndex);
@@ -108,11 +108,11 @@ namespace AmdarisProject.Presentation.Test.Tests
                 Assert.Equal(_pagedRequest.PageSize, response.Items.Count());
                 players.ForEach(player =>
                 {
-                    PlayerDisplayDTO playerDisplayDTO =
-                        response.Items.First(playerDisplayDTO => playerDisplayDTO.Id.Equals(player.Id));
+                    CompetitorDisplayDTO competitorDisplayDTO =
+                        response.Items.First(competitorDisplayDTO => competitorDisplayDTO.Id.Equals(player.Id));
 
-                    Assert.Equal(player.Id, playerDisplayDTO.Id);
-                    Assert.Equal(player.Name, playerDisplayDTO.Name);
+                    Assert.Equal(player.Id, competitorDisplayDTO.Id);
+                    Assert.Equal(player.Name, competitorDisplayDTO.Name);
                 });
             }
 
@@ -132,13 +132,13 @@ namespace AmdarisProject.Presentation.Test.Tests
             [Fact]
             public async Task Test_GetPaginatedTeams_OkStatus()
             {
-                Setup<GetPaginatedTeams, PaginatedResult<TeamDisplayDTO>, GetPaginatedTeamsHandler>();
+                Setup<GetPaginatedTeams, PaginatedResult<CompetitorDisplayDTO>, GetPaginatedTeamsHandler>();
                 Seed_GetPaginatedTeams(out List<Team> teams);
 
                 var requestResult = await _controller.GetPaginatedTeams(_pagedRequest);
 
                 var result = requestResult as OkObjectResult;
-                var response = result?.Value as PaginatedResult<TeamDisplayDTO>;
+                var response = result?.Value as PaginatedResult<CompetitorDisplayDTO>;
                 Assert.Equal((int)HttpStatusCode.OK, result!.StatusCode);
                 Assert.NotNull(response);
                 Assert.Equal(_pagedRequest.PageIndex, response.PageIndex);
@@ -147,12 +147,11 @@ namespace AmdarisProject.Presentation.Test.Tests
                 Assert.Equal(_pagedRequest.PageSize, response.Items.Count());
                 teams.ForEach(team =>
                 {
-                    TeamDisplayDTO teamDisplayDTO =
-                        response.Items.First(teamDisplayDTO => teamDisplayDTO.Id.Equals(team.Id));
+                    CompetitorDisplayDTO competitorDisplayDTO =
+                        response.Items.First(competitorDisplayDTO => competitorDisplayDTO.Id.Equals(team.Id));
 
-                    Assert.Equal(team.Id, teamDisplayDTO.Id);
-                    Assert.Equal(team.Name, teamDisplayDTO.Name);
-                    team.Players.ForEach(player => Assert.Contains(player.Name, teamDisplayDTO.PlayerNames));
+                    Assert.Equal(team.Id, competitorDisplayDTO.Id);
+                    Assert.Equal(team.Name, competitorDisplayDTO.Name);
                 });
             }
 
@@ -172,23 +171,23 @@ namespace AmdarisProject.Presentation.Test.Tests
             [Fact]
             public async Task Test_GetPlayersNotInTeam_OkStatus()
             {
-                Setup<GetPlayersNotInTeam, IEnumerable<PlayerDisplayDTO>, GetPlayersNotInTeamHandler>();
+                Setup<GetPlayersNotInTeam, IEnumerable<CompetitorDisplayDTO>, GetPlayersNotInTeamHandler>();
                 Seed_GetPlayersNotInTeam(out List<Player> playersNotInTeam, out Guid teamId);
 
                 var requestResult = await _controller.GetPlayersNotInTeam(teamId);
 
                 var result = requestResult as OkObjectResult;
-                var response = result?.Value as IEnumerable<PlayerDisplayDTO>;
+                var response = result?.Value as IEnumerable<CompetitorDisplayDTO>;
                 Assert.Equal((int)HttpStatusCode.OK, result!.StatusCode);
                 Assert.NotNull(response);
                 Assert.Equal(playersNotInTeam.Count, response.Count());
                 playersNotInTeam.ForEach(player =>
                 {
-                    PlayerDisplayDTO playerDisplayDTO =
-                        response.First(playerDisplayDTO => playerDisplayDTO.Id.Equals(player.Id));
+                    CompetitorDisplayDTO competitorDisplayDTO =
+                        response.First(competitorDisplayDTO => competitorDisplayDTO.Id.Equals(player.Id));
 
-                    Assert.Equal(player.Id, playerDisplayDTO.Id);
-                    Assert.Equal(player.Name, playerDisplayDTO.Name);
+                    Assert.Equal(player.Id, competitorDisplayDTO.Id);
+                    Assert.Equal(player.Name, competitorDisplayDTO.Name);
                 });
             }
 
@@ -222,23 +221,23 @@ namespace AmdarisProject.Presentation.Test.Tests
             [Fact]
             public async Task Test_GetPlayersNotInCompetition_OkStatus()
             {
-                Setup<GetPlayersNotInCompetition, IEnumerable<PlayerDisplayDTO>, GetPlayersNotInCompetitionHandler>();
+                Setup<GetPlayersNotInCompetition, IEnumerable<CompetitorDisplayDTO>, GetPlayersNotInCompetitionHandler>();
                 Seed_GetPlayersNotInCompetition(out List<Player> playersNotInCompetitions, out Guid teamId);
 
                 var requestResult = await _controller.GetPlayersNotInCompetition(teamId);
 
                 var result = requestResult as OkObjectResult;
-                var response = result?.Value as IEnumerable<PlayerDisplayDTO>;
+                var response = result?.Value as IEnumerable<CompetitorDisplayDTO>;
                 Assert.Equal((int)HttpStatusCode.OK, result!.StatusCode);
                 Assert.NotNull(response);
                 Assert.Equal(playersNotInCompetitions.Count, response.Count());
                 playersNotInCompetitions.ForEach(player =>
                 {
-                    PlayerDisplayDTO playerDisplayDTO =
-                        response.First(playerDisplayDTO => playerDisplayDTO.Id.Equals(player.Id));
+                    CompetitorDisplayDTO competitorDisplayDTO =
+                        response.First(competitorDisplayDTO => competitorDisplayDTO.Id.Equals(player.Id));
 
-                    Assert.Equal(player.Id, playerDisplayDTO.Id);
-                    Assert.Equal(player.Name, playerDisplayDTO.Name);
+                    Assert.Equal(player.Id, competitorDisplayDTO.Id);
+                    Assert.Equal(player.Name, competitorDisplayDTO.Name);
                 });
             }
 
@@ -272,23 +271,23 @@ namespace AmdarisProject.Presentation.Test.Tests
             [Fact]
             public async Task Test_GetTeamsThatCanBeAddedToCompetition_OkStatus()
             {
-                Setup<GetPlayersNotInCompetition, IEnumerable<PlayerDisplayDTO>, GetPlayersNotInCompetitionHandler>();
+                Setup<GetPlayersNotInCompetition, IEnumerable<CompetitorDisplayDTO>, GetPlayersNotInCompetitionHandler>();
                 Seed_GetTeamsThatCanBeAddedToCompetition(out List<Team> teamsThatCanBeAddedToCompetition, out Guid competitionId);
 
                 var requestResult = await _controller.GetTeamsThatCanBeAddedToCompetition(competitionId);
 
                 var result = requestResult as OkObjectResult;
-                var response = result?.Value as IEnumerable<TeamDisplayDTO>;
+                var response = result?.Value as IEnumerable<CompetitorDisplayDTO>;
                 Assert.Equal((int)HttpStatusCode.OK, result!.StatusCode);
                 Assert.NotNull(response);
                 Assert.Equal(teamsThatCanBeAddedToCompetition.Count, response.Count());
                 teamsThatCanBeAddedToCompetition.ForEach(team =>
                 {
-                    TeamDisplayDTO teamDisplayDTO =
-                        response.First(teamDisplayDTO => teamDisplayDTO.Id.Equals(team.Id));
+                    CompetitorDisplayDTO competitorDisplayDTO =
+                        response.First(competitorDisplayDTO => competitorDisplayDTO.Id.Equals(team.Id));
 
-                    Assert.Equal(team.Id, teamDisplayDTO.Id);
-                    Assert.Equal(team.Name, teamDisplayDTO.Name);
+                    Assert.Equal(team.Id, competitorDisplayDTO.Id);
+                    Assert.Equal(team.Name, competitorDisplayDTO.Name);
                 });
             }
 

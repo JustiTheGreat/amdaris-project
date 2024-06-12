@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
+﻿using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Application.Handlers.TeamPlayerHandlers;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitorModels;
@@ -14,7 +14,7 @@ namespace AmdarisProject.Presentation.Test.Tests
         [Fact]
         public async Task Test_AddPlayerToTeam_CreatedStatus()
         {
-            Setup<AddPlayerToTeam, TeamPlayerGetDTO, AddPlayerToTeamHandler>();
+            Setup<AddPlayerToTeam, TeamPlayerDisplayDTO, AddPlayerToTeamHandler>();
             Seed_AddPlayerToTeam(out Team team, out Player player);
 
             var requestResult = await _controller.AddPlayerToTeam(team.Id, player.Id);
@@ -37,14 +37,14 @@ namespace AmdarisProject.Presentation.Test.Tests
         [Fact]
         public async Task Test_ChangeTeamPlayerStatus_OkStatus()
         {
-            Setup<AddPlayerToTeam, TeamPlayerGetDTO, AddPlayerToTeamHandler>();
+            Setup<AddPlayerToTeam, TeamPlayerDisplayDTO, AddPlayerToTeamHandler>();
             Seed_ChangeTeamPlayerStatus(out TeamPlayer teamPlayer);
 
             var requestResult =
                 await _controller.ChangeTeamPlayerStatus(teamPlayer.Team.Id, teamPlayer.Player.Id);
 
             var result = requestResult as OkObjectResult;
-            var response = result?.Value as TeamPlayerGetDTO;
+            var response = result?.Value as TeamPlayerDisplayDTO;
             Assert.Equal((int)HttpStatusCode.OK, result!.StatusCode);
             Assert.NotNull(response);
             Assert.Equal(teamPlayer.Team.Id, response.TeamId);

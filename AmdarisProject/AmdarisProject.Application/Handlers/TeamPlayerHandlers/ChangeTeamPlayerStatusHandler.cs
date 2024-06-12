@@ -1,5 +1,5 @@
 ﻿using AmdarisProject.Application.Abstractions;
-using AmdarisProject.Application.Dtos.ResponseDTOs.GetDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AutoMapper;
@@ -8,15 +8,15 @@ using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
 {
-    public record ChangeTeamPlayerStatus(Guid TeamId, Guid PlayerId) : IRequest<TeamPlayerGetDTO>;
+    public record ChangeTeamPlayerStatus(Guid TeamId, Guid PlayerId) : IRequest<TeamPlayerDisplayDTO>;
     public class ChangeTeamPlayerStatusHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<ChangeTeamPlayerStatusHandler> logger)
-        : IRequestHandler<ChangeTeamPlayerStatus, TeamPlayerGetDTO>
+        : IRequestHandler<ChangeTeamPlayerStatus, TeamPlayerDisplayDTO>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly ILogger<ChangeTeamPlayerStatusHandler> _logger = logger;
 
-        public async Task<TeamPlayerGetDTO> Handle(ChangeTeamPlayerStatus request, CancellationToken cancellationToken)
+        public async Task<TeamPlayerDisplayDTO> Handle(ChangeTeamPlayerStatus request, CancellationToken cancellationToken)
         {
             TeamPlayer teamPlayer = await _unitOfWork.TeamPlayerRepository.GetByTeamAndPlayer(request.TeamId, request.PlayerId)
                 ?? throw new APNotFoundException(
@@ -42,7 +42,7 @@ namespace AmdarisProject.Application.Handlers.TeamPlayerHandlers
             _logger.LogInformation("Changed activity status of player {PlayerName} from the team {TeamName} to {Status}!",
                 [updated.Player.Name, updated.Team.Name, updated.IsActive ? "active" : "incative"]);
 
-            TeamPlayerGetDTO response = _mapper.Map<TeamPlayerGetDTO>(updated);
+            TeamPlayerDisplayDTO response = _mapper.Map<TeamPlayerDisplayDTO>(updated);
             return response;
         }
     }

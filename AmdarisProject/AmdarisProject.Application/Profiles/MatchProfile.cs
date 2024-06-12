@@ -1,5 +1,5 @@
-﻿using AmdarisProject.Application.Dtos.DisplayDTOs;
-using AmdarisProject.Application.Dtos.ResponseDTOs;
+﻿using AmdarisProject.Application.Dtos.ResponseDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Domain.Models;
 using AutoMapper;
 
@@ -10,10 +10,10 @@ namespace AmdarisProject.Application.Profiles
         public MatchProfile()
         {
             CreateMap<Match, MatchDisplayDTO>()
-                .ForMember(dest => dest.CompetitorOneName, opt => opt.MapFrom(src => src.CompetitorOne.Name))
-                .ForMember(dest => dest.CompetitorTwoName, opt => opt.MapFrom(src => src.CompetitorTwo.Name))
-                .ForMember(dest => dest.CompetitionName, opt => opt.MapFrom(src => src.Competition.Name))
-                .ForMember(dest => dest.WinnerName, opt => opt.MapFrom(src => src.Winner == null ? null : src.Winner.Name));
+                .ForMember(dest => dest.Competitors, opt => opt.MapFrom(src => $"{src.CompetitorOne.Name} - {src.CompetitorTwo.Name}"))
+                .ForMember(dest => dest.Score, opt => opt.MapFrom(src => $"{src.CompetitorOnePoints} - {src.CompetitorTwoPoints}"))
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => src.Competition.Name))
+                .ForMember(dest => dest.Winner, opt => opt.MapFrom(src => src.Winner == null ? null : src.Winner.Name));
 
             CreateMap<Match, MatchGetDTO>();
         }

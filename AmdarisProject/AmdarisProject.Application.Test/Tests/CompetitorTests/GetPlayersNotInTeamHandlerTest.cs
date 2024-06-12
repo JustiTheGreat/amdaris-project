@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
+﻿using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitorModels;
@@ -19,23 +19,23 @@ namespace AmdarisProject.Application.Test.Tests.CompetitorTests
                 .Returns(Task.FromResult((Team?)team));
             _competitorRepositoryMock.Setup(o => o.GetPlayersNotInTeam(It.IsAny<Guid>()))
                 .Returns(Task.FromResult((IEnumerable<Player>)players));
-            _mapperMock.Setup(o => o.Map<IEnumerable<PlayerDisplayDTO>>(It.IsAny<IEnumerable<Player>>()))
-                .Returns(_mapper.Map<IEnumerable<PlayerDisplayDTO>>(players));
+            _mapperMock.Setup(o => o.Map<IEnumerable<CompetitorDisplayDTO>>(It.IsAny<IEnumerable<Player>>()))
+                .Returns(_mapper.Map<IEnumerable<CompetitorDisplayDTO>>(players));
             GetPlayersNotInTeam command = new(It.IsAny<Guid>());
             GetPlayersNotInTeamHandler handler = new(_unitOfWorkMock.Object, _mapperMock.Object,
                 GetLogger<GetPlayersNotInTeamHandler>());
 
-            IEnumerable<PlayerDisplayDTO> response = await handler.Handle(command, default);
+            IEnumerable<CompetitorDisplayDTO> response = await handler.Handle(command, default);
 
             _competitorRepositoryMock.Verify(o => o.GetPlayersNotInTeam(It.IsAny<Guid>()), Times.Once);
             Assert.Equal(players.Count, response.Count());
             for (int i = 0; i < players.Count; i++)
             {
                 Player player = players[i];
-                PlayerDisplayDTO playerDisplayDTO = response.ElementAt(i);
+                CompetitorDisplayDTO competitorDisplayDTO = response.ElementAt(i);
 
-                Assert.Equal(player.Id, playerDisplayDTO.Id);
-                Assert.Equal(player.Name, playerDisplayDTO.Name);
+                Assert.Equal(player.Id, competitorDisplayDTO.Id);
+                Assert.Equal(player.Name, competitorDisplayDTO.Name);
             }
         }
 

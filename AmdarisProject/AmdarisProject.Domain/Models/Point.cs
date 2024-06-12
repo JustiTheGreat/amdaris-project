@@ -16,10 +16,10 @@ namespace AmdarisProject.Domain.Models
                 throw new APIllegalStatusException(Match.Status);
 
             if (Match.ACompetitorHasTheWinningScore())
-                throw new APException($"A competitor of match {Match.Id} already has the winning number of points!");
+                throw new APException($"A competitor of match {Match.CompetitorOne.Name}-{Match.CompetitorTwo.Name} already has the winning number of points!");
 
             Value += value;
-
+            
             Match.AddPointsForPlayerSide(Player.Id, value);
         }
     }

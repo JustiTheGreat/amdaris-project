@@ -10,7 +10,6 @@ namespace AmdarisProject.Presentation.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = nameof(UserRole.Administrator))]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public class MatchController(IMediator mediator) : ControllerBase

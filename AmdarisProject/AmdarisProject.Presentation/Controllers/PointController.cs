@@ -18,7 +18,7 @@ namespace AmdarisProject.Presentation.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
-        [HttpPut($"/{nameof(Match)}" + "/{matchId}" + $"{nameof(Player)}" + "/{playerId}")]
+        [HttpPut($"{nameof(Match)}" + "/{matchId}/" + $"{nameof(Player)}" + "/{playerId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(PointGetDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

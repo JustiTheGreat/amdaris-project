@@ -1,6 +1,4 @@
-﻿using AmdarisProject.Application.Dtos.ResponseDTOs;
-
-namespace AmdarisProject.Application.Dtos.DisplayDTOs
+﻿namespace AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs
 {
     public abstract class DisplayDTO : IdDTO
     {

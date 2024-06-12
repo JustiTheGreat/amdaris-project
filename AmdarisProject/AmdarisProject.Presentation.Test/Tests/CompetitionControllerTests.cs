@@ -1,7 +1,7 @@
 ﻿using AmdarisProject.Application.Common.Models;
-using AmdarisProject.Application.Dtos.DisplayDTOs;
 using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Application.Handlers.CompetitionHandlers;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
@@ -125,9 +125,9 @@ namespace AmdarisProject.Presentation.Test.Tests
 
                 Assert.Equal(competition.Id, competitionDisplayDTO.Id);
                 Assert.Equal(competition.Name, competitionDisplayDTO.Name);
-                Assert.Equal(competition.Status, competitionDisplayDTO.Status);
+                Assert.Equal(competition.Status.ToString(), competitionDisplayDTO.Status);
                 Assert.Equal(competition.GameFormat.GameType.Name, competitionDisplayDTO.GameType);
-                Assert.Equal(competition.GameFormat.CompetitorType, competitionDisplayDTO.CompetitorType);
+                Assert.Equal(competition.GameFormat.CompetitorType.ToString(), competitionDisplayDTO.CompetitorType);
             });
         }
 

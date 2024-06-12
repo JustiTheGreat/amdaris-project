@@ -8,9 +8,15 @@ namespace AmdarisProject.Infrastructure.Persistance.Extensions
 {
     public static class QueryableExtensions
     {
-        public static async Task<IEnumerable<T>> CreatePaginatedResultAsync<T>(this IQueryable<T> query, PagedRequest pagedRequest)
+        public static async Task<Tuple<IEnumerable<T>, int>> CreatePaginatedResultAsync<T>(this IQueryable<T> query, PagedRequest pagedRequest)
             where T : Model
-            => await query.ApplyFilters(pagedRequest).Paginate(pagedRequest).Sort(pagedRequest).ToListAsync();
+        {
+            IQueryable<T> totalItems = query.ApplyFilters(pagedRequest).Sort(pagedRequest);
+            int total = await totalItems.CountAsync();
+            IEnumerable<T> paginatedItems = await totalItems.Paginate(pagedRequest).ToListAsync();
+            return Tuple.Create(paginatedItems, total);
+        }
+
 
         private static IQueryable<T> Paginate<T>(this IQueryable<T> query, PagedRequest pagedRequest)
             => query.Skip(pagedRequest.PageIndex * pagedRequest.PageSize).Take(pagedRequest.PageSize);

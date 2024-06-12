@@ -1,4 +1,5 @@
 ﻿using AmdarisProject.Domain.Exceptions;
+using Azure.Core;
 
 namespace AmdarisProject.Presentation.Middleware
 {
@@ -15,6 +16,16 @@ namespace AmdarisProject.Presentation.Middleware
             {
                 await _next.Invoke(httpContext);
             }
+            catch (APUnauthorizedException e)
+            {
+                LogError(httpContext, e);
+                await CreateResponse(httpContext, "Session expired!", StatusCodes.Status401Unauthorized);
+            }
+            catch (APConflictException e)
+            {
+                LogError(httpContext, e);
+                await CreateResponse(httpContext, e.Message, StatusCodes.Status409Conflict);
+            }
             catch (APNotFoundException e)
             {
                 LogError(httpContext, e);
@@ -30,16 +41,6 @@ namespace AmdarisProject.Presentation.Middleware
                 LogError(httpContext, e);
                 await CreateResponse(httpContext, $"IllegalStatus: {e.Message}", StatusCodes.Status400BadRequest);
             }
-            catch (APUnauthorizedException e)
-            {
-                LogError(httpContext, e);
-                await CreateResponse(httpContext, $"Unauthorized: {e.Message}", StatusCodes.Status401Unauthorized);
-            }
-            catch (APConflictException e)
-            {
-                LogError(httpContext, e);
-                await CreateResponse(httpContext, $"Conflict: {e.Message}", StatusCodes.Status409Conflict);
-            }
             catch (Exception e)
             {
                 LogError(httpContext, e);
@@ -51,13 +52,15 @@ namespace AmdarisProject.Presentation.Middleware
             => _logger.LogError("{Method} {Path}: {Message}", [httpContext.Request.Method, httpContext.Request.Path, e.Message]);
 
         private async Task CreateResponse(HttpContext httpContext, string message,
-            int StatusCode = StatusCodes.Status500InternalServerError)
+            int statusCode = StatusCodes.Status500InternalServerError)
         {
+            bool showDetails = _environment.IsDevelopment()
+                || statusCode == StatusCodes.Status401Unauthorized
+                || statusCode == StatusCodes.Status409Conflict;
             string basicErrorMessage = "An unexpected error occured!";
-            httpContext.Response.StatusCode =
-                _environment.IsDevelopment() ? StatusCode : StatusCodes.Status500InternalServerError;
-            httpContext.Response.ContentType = "text/plain";
-            string responseMessage = _environment.IsDevelopment() ? message : basicErrorMessage;
+            httpContext.Response.StatusCode = showDetails ? statusCode : StatusCodes.Status500InternalServerError;
+            httpContext.Response.ContentType = ContentType.TextPlain.ToString();
+            string responseMessage = showDetails ? message : basicErrorMessage;
             await httpContext.Response.WriteAsync(responseMessage);
         }
     }

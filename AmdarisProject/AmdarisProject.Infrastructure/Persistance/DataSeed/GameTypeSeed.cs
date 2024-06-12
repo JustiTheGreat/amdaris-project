@@ -7,7 +7,7 @@ namespace AmdarisProject.Infrastructure.Persistance.DataSeed
     {
         public static async Task Seed(AmdarisProjectDBContext dbContext)
         {
-            List<string> gameTypes = ["Ping pong", "Chess", "FIFA", "Football", "Basket", "Tenis", "Hockey", "Rugby"];
+            List<string> gameTypes = ["Ping pong", "Chess", "FIFA", "Football", "Basketball", "Tenis", "Hockey", "Rugby"];
 
             if (!dbContext.GameTypes.Any())
             {

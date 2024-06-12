@@ -45,7 +45,7 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
                 throw new APIllegalStatusException(Status);
 
             if (!AllMatchesOfCompetitonAreDone())
-                throw new APException($"Competition {Id} still has unfinished matches!");
+                throw new APConflictException($"Competition {Name} still has unfinished matches!");
 
             Status = CompetitionStatus.FINISHED;
         }
@@ -60,7 +60,7 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
             if (AMatchIsBeignPlayed())
                 throw new APException($"A match is from competition {Name} is being played!");
 
-            Status = CompetitionStatus.FINISHED;
+            Status = CompetitionStatus.CANCELED;
 
             Matches.ForEach(match => match.Cancel());
         }
@@ -99,19 +99,19 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
 
             if (competitor is Player && GameFormat.CompetitorType is not CompetitorType.PLAYER
                 || competitor is Team && GameFormat.CompetitorType is not CompetitorType.TEAM)
-                throw new APException($"Tried to add {competitor.GetType().Name} " +
-                    $"to competition with {GameFormat.CompetitorType} competitor type!");
+                throw new APException($"Can't register competitor {competitor.GetType().Name} " +
+                    $"to a competition with {GameFormat.CompetitorType} competitor type!");
 
             if (ContainsCompetitor(Id))
-                throw new APException($"Competitor {competitor.Id} is already registered to competition {Id}!");
+                throw new APException($"Competitor {competitor.Name} is already registered to competition {Name}!");
 
             if (competitor is Team team)
             {
                 if (team.ContainsAPlayerPartOfAnotherTeamFromCompetition(this))
-                    throw new APException($"Team {competitor.Id} is contains a player part of another team from competition {Id}!");
+                    throw new APException($"Team {competitor.Name} contains a player part of another team from competition {Name}!");
 
                 if (!team.HasTheRequiredNumberOfActivePlayers((uint)GameFormat.TeamSize!))
-                    throw new APException($"Team {competitor.Id} doesn't have the required number of active competitors!");
+                    throw new APException($"Team {competitor.Name} doesn't have the required number of active competitors!");
             }
 
             Competitors.Add(competitor);
@@ -124,11 +124,11 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
 
             if (competitor is Player && GameFormat.CompetitorType is not CompetitorType.PLAYER
                 || competitor is Team && GameFormat.CompetitorType is not CompetitorType.TEAM)
-                throw new APException($"Tried to remove {competitor.GetType().Name} " +
-                    $"from competition with {GameFormat.CompetitorType} competitor type!");
+                throw new APException($"Can't remove a {competitor.GetType().Name} " +
+                    $"from a competition with {GameFormat.CompetitorType} competitor type!");
 
             if (!ContainsCompetitor(competitor.Id))
-                throw new APException($"Competitor {competitor.Id} is not registered to competition {Id}!");
+                throw new APException($"Competitor {competitor.Name} is not registered to competition {Name}!");
 
             Competitors = Competitors.Where(c => !c.Id.Equals(competitor.Id)).ToList();
         }
@@ -138,6 +138,6 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
                 match.CompetitorOne.Id.Equals(competitorId1) && match.CompetitorTwo.Id.Equals(competitorId2)
                 || match.CompetitorOne.Id.Equals(competitorId2) && match.CompetitorTwo.Id.Equals(competitorId1));
 
-        public bool DurationAndBreakTimesAreMatching() => BreakInMinutes is null ^ GameFormat.DurationInMinutes is null;
+        public bool DurationAndBreakTimesAreMatching() => BreakInMinutes is null == GameFormat.DurationInMinutes is null;
     }
 }

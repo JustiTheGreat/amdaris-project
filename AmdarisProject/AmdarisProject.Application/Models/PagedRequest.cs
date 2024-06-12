@@ -1,5 +1,4 @@
-﻿using AmdarisProject.Domain.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace AmdarisProject.Application.Common.Models
 {
@@ -13,7 +12,7 @@ namespace AmdarisProject.Application.Common.Models
 
         public required string ColumnNameForSorting { get; set; }
 
-        public required SortDirection SortDirection { get; set; }
+        public required string SortDirection { get; set; }
 
         public RequestFilters RequestFilters { get; set; }
 

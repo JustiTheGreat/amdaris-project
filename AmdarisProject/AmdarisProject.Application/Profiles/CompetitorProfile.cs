@@ -1,6 +1,7 @@
-﻿using AmdarisProject.Application.Dtos.DisplayDTOs.CompetitorDisplayDTOs;
-using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
+﻿using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
+using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Extensions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
@@ -30,13 +31,21 @@ namespace AmdarisProject.Application.Profiles
                .ForMember(dest => dest.Players, opt => opt.MapFrom(src => new List<Player>()));
 
             CreateMap<Competitor, CompetitorDisplayDTO>()
-                .Include<Player, PlayerDisplayDTO>()
-                .Include<Team, TeamDisplayDTO>();
+                .Include<Player, CompetitorDisplayDTO>()
+                .Include<Team, CompetitorDisplayDTO>()
+                .ForMember(dest => dest.CompetitorType, opt => opt.MapFrom(src =>
+                    src is Player ? CompetitorType.PLAYER.ToString()
+                    : src is Team ? CompetitorType.TEAM.ToString()
+                    : "UNKNOWN"))
+                .ForMember(dest => dest.NumberOfCompetitions, opt => opt.MapFrom(src => src.Competitions.Count()))
+                .ForMember(dest => dest.NumberOfMatches, opt => opt.MapFrom(src => src.Matches.Count()));
 
-            CreateMap<Player, PlayerDisplayDTO>();
+            CreateMap<Player, CompetitorDisplayDTO>()
+                .ForMember(dest => dest.NumberOfTeams, opt => opt.MapFrom(src => src.Teams.Count()));
 
-            CreateMap<Team, TeamDisplayDTO>()
-                .ForMember(dest => dest.PlayerNames, opt => opt.MapFrom(src => src.Players.Select(player => player.Name)));
+            CreateMap<Team, CompetitorDisplayDTO>()
+                .ForMember(dest => dest.NumberOfPlayers, opt => opt.MapFrom(src => src.TeamPlayers.Count()))
+                .ForMember(dest => dest.NumberOfActivePlayers, opt => opt.MapFrom(src => src.TeamPlayers.Count(teamPlayer => teamPlayer.IsActive)));
 
             CreateMap<Competitor, CompetitorGetDTO>()
                 .Include<Player, PlayerGetDTO>()

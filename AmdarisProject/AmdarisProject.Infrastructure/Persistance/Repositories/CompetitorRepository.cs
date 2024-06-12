@@ -16,7 +16,6 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
             .Include(o => o.Matches)
             .Include(o => o.WonMatches)
             .Include(o => o.Competitions)
-
             .Include(o => ((Player)o).Points)
             .Include(o => ((Player)o).Teams)
             .Include(o => ((Team)o).Players)
@@ -55,11 +54,19 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
         public async Task<IEnumerable<Team>> GetAllTeams()
             => await _dbContext.Set<Team>().ToListAsync();
 
-        public async Task<IEnumerable<Player>> GetPaginatedPlayers(PagedRequest pagedRequest)
-            => await _dbContext.Set<Player>().CreatePaginatedResultAsync(pagedRequest);
+        public async Task<Tuple<IEnumerable<Player>, int>> GetPaginatedPlayers(PagedRequest pagedRequest)
+            => await _dbContext.Set<Player>()
+            .Include(o => o.Matches)
+            .Include(o => o.Competitions)
+            .Include(o => o.Teams)
+            .CreatePaginatedResultAsync(pagedRequest);
 
-        public async Task<IEnumerable<Team>> GetPaginatedTeams(PagedRequest pagedRequest)
-            => await _dbContext.Set<Team>().CreatePaginatedResultAsync(pagedRequest);
+        public async Task<Tuple<IEnumerable<Team>, int>> GetPaginatedTeams(PagedRequest pagedRequest)
+            => await _dbContext.Set<Team>()
+            .Include(o => o.Matches)
+            .Include(o => o.Competitions)
+            .Include(o => o.TeamPlayers)
+            .CreatePaginatedResultAsync(pagedRequest);
 
         public async Task<IEnumerable<Player>> GetPlayersNotInTeam(Guid teamId)
             => await _dbContext.Set<Player>()

@@ -1,5 +1,5 @@
-﻿using AmdarisProject.Application.Dtos.DisplayDTOs;
-using AmdarisProject.Application.Dtos.ResponseDTOs;
+﻿using AmdarisProject.Application.Dtos.ResponseDTOs;
+using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Domain.Models;
 using AutoMapper;
 
@@ -10,7 +10,9 @@ namespace AmdarisProject.Application.Profiles
         public PointProfile()
         {
             CreateMap<Point, PointDisplayDTO>()
-               .ForMember(dest => dest.PlayerName, opt => opt.MapFrom(src => src.Player.Name));
+                .ForMember(dest => dest.MatchId, opt => opt.MapFrom(src => src.Match.Id))
+                .ForMember(dest => dest.PlayerId, opt => opt.MapFrom(src => src.Player.Id))
+                .ForMember(dest => dest.Player, opt => opt.MapFrom(src => src.Player.Name));
 
             CreateMap<Point, PointGetDTO>()
                 .ForMember(dest => dest.Match, opt => opt.MapFrom(src => src.Match.Id));

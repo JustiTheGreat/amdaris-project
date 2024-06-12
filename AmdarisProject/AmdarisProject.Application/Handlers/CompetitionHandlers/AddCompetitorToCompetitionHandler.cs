@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 {
-    public record AddCompetitorToCompetition(Guid CompetitorId, Guid CompetitionId) : IRequest<CompetitionGetDTO>;
+    public record AddCompetitorToCompetition(Guid CompetitionId, Guid CompetitorId) : IRequest<CompetitionGetDTO>;
     public class AddCompetitorToCompetitionHandler(IUnitOfWork unitOfWork, IMapper mapper,
         ILogger<AddCompetitorToCompetitionHandler> logger)
         : IRequestHandler<AddCompetitorToCompetition, CompetitionGetDTO>
@@ -48,7 +48,7 @@ namespace AmdarisProject.Application.Handlers.CompetitionHandlers
 
             CompetitionGetDTO response = updated is OneVSAllCompetition ? _mapper.Map<OneVSAllCompetitionGetDTO>(updated)
                 : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionGetDTO>(updated)
-                : throw new APException(nameof(updated));
+                : throw new APException("Unexpected competition type!");
             return response;
         }
     }

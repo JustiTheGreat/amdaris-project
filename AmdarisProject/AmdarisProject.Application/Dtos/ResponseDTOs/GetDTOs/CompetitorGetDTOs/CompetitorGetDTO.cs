@@ -1,4 +1,4 @@
-﻿using AmdarisProject.Application.Dtos.DisplayDTOs;
+﻿using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 
 namespace AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs
 {
@@ -8,5 +8,6 @@ namespace AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs
         public required List<MatchDisplayDTO> Matches { get; set; } = [];
         public required List<Guid> WonMatches { get; set; } = [];
         public required List<CompetitionDisplayDTO> Competitions { get; set; } = [];
+        public required List<TeamPlayerDisplayDTO> TeamPlayers { get; set; }
     }
 }

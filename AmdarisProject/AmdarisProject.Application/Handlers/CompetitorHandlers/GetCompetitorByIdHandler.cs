@@ -25,7 +25,7 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
 
             CompetitorGetDTO response = competitor is Player ? _mapper.Map<PlayerGetDTO>(competitor)
                 : competitor is Team ? _mapper.Map<TeamGetDTO>(competitor)
-                : throw new APException(nameof(competitor));
+                : throw new APException("Unexpected competitor type!");
             return response;
         }
     }

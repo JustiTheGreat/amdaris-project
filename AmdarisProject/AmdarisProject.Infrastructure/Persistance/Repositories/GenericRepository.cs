@@ -31,8 +31,8 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
         public async Task<IEnumerable<T>> GetAll()
             => await _dbContext.Set<T>().ToListAsync();
 
-        public async Task<IEnumerable<T>> GetPaginatedData(PagedRequest pagedRequest)
-            => await _dbContext.Set<T>().CreatePaginatedResultAsync<T>(pagedRequest);
+        public async Task<Tuple<IEnumerable<T>, int>> GetPaginatedData(PagedRequest pagedRequest)
+            => await _dbContext.Set<T>().CreatePaginatedResultAsync(pagedRequest);
 
         public async Task Delete(Guid id)
             => _dbContext.Set<T>().Remove(await GetById(id)

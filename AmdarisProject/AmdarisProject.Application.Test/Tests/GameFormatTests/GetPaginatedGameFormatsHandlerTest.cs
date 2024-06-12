@@ -2,6 +2,7 @@
 using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Handlers.GameFormatHandlers;
 using AmdarisProject.Domain.Models;
+using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.TestUtils.ModelBuilders;
 using Moq;
 
@@ -14,8 +15,9 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
         {
             List<GameFormat> gameFormats = [];
             for (int i = 0; i < _numberOfModelsInAList; i++) gameFormats.Add(APBuilder.CreateBasicGameFormat().Get());
+            var paginatedResult = Tuple.Create((IEnumerable<GameFormat>)gameFormats, gameFormats.Count());
             _gameFormatRepositoryMock.Setup(o => o.GetPaginatedData(It.IsAny<PagedRequest>()))
-                .Returns(Task.FromResult((IEnumerable<GameFormat>)gameFormats));
+                .Returns(Task.FromResult(paginatedResult));
             _mapperMock.Setup(o => o.Map<IEnumerable<GameFormatGetDTO>>(It.IsAny<IEnumerable<GameFormat>>()))
                 .Returns(_mapper.Map<IEnumerable<GameFormatGetDTO>>(gameFormats));
             GetPaginatedGameFormats command = new(_pagedRequest);
@@ -37,7 +39,7 @@ namespace AmdarisProject.Application.Test.Tests.GameFormatTests
                 Assert.Equal(gameFormat.Name, gameFormatGetDTO.Name);
                 Assert.Equal(gameFormat.GameType.Id, gameFormatGetDTO.GameType.Id);
                 Assert.Equal(gameFormat.GameType.Name, gameFormatGetDTO.GameType.Name);
-                Assert.Equal(gameFormat.CompetitorType, gameFormatGetDTO.CompetitorType);
+                Assert.Equal(gameFormat.CompetitorType.ToString(), gameFormatGetDTO.CompetitorType);
                 Assert.Equal(gameFormat.TeamSize, gameFormatGetDTO.TeamSize);
                 Assert.Equal(gameFormat.WinAt, gameFormatGetDTO.WinAt);
                 Assert.Equal(gameFormat.DurationInMinutes, gameFormatGetDTO.DurationInMinutes);
