@@ -32,16 +32,6 @@ namespace AmdarisProject.Presentation.Controllers
         }
 
         [Authorize(Roles = $"{nameof(UserRole.Administrator)}, {nameof(UserRole.User)}")]
-        [HttpPost(nameof(Player))]
-        [ValidateModelState]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult> CreatePlayer([FromBody] CompetitorCreateDTO create)
-        {
-            await _mediator.Send(new CreatePlayer(create));
-            return Created();
-        }
-
-        [Authorize(Roles = $"{nameof(UserRole.Administrator)}, {nameof(UserRole.User)}")]
         [HttpPost(nameof(GetPaginatedPlayers))]
         [ValidateModelState]
         [ProducesResponseType(typeof(PaginatedResult<CompetitorDisplayDTO>), StatusCodes.Status200OK)]

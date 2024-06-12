@@ -2,11 +2,9 @@
 using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Domain.Enums;
-using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.TestUtils.ModelBuilders;
 using Moq;
-using System.Numerics;
 
 namespace AmdarisProject.Application.Test.Tests.CompetitorTests
 {

@@ -1,5 +1,4 @@
-﻿using AmdarisProject.Domain.Exceptions;
-using AmdarisProject.Presentation.Controllers;
+﻿using AmdarisProject.Presentation.Controllers;
 using Azure.Core;
 
 namespace AmdarisProject.Presentation.Middleware

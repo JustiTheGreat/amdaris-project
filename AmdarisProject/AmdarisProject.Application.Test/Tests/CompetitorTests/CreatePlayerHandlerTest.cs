@@ -1,6 +1,5 @@
 ﻿using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitorResponseDTOs;
-using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.TestUtils;
 using AmdarisProject.TestUtils.ModelBuilders;

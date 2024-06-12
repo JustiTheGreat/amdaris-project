@@ -2,7 +2,6 @@
 using AmdarisProject.Application.Dtos.ResponseDTOs;
 using AmdarisProject.Application.Handlers.GameFormatHandlers;
 using AmdarisProject.Domain.Models;
-using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.TestUtils.ModelBuilders;
 using Moq;
 

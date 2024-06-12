@@ -6,13 +6,14 @@ using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.Presentation;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace AmdarisProject.Infrastructure.Identity
 {
     internal class AuthenticationService(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,
-        ITokenService tokenService, IUnitOfWork unitOfWork, IMapper mapper)
+        ITokenService tokenService, IUnitOfWork unitOfWork, IMapper mapper, ILogger<IAuthenticationService> logger)
         : IAuthenticationService
     {
         private readonly UserManager<IdentityUser> _userManager = userManager;
@@ -20,6 +21,7 @@ namespace AmdarisProject.Infrastructure.Identity
         private readonly ITokenService _tokenService = tokenService;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<IAuthenticationService> _logger = logger;
 
         public async Task<string> Register(UserRegisterDTO userRegisterDTO)
         {
@@ -38,7 +40,11 @@ namespace AmdarisProject.Infrastructure.Identity
             var player = _mapper.Map<Player>(new CompetitorCreateDTO() { Name = userRegisterDTO.Username });
             await _unitOfWork.CompetitorRepository.Create(player);
 
+            _logger.LogInformation("Created player {PlayerName}!", [player.Name]);
+
             await _userManager.CreateAsync(identity, userRegisterDTO.Password);
+
+            _logger.LogInformation("Created user {Username}!", [userRegisterDTO.Username]);
 
             var claims = new List<Claim>() {
                 new(ClaimIndetifiers.FirstName, userRegisterDTO.FirstName),
@@ -56,7 +62,6 @@ namespace AmdarisProject.Infrastructure.Identity
             claimsIdentity.AddClaim(new(JwtRegisteredClaimNames.Email, identity.Email));
             claimsIdentity.AddClaim(claims[2]);
             claimsIdentity.AddClaim(claims[3]);
-            //claimsIdentity.AddClaims(claims);//TODO does not work
 
             var token = _tokenService.GenerateAccessToken(claimsIdentity);
             return token;
