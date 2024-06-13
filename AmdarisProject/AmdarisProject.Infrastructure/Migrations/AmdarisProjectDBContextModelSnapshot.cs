@@ -28,6 +28,9 @@ namespace AmdarisProject.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("ActualizedStartTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal?>("BreakInMinutes")
                         .HasColumnType("decimal(20,0)");
 
@@ -39,6 +42,9 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.Property<Guid>("GameFormatId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("InitialStartTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Location")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -46,9 +52,6 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -87,30 +90,6 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("Competitor");
 
                     b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("AmdarisProject.Domain.Models.CompetitorModels.TeamPlayer", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("PlayerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TeamId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlayerId");
-
-                    b.HasIndex("TeamId");
-
-                    b.ToTable("TeamPlayers");
                 });
 
             modelBuilder.Entity("AmdarisProject.Domain.Models.GameFormat", b =>
@@ -172,6 +151,12 @@ namespace AmdarisProject.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("ActualizedEndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ActualizedStartTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("CompetitionId")
                         .HasColumnType("uniqueidentifier");
 
@@ -187,7 +172,10 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.Property<long?>("CompetitorTwoPoints")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("EndTime")
+                    b.Property<DateTime?>("InitialEndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("InitialStartTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Location")
@@ -199,9 +187,6 @@ namespace AmdarisProject.Infrastructure.Migrations
 
                     b.Property<long?>("StageLevel")
                         .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("StartTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -245,6 +230,30 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.HasIndex("PlayerId");
 
                     b.ToTable("Points");
+                });
+
+            modelBuilder.Entity("AmdarisProject.Domain.Models.TeamPlayer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TeamId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("TeamPlayers");
                 });
 
             modelBuilder.Entity("CompetitionCompetitor", b =>
@@ -507,25 +516,6 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.Navigation("GameFormat");
                 });
 
-            modelBuilder.Entity("AmdarisProject.Domain.Models.CompetitorModels.TeamPlayer", b =>
-                {
-                    b.HasOne("AmdarisProject.Domain.Models.CompetitorModels.Player", "Player")
-                        .WithMany("TeamPlayers")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.HasOne("AmdarisProject.Domain.Models.CompetitorModels.Team", "Team")
-                        .WithMany("TeamPlayers")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Player");
-
-                    b.Navigation("Team");
-                });
-
             modelBuilder.Entity("AmdarisProject.Domain.Models.GameFormat", b =>
                 {
                     b.HasOne("AmdarisProject.Domain.Models.GameType", "GameType")
@@ -588,6 +578,25 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.Navigation("Match");
 
                     b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("AmdarisProject.Domain.Models.TeamPlayer", b =>
+                {
+                    b.HasOne("AmdarisProject.Domain.Models.CompetitorModels.Player", "Player")
+                        .WithMany("TeamPlayers")
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.HasOne("AmdarisProject.Domain.Models.CompetitorModels.Team", "Team")
+                        .WithMany("TeamPlayers")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Player");
+
+                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("CompetitionCompetitor", b =>

@@ -8,7 +8,8 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
     {
         public required string Name { get; set; }
         public required string Location { get; set; }
-        public required DateTime StartTime { get; set; }
+        public required DateTime InitialStartTime { get; set; }
+        public required DateTime ActualizedStartTime { get; set; }
         public required CompetitionStatus Status { get; set; }
         public required ulong? BreakInMinutes { get; set; }
         public virtual required GameFormat GameFormat { get; set; }
@@ -36,6 +37,7 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
             if (Status is not CompetitionStatus.NOT_STARTED)
                 throw new APIllegalStatusException(Status);
 
+            ActualizedStartTime = DateTime.UtcNow;
             Status = CompetitionStatus.STARTED;
         }
 

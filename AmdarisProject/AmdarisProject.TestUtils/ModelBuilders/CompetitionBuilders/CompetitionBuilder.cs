@@ -20,9 +20,15 @@ namespace AmdarisProject.TestUtils.ModelBuilders.CompetitionBuilders
             return (Y)this;
         }
 
-        public Y SetStartTime(DateTime startTime)
+        public Y SetInitialStartTime(DateTime initialStartTime)
         {
-            _model.StartTime = startTime;
+            _model.InitialStartTime = initialStartTime;
+            return (Y)this;
+        }
+
+        public Y SetActualizedStartTime(DateTime actualizedStartTime)
+        {
+            _model.ActualizedStartTime = actualizedStartTime;
             return (Y)this;
         }
 

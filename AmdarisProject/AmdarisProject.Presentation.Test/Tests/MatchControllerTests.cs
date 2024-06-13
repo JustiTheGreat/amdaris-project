@@ -83,7 +83,7 @@ namespace AmdarisProject.Presentation.Test.Tests
             var response = result?.Value as MatchGetDTO;
             Assert.Equal((int)HttpStatusCode.OK, result!.StatusCode);
             Assert.NotNull(response);
-            AssertResponse.MatchMatchGetDTO(match, response, endMatch: true);
+            AssertResponse.MatchMatchGetDTO(match, response);
         }
 
         private void Seed_EndMatch(out Match match, MatchStatus endStatus)

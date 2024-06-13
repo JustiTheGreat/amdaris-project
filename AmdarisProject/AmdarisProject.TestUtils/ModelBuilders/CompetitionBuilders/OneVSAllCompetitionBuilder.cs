@@ -5,12 +5,13 @@ namespace AmdarisProject.TestUtils.ModelBuilders.CompetitionBuilders
 {
     public class OneVSAllCompetitionBuilder : CompetitionBuilder<OneVSAllCompetition, OneVSAllCompetitionBuilder>
     {
-        public OneVSAllCompetitionBuilder() : base(new OneVSAllCompetition()
+        public OneVSAllCompetitionBuilder(DateTime initialStartTime) : base(new OneVSAllCompetition()
         {
             Id = Guid.NewGuid(),
             Name = "Test",
             Location = "Test",
-            StartTime = DateTime.UtcNow,
+            InitialStartTime = initialStartTime,
+            ActualizedStartTime = initialStartTime,
             Status = CompetitionStatus.ORGANIZING,
             BreakInMinutes = null,
             GameFormat = APBuilder.CreateBasicGameFormat().Get(),
@@ -20,11 +21,12 @@ namespace AmdarisProject.TestUtils.ModelBuilders.CompetitionBuilders
         { }
 
         public override OneVSAllCompetitionBuilder Clone()
-            => new OneVSAllCompetitionBuilder()
+            => new OneVSAllCompetitionBuilder(DateTime.UtcNow)
             .SetId(_model.Id)
             .SetName(_model.Name)
             .SetLocation(_model.Location)
-            .SetStartTime(_model.StartTime)
+            .SetInitialStartTime(_model.InitialStartTime)
+            .SetActualizedStartTime(_model.ActualizedStartTime)
             .SetStatus(_model.Status)
             .SetBreakInMinutes(_model.BreakInMinutes)
             .SetGameFormat(_model.GameFormat)

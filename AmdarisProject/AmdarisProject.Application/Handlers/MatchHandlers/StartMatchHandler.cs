@@ -98,8 +98,9 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
 
             foreach (Match m in matches)
             {
-                m.StartTime = ((DateTime)match.StartTime!).AddSeconds(
+                m.ActualizedStartTime = ((DateTime)match.ActualizedStartTime!).AddMinutes(
                         (ulong)++i * (match.Competition.GameFormat.DurationInMinutes! + match.Competition.BreakInMinutes ?? 0));
+                m.ActualizedEndTime = ((DateTime)m.ActualizedStartTime).AddMinutes(match.Competition.GameFormat.DurationInMinutes ?? 0);
                 await _unitOfWork.MatchRepository.Update(m);
             }
 

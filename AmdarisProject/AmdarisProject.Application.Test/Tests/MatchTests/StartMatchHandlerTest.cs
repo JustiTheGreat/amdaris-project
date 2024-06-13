@@ -21,7 +21,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
                 .SetCompetition(APBuilder.CreateBasicOneVSAllCompetition().SetStatus(CompetitionStatus.STARTED).Get());
             Match match = matchBuilder.Get();
             _matchRepositoryMock.Setup(o => o.GetById(It.IsAny<Guid>())).Returns(Task.FromResult((Match?)match));
-            match = matchBuilder.Clone().SetStatus(MatchStatus.STARTED).SetStartTime(DateTime.UtcNow).InitializePoints().Get();
+            match = matchBuilder.Clone().SetStatus(MatchStatus.STARTED).SetInitialStartTime(DateTime.UtcNow).InitializePoints().Get();
             _matchRepositoryMock.Setup(o => o.Update(It.IsAny<Match>())).Returns(Task.FromResult(match));
             var v = _pointRepositoryMock.SetupSequence(o => o.Create(It.IsAny<Point>()));
             match.Points.ForEach(point => v.Returns(Task.FromResult(point)));

@@ -8,8 +8,10 @@ namespace AmdarisProject.Domain.Models
     public class Match : Model
     {
         public required string Location { get; set; }
-        public required DateTime? StartTime { get; set; }
-        public required DateTime? EndTime { get; set; }
+        public required DateTime? InitialStartTime { get; set; }
+        public required DateTime? ActualizedStartTime { get; set; }
+        public required DateTime? InitialEndTime { get; set; }
+        public required DateTime? ActualizedEndTime { get; set; }
         public required MatchStatus Status { get; set; }
         public virtual required Competitor CompetitorOne { get; set; }
         public virtual required Competitor CompetitorTwo { get; set; }
@@ -78,8 +80,9 @@ namespace AmdarisProject.Domain.Models
             if (Status is MatchStatus.STARTED)
             {
                 DateTime now = DateTime.UtcNow;
-                lateStart = StartTime is not null && now > StartTime;
-                StartTime = now;
+                lateStart = ActualizedStartTime is not null && ActualizedStartTime < now;
+                ActualizedStartTime = now;
+                ActualizedEndTime = ((DateTime)ActualizedStartTime).AddMinutes(Competition.GameFormat.DurationInMinutes ?? 0);
                 CompetitorOnePoints = 0;
                 CompetitorTwoPoints = 0;
             }
@@ -97,13 +100,10 @@ namespace AmdarisProject.Domain.Models
             if (Status is not MatchStatus.STARTED)
                 throw new APIllegalStatusException(Status);
 
-            if (CompetitorOnePoints is null || CompetitorTwoPoints is null || Competition.GameFormat.WinAt is null)
-                throw new APException("Cannot end this type of match!");
-
-            if (endStatus is MatchStatus.FINISHED && !ACompetitorHasTheWinningScore())
+            if (Competition.GameFormat.WinAt is not null && endStatus is MatchStatus.FINISHED && !ACompetitorHasTheWinningScore())
                 throw new APException($"Match {CompetitorOne.Name}-{CompetitorTwo.Name} doesn't have a competitor with the winning number of points!");
 
-            EndTime = DateTime.UtcNow;
+            ActualizedEndTime = DateTime.UtcNow;
             Status = endStatus;
             Winner = GetWinner();
         }

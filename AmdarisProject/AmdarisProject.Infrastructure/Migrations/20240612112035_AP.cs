@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -237,7 +238,8 @@ namespace AmdarisProject.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    InitialStartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ActualizedStartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BreakInMinutes = table.Column<decimal>(type: "decimal(20,0)", nullable: true),
                     GameFormatId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -286,8 +288,10 @@ namespace AmdarisProject.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    InitialStartTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ActualizedStartTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    InitialEndTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ActualizedEndTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CompetitorOneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CompetitorTwoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),

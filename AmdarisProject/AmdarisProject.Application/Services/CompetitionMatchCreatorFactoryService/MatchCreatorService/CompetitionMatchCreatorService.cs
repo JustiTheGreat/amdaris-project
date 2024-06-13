@@ -50,29 +50,38 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
             if (!competition.ContainsCompetitor(competitorTwo.Id))
                 throw new APException($"Competitor {competitorTwo.Name} not registered to competition {competition.Name}!");
 
-            DateTime? matchStartTime = null;
+            DateTime? matchInitialStartTime = null, matchInitialEndTime = null;
+
 
             if (competition.GameFormat.DurationInMinutes is not null)
             {
+                double matchDurationInMinutes = (double)competition.GameFormat.DurationInMinutes;
+
                 if (competition.Matches.Count == 0)
                 {
-                    matchStartTime = competition.StartTime;
+                    matchInitialStartTime = competition.InitialStartTime < DateTime.UtcNow
+                        ? DateTime.UtcNow
+                        : competition.InitialStartTime;
                 }
                 else
                 {
-                    DateTime lastStartTime = competition.Matches.Max(match => match.StartTime)
+                    DateTime lastMatchPredictedStartTime = competition.Matches.Max(match => match.InitialStartTime)
                         ?? throw new APException("Null start time for a timed match!");
 
-                    matchStartTime = lastStartTime.AddMinutes(
-                        competition.GameFormat.DurationInMinutes! + competition.BreakInMinutes ?? 0);
+                    matchInitialStartTime = lastMatchPredictedStartTime
+                        .AddMinutes(matchDurationInMinutes + competition.BreakInMinutes ?? 0);
                 }
+
+                matchInitialEndTime = ((DateTime)matchInitialStartTime).AddMinutes(matchDurationInMinutes);
             }
 
             Match match = new()
             {
                 Location = location,
-                StartTime = matchStartTime,
-                EndTime = null,
+                InitialStartTime = matchInitialStartTime,
+                ActualizedStartTime = matchInitialStartTime,
+                InitialEndTime = matchInitialEndTime,
+                ActualizedEndTime = matchInitialEndTime,
                 Status = MatchStatus.NOT_STARTED,
                 CompetitorOne = competitorOne,
                 CompetitorTwo = competitorTwo,

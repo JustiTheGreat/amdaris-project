@@ -17,6 +17,8 @@ namespace AmdarisProject.Application.Profiles
                 .Include<CompetitionCreateDTO, OneVSAllCompetition>()
                 .Include<CompetitionCreateDTO, TournamentCompetition>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.Empty))
+                .ForMember(dest => dest.InitialStartTime, opt => opt.MapFrom(src => src.StartTime))
+                .ForMember(dest => dest.ActualizedStartTime, opt => opt.MapFrom(src => src.StartTime))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => CompetitionStatus.ORGANIZING))
                 .ForMember(dest => dest.GameFormat, opt => opt.MapFrom(src => (GameFormat)null!))
                 .ForMember(dest => dest.Competitors, opt => opt.MapFrom(src => new List<Competitor>()))

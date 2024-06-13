@@ -25,7 +25,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
         [MemberData(nameof(MatchStatuses))]
         public async Task Test_EndMatchHandler_Success(MatchStatus matchStatus)
         {
-            Match match = APBuilder.CreateBasicMatch().SetStatus(matchStatus).SetEndTime(DateTime.UtcNow).Get();
+            Match match = APBuilder.CreateBasicMatch().SetStatus(matchStatus).SetInitialEndTime(DateTime.UtcNow).Get();
             _endMatchServiceMock.Setup(o => o.End(It.IsAny<Guid>(), It.IsAny<MatchStatus>())).Returns(Task.FromResult(match));
             _mapperMock.Setup(o => o.Map<MatchGetDTO>(It.IsAny<Match>())).Returns(_mapper.Map<MatchGetDTO>(match));
             EndMatch command = new(match.Id, matchStatus);
@@ -33,7 +33,7 @@ namespace AmdarisProject.Application.Test.Tests.MatchTests
 
             MatchGetDTO response = await handler.Handle(command, default);
 
-            AssertResponse.MatchMatchGetDTO(match, response, endMatch: true);
+            AssertResponse.MatchMatchGetDTO(match, response);
         }
 
         [Fact]

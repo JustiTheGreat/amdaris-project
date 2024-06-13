@@ -5,12 +5,13 @@ namespace AmdarisProject.TestUtils.ModelBuilders.CompetitionBuilders
 {
     public class TournamentCompetitionBuilder : CompetitionBuilder<TournamentCompetition, TournamentCompetitionBuilder>
     {
-        public TournamentCompetitionBuilder() : base(new TournamentCompetition()
+        public TournamentCompetitionBuilder(DateTime initialStartTime) : base(new TournamentCompetition()
         {
             Id = Guid.NewGuid(),
             Name = "Test",
             Location = "Test",
-            StartTime = DateTime.UtcNow,
+            InitialStartTime = initialStartTime,
+            ActualizedStartTime = initialStartTime,
             Status = CompetitionStatus.ORGANIZING,
             BreakInMinutes = null,
             GameFormat = APBuilder.CreateBasicGameFormat().Get(),
@@ -21,11 +22,12 @@ namespace AmdarisProject.TestUtils.ModelBuilders.CompetitionBuilders
         { }
 
         public override TournamentCompetitionBuilder Clone()
-            => new TournamentCompetitionBuilder()
+            => new TournamentCompetitionBuilder(DateTime.UtcNow)
             .SetId(_model.Id)
             .SetName(_model.Name)
             .SetLocation(_model.Location)
-            .SetStartTime(_model.StartTime)
+            .SetInitialStartTime(_model.InitialStartTime)
+            .SetActualizedStartTime(_model.ActualizedStartTime)
             .SetStatus(_model.Status)
             .SetBreakInMinutes(_model.BreakInMinutes)
             .SetGameFormat(_model.GameFormat)

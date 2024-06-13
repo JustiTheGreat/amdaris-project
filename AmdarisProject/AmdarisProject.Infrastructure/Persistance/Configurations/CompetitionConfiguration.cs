@@ -14,7 +14,8 @@ namespace AmdarisProject.Infrastructure.Persistance.Configurations
                 .HasValue<TournamentCompetition>(nameof(TournamentCompetition));
             builder.Property(competition => competition.Name).IsRequired();
             builder.Property(competition => competition.Location).IsRequired();
-            builder.Property(competition => competition.StartTime).IsRequired();
+            builder.Property(competition => competition.InitialStartTime).IsRequired();
+            builder.Property(competition => competition.ActualizedStartTime).IsRequired();
             builder.Property(competition => competition.Status).IsRequired().HasConversion<string>();
             builder
                 .HasMany(competition => competition.Competitors)

@@ -12,16 +12,14 @@ namespace AmdarisProject.TestUtils
 {
     public class AssertResponse
     {
-        public static void MatchMatchGetDTO(Match model, MatchGetDTO response, bool startMatch = false, bool endMatch = false)
+        public static void MatchMatchGetDTO(Match model, MatchGetDTO response, bool startMatch = false)
         {
             Assert.Equal(model.Id, response.Id);
 
-            if (startMatch) Assert.NotNull(response.StartTime);
-            else Assert.Equal(model.StartTime, response.StartTime);
-
-            if (endMatch) Assert.NotNull(response.EndTime);
-            else Assert.Equal(model.EndTime, response.EndTime);
-
+            Assert.Equal(model.InitialStartTime, response.InitialStartTime);
+            Assert.Equal(model.ActualizedStartTime, response.ActualizedStartTime);
+            Assert.Equal(model.InitialEndTime, response.InitialEndTime);
+            Assert.Equal(model.ActualizedEndTime, response.ActualizedEndTime);
             Assert.Equal(model.Status.ToString(), response.Status);
             Assert.Equal(model.CompetitorOne.Id, response.CompetitorOne.Id);
             Assert.Equal(model.CompetitorOne.Name, response.CompetitorOne.Name);
@@ -72,7 +70,7 @@ namespace AmdarisProject.TestUtils
                     Assert.Equal(match.Id, matchDisplayDTO.Id);
 
                 Assert.Equal(match.Status.ToString(), matchDisplayDTO.Status);
-                Assert.Equal(match.StartTime, matchDisplayDTO.StartTime);
+                Assert.Equal(match.ActualizedStartTime, matchDisplayDTO.StartTime);
                 Assert.Equal($"{match.CompetitorOne.Name} - {match.CompetitorTwo.Name}", matchDisplayDTO.Competitors);
                 Assert.Equal($"{match.CompetitorOnePoints} - {match.CompetitorTwoPoints}", matchDisplayDTO.Score);
                 Assert.Equal(match.Competition.Name, matchDisplayDTO.Competition);
@@ -136,7 +134,7 @@ namespace AmdarisProject.TestUtils
                     Assert.Equal(match.Id, response.Matches.ElementAt(i).Id);
 
                 Assert.Equal(match.Status.ToString(), matchDisplayDTO.Status);
-                Assert.Equal(match.StartTime, matchDisplayDTO.StartTime);
+                Assert.Equal(match.ActualizedStartTime, matchDisplayDTO.StartTime);
                 Assert.Equal($"{match.CompetitorOne.Name} - {match.CompetitorTwo.Name}", matchDisplayDTO.Competitors);
                 Assert.Equal($"{match.CompetitorOnePoints} - {match.CompetitorTwoPoints}", matchDisplayDTO.Score);
                 Assert.Equal(match.Competition.Name, matchDisplayDTO.Competition);
@@ -189,7 +187,8 @@ namespace AmdarisProject.TestUtils
 
             Assert.Equal(model.Name, response.Name);
             Assert.Equal(model.Location, response.Location);
-            Assert.Equal(model.StartTime, response.StartTime);
+            Assert.Equal(model.InitialStartTime, response.InitialStartTime);
+            Assert.Equal(model.ActualizedStartTime, response.ActualizedStartTime);
             Assert.Equal(model.Status.ToString(), response.Status);
             Assert.Equal(model.BreakInMinutes, response.BreakInMinutes);
             Assert.Equal(model.GameFormat.GameType.Id, response.GameType.Id);
@@ -209,7 +208,7 @@ namespace AmdarisProject.TestUtils
                     Assert.Equal(match.Id, matchDisplayDTO.Id);
 
                 Assert.Equal(match.Status.ToString(), matchDisplayDTO.Status);
-                Assert.Equal(match.StartTime, matchDisplayDTO.StartTime);
+                Assert.Equal(match.ActualizedStartTime, matchDisplayDTO.StartTime);
                 Assert.Equal($"{match.CompetitorOne.Name} - {match.CompetitorTwo.Name}", matchDisplayDTO.Competitors);
                 Assert.Equal($"{match.CompetitorOnePoints} - {match.CompetitorTwoPoints}", matchDisplayDTO.Score);
                 Assert.Equal(match.Competition.Name, matchDisplayDTO.Competition);
@@ -252,7 +251,8 @@ namespace AmdarisProject.TestUtils
 
             Assert.Equal(model.Name, response.Name);
             Assert.Equal(model.Location, response.Location);
-            Assert.Equal(model.StartTime, response.StartTime);
+            Assert.Equal(model.ActualizedStartTime, response.ActualizedStartTime);
+            Assert.Equal(model.InitialStartTime, response.InitialStartTime);
             Assert.Equal(model.Status.ToString(), response.Status);
             Assert.Equal(model.BreakInMinutes, response.BreakInMinutes);
             Assert.Equal(model.GameFormat.GameType.Id, response.GameType.Id);
@@ -272,7 +272,7 @@ namespace AmdarisProject.TestUtils
                     Assert.Equal(match.Id, matchDisplayDTO.Id);
 
                 Assert.Equal(match.Status.ToString(), matchDisplayDTO.Status);
-                Assert.Equal(match.StartTime, matchDisplayDTO.StartTime);
+                Assert.Equal(match.ActualizedStartTime, matchDisplayDTO.StartTime);
                 Assert.Equal($"{match.CompetitorOne.Name} - {match.CompetitorTwo.Name}", matchDisplayDTO.Competitors);
                 Assert.Equal($"{match.CompetitorOnePoints} - {match.CompetitorTwoPoints}", matchDisplayDTO.Score);
                 Assert.Equal(match.Competition.Name, matchDisplayDTO.Competition);

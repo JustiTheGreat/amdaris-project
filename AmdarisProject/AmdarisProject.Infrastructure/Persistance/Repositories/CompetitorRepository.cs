@@ -76,10 +76,7 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
         public async Task<IEnumerable<Player>> GetPlayersNotInCompetition(Guid competitionId)
             => await _dbContext.Set<Player>()
             .AsSplitQuery()
-            .Where(player => player.Competitions.All(competition =>
-                competition.Id.Equals(competitionId)
-                && !competition.Competitors.Any(competitor => competitor.Id.Equals(player.Id))
-            ))
+            .Where(player => player.Competitions.All(competition => !competition.Id.Equals(competitionId)))
             .ToListAsync();
 
         public async Task<IEnumerable<Team>> GetTeamsThatCanBeAddedToCompetition(Guid competitionId, uint requiredTeamSize)
@@ -87,14 +84,7 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
             .AsSplitQuery()
             .Where(team =>
                 team.TeamPlayers.Count(teamPlayer => teamPlayer.IsActive) == requiredTeamSize
-                && team.Competitions.All(competition => !competition.Id.Equals(competitionId))
-                && team.Players.All(player => player.Competitions.All(competition =>
-                    competition.Id.Equals(competitionId)
-                    && !competition.Competitors.Any(competitor =>
-                        competitor.Id.Equals(player.Id)
-                        || competitor is Team
-                        && ((Team)competitor).Players.Any(p => p.Id.Equals(player.Id)))
-                )))
+                && team.Competitions.All(competition => !competition.Id.Equals(competitionId)))
             .ToListAsync();
     }
 }

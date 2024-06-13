@@ -11,8 +11,10 @@ namespace AmdarisProject.TestUtils.ModelBuilders
         {
             Id = Guid.NewGuid(),
             Location = "Test",
-            StartTime = null,
-            EndTime = null,
+            InitialStartTime = null,
+            ActualizedStartTime = null,
+            InitialEndTime = null,
+            ActualizedEndTime = null,
             Status = MatchStatus.NOT_STARTED,
             CompetitorOne = APBuilder.CreateBasicPlayer().Get(),
             CompetitorTwo = APBuilder.CreateBasicPlayer().Get(),
@@ -30,8 +32,10 @@ namespace AmdarisProject.TestUtils.ModelBuilders
             => new MatchBuilder()
             .SetId(_model.Id)
             .SetLocation(_model.Location)
-            .SetStartTime(_model.StartTime)
-            .SetEndTime(_model.EndTime)
+            .SetInitialStartTime(_model.InitialStartTime)
+            .SetInitialStartTime(_model.ActualizedStartTime)
+            .SetInitialStartTime(_model.InitialEndTime)
+            .SetInitialEndTime(_model.ActualizedEndTime)
             .SetStatus(_model.Status)
             .SetCompetitorOne(_model.CompetitorOne)
             .SetCompetitorTwo(_model.CompetitorTwo)
@@ -49,15 +53,27 @@ namespace AmdarisProject.TestUtils.ModelBuilders
             return this;
         }
 
-        public MatchBuilder SetStartTime(DateTime? startTime)
+        public MatchBuilder SetInitialStartTime(DateTime? initialStartTime)
         {
-            _model.StartTime = startTime;
+            _model.InitialStartTime = initialStartTime;
             return this;
         }
 
-        public MatchBuilder SetEndTime(DateTime? endTime)
+        public MatchBuilder SetActualizedStartTime(DateTime? actualizedStartTime)
         {
-            _model.EndTime = endTime;
+            _model.ActualizedStartTime = actualizedStartTime;
+            return this;
+        }
+
+        public MatchBuilder SetInitialEndTime(DateTime? initialEndTime)
+        {
+            _model.InitialEndTime = initialEndTime;
+            return this;
+        }
+
+        public MatchBuilder SetActualizedlEndTime(DateTime? actualizedEndTime)
+        {
+            _model.ActualizedEndTime = actualizedEndTime;
             return this;
         }
 
