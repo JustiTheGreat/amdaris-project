@@ -1,9 +1,10 @@
 ﻿using AmdarisProject.Application.Dtos.RequestDTOs;
-using AmdarisProject.Application.Handlers.AuthenticationHandlers;
 using AmdarisProject.Presentation.Filters;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using AmdarisProject.Application.Abstractions;
+using AmdarisProject.Infrastructure.Persistance.Contexts;
+using MediatR;
 
 namespace AmdarisProject.Presentation.Controllers
 {
@@ -12,10 +13,12 @@ namespace AmdarisProject.Presentation.Controllers
     [AllowAnonymous]
     [ValidateModelState]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public class UserController(IMediator mediator)
+    public class UserController(IMediator mediator, IAuthenticationService authenticationService, AmdarisProjectDBContext dbContext)
         : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
+        private readonly IAuthenticationService _authenticationService = authenticationService;
+        private readonly AmdarisProjectDBContext _dbContext = dbContext;
 
         [HttpPost]
         [Route(nameof(Register))]
@@ -23,7 +26,7 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Register(UserRegisterDTO userRegisterDTO)
         {
-            var token = await _mediator.Send(new Register(userRegisterDTO));
+            string token = await _authenticationService.Register(userRegisterDTO);
             return Ok(token);
         }
 
@@ -35,7 +38,7 @@ namespace AmdarisProject.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)
         {
-            var token = await _mediator.Send(new Login(userLoginDTO));
+            string token = await _authenticationService.Login(userLoginDTO);
             return Ok(token);
         }
     }

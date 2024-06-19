@@ -56,6 +56,9 @@ namespace AmdarisProject.Infrastructure.Identity
 
             var roleName = nameof(UserRole.User);
             await _userManager.AddToRoleAsync(identity, roleName);
+
+            _logger.LogInformation("User {Username} registered successfully!", [userRegisterDTO.Username]);
+
             claims.Add(new(ClaimTypes.Role, roleName));
 
             var claimsIdentity = new ClaimsIdentity();
@@ -75,6 +78,8 @@ namespace AmdarisProject.Infrastructure.Identity
             var result = await _signInManager.CheckPasswordSignInAsync(user, userLoginDTO.Password, false);
 
             if (!result.Succeeded) throw new APConflictException("Incorrect credentials!");
+
+            _logger.LogInformation("User {username} logged successfully!", [user.UserName]);
 
             if (user.Email is null) throw new APException("Missing stored email!");
 

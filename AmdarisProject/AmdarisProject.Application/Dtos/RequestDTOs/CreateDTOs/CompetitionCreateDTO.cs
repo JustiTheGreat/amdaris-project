@@ -9,7 +9,7 @@ namespace AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs
         [Required(ErrorMessage = "Location is required")]
         public required string Location { get; set; }
         [Required(ErrorMessage = "Start time is required")]
-        public required DateTime StartTime { get; set; }
+        public required DateTimeOffset StartTime { get; set; }
         [Required(ErrorMessage = "Game format is required")]
         public required Guid GameFormat { get; set; }
         public ulong? BreakInMinutes { get; set; }

@@ -5,10 +5,10 @@ namespace AmdarisProject.Application.Dtos.ResponseDTOs
     public class MatchGetDTO : GetDTO
     {
         public required string Location { get; set; }
-        public required DateTime? InitialStartTime { get; set; }
-        public required DateTime? ActualizedStartTime { get; set; }
-        public required DateTime? InitialEndTime { get; set; }
-        public required DateTime? ActualizedEndTime { get; set; }
+        public required DateTimeOffset? InitialStartTime { get; set; }
+        public required DateTimeOffset? ActualizedStartTime { get; set; }
+        public required DateTimeOffset? InitialEndTime { get; set; }
+        public required DateTimeOffset? ActualizedEndTime { get; set; }
         public required string Status { get; set; }
         public required CompetitorDisplayDTO CompetitorOne { get; set; }
         public required CompetitorDisplayDTO CompetitorTwo { get; set; }

@@ -5,7 +5,7 @@ namespace AmdarisProject.TestUtils.ModelBuilders.CompetitionBuilders
 {
     public class TournamentCompetitionBuilder : CompetitionBuilder<TournamentCompetition, TournamentCompetitionBuilder>
     {
-        public TournamentCompetitionBuilder(DateTime initialStartTime) : base(new TournamentCompetition()
+        public TournamentCompetitionBuilder(DateTimeOffset initialStartTime) : base(new TournamentCompetition()
         {
             Id = Guid.NewGuid(),
             Name = "Test",
@@ -22,7 +22,7 @@ namespace AmdarisProject.TestUtils.ModelBuilders.CompetitionBuilders
         { }
 
         public override TournamentCompetitionBuilder Clone()
-            => new TournamentCompetitionBuilder(DateTime.UtcNow)
+            => new TournamentCompetitionBuilder(DateTimeOffset.UtcNow)
             .SetId(_model.Id)
             .SetName(_model.Name)
             .SetLocation(_model.Location)

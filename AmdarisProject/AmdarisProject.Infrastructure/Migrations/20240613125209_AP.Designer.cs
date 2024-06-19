@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmdarisProject.Infrastructure.Migrations
 {
     [DbContext(typeof(AmdarisProjectDBContext))]
-    [Migration("20240612112035_AP")]
+    [Migration("20240613125209_AP")]
     partial class AP
     {
         /// <inheritdoc />
@@ -31,8 +31,8 @@ namespace AmdarisProject.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ActualizedStartTime")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("ActualizedStartTime")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<decimal?>("BreakInMinutes")
                         .HasColumnType("decimal(20,0)");
@@ -45,8 +45,8 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.Property<Guid>("GameFormatId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("InitialStartTime")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("InitialStartTime")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -154,11 +154,11 @@ namespace AmdarisProject.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("ActualizedEndTime")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("ActualizedEndTime")
+                        .HasColumnType("datetimeoffset");
 
-                    b.Property<DateTime?>("ActualizedStartTime")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("ActualizedStartTime")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<Guid>("CompetitionId")
                         .HasColumnType("uniqueidentifier");
@@ -175,11 +175,11 @@ namespace AmdarisProject.Infrastructure.Migrations
                     b.Property<long?>("CompetitorTwoPoints")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("InitialEndTime")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("InitialEndTime")
+                        .HasColumnType("datetimeoffset");
 
-                    b.Property<DateTime?>("InitialStartTime")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("InitialStartTime")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Location")
                         .IsRequired()

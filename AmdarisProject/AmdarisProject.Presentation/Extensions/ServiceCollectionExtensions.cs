@@ -1,5 +1,6 @@
 ﻿using AmdarisProject.Application;
 using AmdarisProject.Application.Extensions;
+using AmdarisProject.Application.Options;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Infrastructure.Options;
 using AmdarisProject.Infrastructure.Persistance.Extensions;
@@ -29,7 +30,9 @@ namespace AmdarisProject.Presentation.Extensions
                 .AddAutoMapper(typeof(AutoMapperProfileAssemblyMarker))
                 .Configure<ConnectionStrings>(builder.Configuration.GetSection(nameof(ConnectionStrings)))
                 .Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)))
-                .Configure<AdministratorData>(builder.Configuration.GetSection(nameof(AdministratorData)));
+                .Configure<AdministratorData>(builder.Configuration.GetSection(nameof(AdministratorData)))
+                .Configure<SmtpSettings>(builder.Configuration.GetSection(nameof(SmtpSettings)))
+                .Configure<BlobSettings>(builder.Configuration.GetSection(nameof(BlobSettings)));
         }
 
         private static IServiceCollection ConfigureCors(this IServiceCollection serviceCollection, string allowedOrigins)

@@ -53,25 +53,25 @@ namespace AmdarisProject.TestUtils.ModelBuilders
             return this;
         }
 
-        public MatchBuilder SetInitialStartTime(DateTime? initialStartTime)
+        public MatchBuilder SetInitialStartTime(DateTimeOffset? initialStartTime)
         {
             _model.InitialStartTime = initialStartTime;
             return this;
         }
 
-        public MatchBuilder SetActualizedStartTime(DateTime? actualizedStartTime)
+        public MatchBuilder SetActualizedStartTime(DateTimeOffset? actualizedStartTime)
         {
             _model.ActualizedStartTime = actualizedStartTime;
             return this;
         }
 
-        public MatchBuilder SetInitialEndTime(DateTime? initialEndTime)
+        public MatchBuilder SetInitialEndTime(DateTimeOffset? initialEndTime)
         {
             _model.InitialEndTime = initialEndTime;
             return this;
         }
 
-        public MatchBuilder SetActualizedlEndTime(DateTime? actualizedEndTime)
+        public MatchBuilder SetActualizedlEndTime(DateTimeOffset? actualizedEndTime)
         {
             _model.ActualizedEndTime = actualizedEndTime;
             return this;

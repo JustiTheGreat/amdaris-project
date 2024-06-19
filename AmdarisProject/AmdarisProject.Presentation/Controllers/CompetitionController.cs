@@ -3,6 +3,7 @@ using AmdarisProject.Application.Dtos.RequestDTOs.CreateDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Application.Handlers.CompetitionHandlers;
+using AmdarisProject.Application.Handlers.CompetitorHandlers;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
@@ -88,6 +89,18 @@ namespace AmdarisProject.Presentation.Controllers
         {
             IEnumerable<CompetitorDisplayDTO> response = await _mediator.Send(new GetCompetitionWinners(competitionId));
             return Ok(response);
+        }
+
+        [Authorize(Roles = nameof(UserRole.Administrator))]
+        [HttpGet]
+        [Route(nameof(SendDiplomasToCompetitionWinners) + "/{competitionId}")]
+        [ValidateModelState]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SendDiplomasToCompetitionWinners([FromRoute] Guid competitionId)
+        {
+            await _mediator.Send(new SendDiplomaToPlayers(competitionId));
+            return Ok();
         }
 
         [Authorize(Roles = nameof(UserRole.Administrator))]

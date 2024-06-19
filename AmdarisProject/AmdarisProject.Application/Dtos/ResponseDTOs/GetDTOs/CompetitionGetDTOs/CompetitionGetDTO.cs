@@ -7,8 +7,8 @@ namespace AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs
     {
         public required string Name { get; set; }
         public required string Location { get; set; }
-        public required DateTime InitialStartTime { get; set; }
-        public required DateTime ActualizedStartTime { get; set; }
+        public required DateTimeOffset InitialStartTime { get; set; }
+        public required DateTimeOffset ActualizedStartTime { get; set; }
         public required string Status { get; set; }
         public required ulong? BreakInMinutes { get; set; }
         public required GameTypeGetDTO GameType { get; set; }

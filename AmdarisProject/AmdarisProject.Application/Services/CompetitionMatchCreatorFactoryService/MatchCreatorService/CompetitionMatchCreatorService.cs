@@ -50,7 +50,7 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
             if (!competition.ContainsCompetitor(competitorTwo.Id))
                 throw new APException($"Competitor {competitorTwo.Name} not registered to competition {competition.Name}!");
 
-            DateTime? matchInitialStartTime = null, matchInitialEndTime = null;
+            DateTimeOffset? matchInitialStartTime = null, matchInitialEndTime = null;
 
 
             if (competition.GameFormat.DurationInMinutes is not null)
@@ -59,20 +59,20 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
 
                 if (competition.Matches.Count == 0)
                 {
-                    matchInitialStartTime = competition.InitialStartTime < DateTime.UtcNow
-                        ? DateTime.UtcNow
+                    matchInitialStartTime = competition.InitialStartTime < DateTimeOffset.UtcNow
+                        ? DateTimeOffset.UtcNow
                         : competition.InitialStartTime;
                 }
                 else
                 {
-                    DateTime lastMatchPredictedStartTime = competition.Matches.Max(match => match.InitialStartTime)
+                    DateTimeOffset lastMatchPredictedStartTime = competition.Matches.Max(match => match.InitialStartTime)
                         ?? throw new APException("Null start time for a timed match!");
 
                     matchInitialStartTime = lastMatchPredictedStartTime
                         .AddMinutes(matchDurationInMinutes + competition.BreakInMinutes ?? 0);
                 }
 
-                matchInitialEndTime = ((DateTime)matchInitialStartTime).AddMinutes(matchDurationInMinutes);
+                matchInitialEndTime = ((DateTimeOffset)matchInitialStartTime).AddMinutes(matchDurationInMinutes);
             }
 
             Match match = new()

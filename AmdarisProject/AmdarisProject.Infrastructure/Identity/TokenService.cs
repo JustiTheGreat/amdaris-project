@@ -17,6 +17,7 @@ namespace AmdarisProject.Presentation
             ArgumentNullException.ThrowIfNull(_jwtSettings.SecretKey);
             ArgumentNullException.ThrowIfNull(_jwtSettings.Issuer);
             ArgumentNullException.ThrowIfNull(_jwtSettings.Audience);
+            ArgumentNullException.ThrowIfNull(_jwtSettings.TokenLifetimeInMinutes);
         }
 
         public string GenerateAccessToken(ClaimsIdentity identity)

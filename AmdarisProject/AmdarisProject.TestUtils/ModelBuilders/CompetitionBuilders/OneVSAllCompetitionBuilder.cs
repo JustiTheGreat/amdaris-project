@@ -5,7 +5,7 @@ namespace AmdarisProject.TestUtils.ModelBuilders.CompetitionBuilders
 {
     public class OneVSAllCompetitionBuilder : CompetitionBuilder<OneVSAllCompetition, OneVSAllCompetitionBuilder>
     {
-        public OneVSAllCompetitionBuilder(DateTime initialStartTime) : base(new OneVSAllCompetition()
+        public OneVSAllCompetitionBuilder(DateTimeOffset initialStartTime) : base(new OneVSAllCompetition()
         {
             Id = Guid.NewGuid(),
             Name = "Test",
@@ -21,7 +21,7 @@ namespace AmdarisProject.TestUtils.ModelBuilders.CompetitionBuilders
         { }
 
         public override OneVSAllCompetitionBuilder Clone()
-            => new OneVSAllCompetitionBuilder(DateTime.UtcNow)
+            => new OneVSAllCompetitionBuilder(DateTimeOffset.UtcNow)
             .SetId(_model.Id)
             .SetName(_model.Name)
             .SetLocation(_model.Location)

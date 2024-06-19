@@ -8,10 +8,10 @@ namespace AmdarisProject.Domain.Models
     public class Match : Model
     {
         public required string Location { get; set; }
-        public required DateTime? InitialStartTime { get; set; }
-        public required DateTime? ActualizedStartTime { get; set; }
-        public required DateTime? InitialEndTime { get; set; }
-        public required DateTime? ActualizedEndTime { get; set; }
+        public required DateTimeOffset? InitialStartTime { get; set; }
+        public required DateTimeOffset? ActualizedStartTime { get; set; }
+        public required DateTimeOffset? InitialEndTime { get; set; }
+        public required DateTimeOffset? ActualizedEndTime { get; set; }
         public required MatchStatus Status { get; set; }
         public virtual required Competitor CompetitorOne { get; set; }
         public virtual required Competitor CompetitorTwo { get; set; }
@@ -79,10 +79,10 @@ namespace AmdarisProject.Domain.Models
 
             if (Status is MatchStatus.STARTED)
             {
-                DateTime now = DateTime.UtcNow;
+                DateTimeOffset now = DateTimeOffset.UtcNow;
                 lateStart = ActualizedStartTime is not null && ActualizedStartTime < now;
                 ActualizedStartTime = now;
-                ActualizedEndTime = ((DateTime)ActualizedStartTime).AddMinutes(Competition.GameFormat.DurationInMinutes ?? 0);
+                ActualizedEndTime = ((DateTimeOffset)ActualizedStartTime).AddMinutes(Competition.GameFormat.DurationInMinutes ?? 0);
                 CompetitorOnePoints = 0;
                 CompetitorTwoPoints = 0;
             }
@@ -103,7 +103,7 @@ namespace AmdarisProject.Domain.Models
             if (Competition.GameFormat.WinAt is not null && endStatus is MatchStatus.FINISHED && !ACompetitorHasTheWinningScore())
                 throw new APException($"Match {CompetitorOne.Name}-{CompetitorTwo.Name} doesn't have a competitor with the winning number of points!");
 
-            ActualizedEndTime = DateTime.UtcNow;
+            ActualizedEndTime = DateTimeOffset.UtcNow;
             Status = endStatus;
             Winner = GetWinner();
         }
