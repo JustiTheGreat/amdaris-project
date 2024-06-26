@@ -7,5 +7,7 @@ namespace AmdarisProject.Application.Abstractions
         Task<string> Register(UserRegisterDTO userRegisterDTO);
 
         Task<string> Login(UserLoginDTO userLoginDTO);
+
+        Task<string> UpdateProfile(string email, UpdateProfileDTO updateProfileDTO);
     }
 }

@@ -23,20 +23,22 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             Match match = await _unitOfWork.MatchRepository.GetById(request.MatchId)
                 ?? throw new APNotFoundException(Tuple.Create(nameof(request.MatchId), request.MatchId));
 
-            bool lateStart = match.Start();
-
-            Match updated;
-
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-                updated = await _unitOfWork.MatchRepository.Update(match);
+                bool lateStart = match.Start();
 
                 if (match.Status is MatchStatus.STARTED)
                 {
                     await InitializePointsForMatchPlayers(match);
 
                     if (lateStart) await UpdateUnstartedMatchesStartTimes(match);
+                }
+
+                if (match.Competition.End())
+                {
+                   _logger.LogInformation("Competition {Competition} ended with status {Status}!",
+                   [match.Competition.Name, match.Competition.Status]);
                 }
 
                 await _unitOfWork.SaveAsync();
@@ -49,9 +51,9 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
             }
 
             _logger.LogInformation("Match {CompetitorOneName}-{CompetitorTwoName} has started!",
-                [updated.CompetitorOne.Name, updated.CompetitorTwo.Name]);
+                [match.CompetitorOne.Name, match.CompetitorTwo.Name]);
 
-            MatchGetDTO response = _mapper.Map<MatchGetDTO>(updated);
+            MatchGetDTO response = _mapper.Map<MatchGetDTO>(match);
             return response;
         }
 

@@ -28,7 +28,8 @@ namespace AmdarisProject.Application.Services
                     Id = competitor.Id,
                     Competitor = competitor.Name,
                     Wins = competition.GetCompetitorWins(competitor.Id),
-                    Points = competition.GetCompetitorPoints(competitor.Id)
+                    Points = competition.GetCompetitorPoints(competitor.Id),
+                    ProfilePicture = (competitor as Player)?.ProfilePictureUri,
                 })
                 .OrderByDescending(entry => entry.Wins)
                 .ThenByDescending(entry => entry.Points)

@@ -18,5 +18,11 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
 
         public override bool ShouldCreateMatches()
             => Matches.Count == 0;
+
+        public override CompetitionStatus GetCompetitionFinishStatus()
+            => Matches.Count(match =>
+                match.Status == MatchStatus.FINISHED
+                || match.Status == MatchStatus.SPECIAL_WIN_COMPETITOR_ONE
+                || match.Status == MatchStatus.SPECIAL_WIN_COMPETITOR_TWO) > 0 ? CompetitionStatus.FINISHED : CompetitionStatus.CANCELED;
     }
 }

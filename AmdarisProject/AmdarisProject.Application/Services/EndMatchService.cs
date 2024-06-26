@@ -27,10 +27,15 @@ namespace AmdarisProject.Application.Services
                 .GetCompetitionMatchCreator(updated.Competition.GetType())
                 .CreateCompetitionMatches(updated.Competition.Id);
 
-            //TODO automatically end the competition?
-
             _logger.LogInformation("Match {CompetitorOneName}-{CompetitorTwoName} ended with status {Status}!",
-                [updated.CompetitorOne.Name, updated.CompetitorTwo.Name, match.Status]);
+               [updated.CompetitorOne.Name, updated.CompetitorTwo.Name, match.Status]);
+
+            if (updated.Competition.End())
+            {
+                await _unitOfWork.CompetitionRepository.Update(match.Competition);
+                _logger.LogInformation("Competition {Competition} ended with status {Status}!",
+               [match.Competition.Name, match.Competition.Status]);
+            }
 
             return updated;
         }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmdarisProject.Infrastructure.Migrations
 {
     [DbContext(typeof(AmdarisProjectDBContext))]
-    [Migration("20240613125209_AP")]
+    [Migration("20240619114318_AP")]
     partial class AP
     {
         /// <inheritdoc />
@@ -497,6 +497,9 @@ namespace AmdarisProject.Infrastructure.Migrations
             modelBuilder.Entity("AmdarisProject.Domain.Models.CompetitorModels.Player", b =>
                 {
                     b.HasBaseType("AmdarisProject.Domain.Models.CompetitorModels.Competitor");
+
+                    b.Property<string>("ProfilePictureUri")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("Player");
                 });

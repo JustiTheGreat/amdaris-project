@@ -1,6 +1,7 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Abstractions.RepositoryAbstractions;
 using AmdarisProject.Infrastructure.Identity;
+using AmdarisProject.Infrastructure.Persistance.BlobStorage;
 using AmdarisProject.Infrastructure.Persistance.Contexts;
 using AmdarisProject.Infrastructure.Persistance.Repositories;
 using AmdarisProject.Presentation;
@@ -23,6 +24,7 @@ namespace AmdarisProject.Infrastructure.Persistance.Extensions
                 .AddScoped<IPointRepository, PointRepository>()
                 .AddScoped<ITeamPlayerRepository, TeamPlayerRepository>()
                 .AddScoped<IUnitOfWork, UnitOfWork>()
+                .AddScoped<IBlobStorageService, BlobStorageService>()
                 .AddTransient<ITokenService, TokenService>()
                 .AddTransient<IAuthenticationService, AuthenticationService>()
                 .AddIdentityCore<IdentityUser>(options =>

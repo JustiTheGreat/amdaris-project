@@ -22,6 +22,8 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
 
         public abstract bool ShouldCreateMatches();
 
+        public abstract CompetitionStatus GetCompetitionFinishStatus();
+
         public void StopRegistrations()
         {
             if (Status is not CompetitionStatus.ORGANIZING)
@@ -41,15 +43,20 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
             Status = CompetitionStatus.STARTED;
         }
 
-        public void End()
+        public bool End()
         {
-            if (Status is not CompetitionStatus.STARTED)
-                throw new APIllegalStatusException(Status);
+            //if (Status is not CompetitionStatus.STARTED)
+            //    throw new APIllegalStatusException(Status);
 
-            if (!AllMatchesOfCompetitonAreDone())
-                throw new APConflictException($"Competition {Name} still has unfinished matches!");
+            //if (!AllMatchesOfCompetitonAreDone())
+            //    throw new APConflictException($"Competition {Name} still has unfinished matches!");
 
-            Status = CompetitionStatus.FINISHED;
+            if (Status is not CompetitionStatus.STARTED || !AllMatchesOfCompetitonAreDone())
+                return false;
+
+            Status = GetCompetitionFinishStatus();
+
+            return true;
         }
 
         public void Cancel()
@@ -60,11 +67,12 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
                 throw new APIllegalStatusException(Status);
 
             if (AMatchIsBeignPlayed())
-                throw new APException($"A match is from competition {Name} is being played!");
+                throw new APException($"A match from competition {Name} is being played!");
 
             Status = CompetitionStatus.CANCELED;
 
-            Matches.ForEach(match => match.Cancel());
+            Matches.ForEach(match => match.Status = match.Status == MatchStatus.NOT_STARTED || match.Status == MatchStatus.STARTED
+                ? match.Status = MatchStatus.CANCELED : match.Status);
         }
 
         public bool AllMatchesOfCompetitonAreDone()
@@ -112,7 +120,7 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
                 if (team.ContainsAPlayerPartOfAnotherTeamFromCompetition(this))
                     throw new APException($"Team {competitor.Name} contains a player part of another team from competition {Name}!");
 
-                if (!team.HasTheRequiredNumberOfActivePlayers((uint)GameFormat.TeamSize!))
+                if (!team.HasTheRequiredNumberOfActivePlayers((int)GameFormat.TeamSize!))
                     throw new APException($"Team {competitor.Name} doesn't have the required number of active competitors!");
             }
 

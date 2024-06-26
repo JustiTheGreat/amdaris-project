@@ -128,18 +128,6 @@ namespace AmdarisProject.Presentation.Controllers
         }
 
         [Authorize(Roles = nameof(UserRole.Administrator))]
-        [HttpPut(nameof(EndCompetition) + "/{competitionId}")]
-        [ValidateGuid]
-        [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> EndCompetition([FromRoute] Guid competitionId)
-        {
-            CompetitionGetDTO response = await _mediator.Send(new EndCompetition(competitionId));
-            return Ok(response);
-        }
-
-        [Authorize(Roles = nameof(UserRole.Administrator))]
         [HttpPut(nameof(CancelCompetition) + "/{competitionId}")]
         [ValidateGuid]
         [ProducesResponseType(typeof(CompetitionGetDTO), StatusCodes.Status200OK)]

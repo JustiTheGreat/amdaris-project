@@ -12,7 +12,7 @@ namespace AmdarisProject.Domain.Models.CompetitorModels
         public override bool IsOrContainsCompetitor(Guid competitorId)
             => Id.Equals(competitorId) || ContainsPlayer(competitorId);
 
-        public bool HasTheRequiredNumberOfActivePlayers(uint requiredNumberOfActivePlayers)
+        public bool HasTheRequiredNumberOfActivePlayers(int requiredNumberOfActivePlayers)
             => TeamPlayers.Count(teamPlayer => teamPlayer.IsActive) == requiredNumberOfActivePlayers;
 
         public bool ContainsAPlayerPartOfAnotherTeamFromCompetition(Competition competition)

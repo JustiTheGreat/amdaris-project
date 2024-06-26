@@ -41,7 +41,9 @@ namespace AmdarisProject.Application.Profiles
                 .ForMember(dest => dest.NumberOfMatches, opt => opt.MapFrom(src => src.Matches.Count()));
 
             CreateMap<Player, CompetitorDisplayDTO>()
-                .ForMember(dest => dest.NumberOfTeams, opt => opt.MapFrom(src => src.Teams.Count()));
+                .ForMember(dest => dest.NumberOfTeams, opt => opt.MapFrom(src => src.Teams.Count()))
+                .ForMember(dest => dest.ProfilePicture, opt => opt.MapFrom(src => src.ProfilePictureUri));
+
 
             CreateMap<Team, CompetitorDisplayDTO>()
                 .ForMember(dest => dest.NumberOfPlayers, opt => opt.MapFrom(src => src.TeamPlayers.Count()))
@@ -53,7 +55,8 @@ namespace AmdarisProject.Application.Profiles
                 .ForMember(dest => dest.WonMatches, opt => opt.MapFrom(src => src.WonMatches.GetIds()));
 
             CreateMap<Player, PlayerGetDTO>()
-                .ForMember(dest => dest.Points, opt => opt.MapFrom(src => src.Points.GetIds()));
+                .ForMember(dest => dest.Points, opt => opt.MapFrom(src => src.Points.GetIds()))
+                .ForMember(dest => dest.ProfilePicture, opt => opt.MapFrom(src => src.ProfilePictureUri));
 
             CreateMap<Team, TeamGetDTO>();
         }

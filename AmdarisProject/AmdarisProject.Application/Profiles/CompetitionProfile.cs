@@ -2,6 +2,7 @@
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Application.Dtos.ResponseDTOs.DisplayDTOs;
 using AmdarisProject.Domain.Enums;
+using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
@@ -50,7 +51,11 @@ namespace AmdarisProject.Application.Profiles
                 .ForMember(dest => dest.CompetitorType, opt => opt.MapFrom(src => src.GameFormat.CompetitorType))
                 .ForMember(dest => dest.TeamSize, opt => opt.MapFrom(src => src.GameFormat.TeamSize))
                 .ForMember(dest => dest.WinAt, opt => opt.MapFrom(src => src.GameFormat.WinAt))
-                .ForMember(dest => dest.DurationInMinutes, opt => opt.MapFrom(src => src.GameFormat.DurationInMinutes));
+                .ForMember(dest => dest.DurationInMinutes, opt => opt.MapFrom(src => src.GameFormat.DurationInMinutes))
+                .ForMember(dest => dest.CompetitionType, opt => opt.MapFrom(src =>
+                    src is OneVSAllCompetition ? CompetitionType.ONE_VS_ALL.ToString()
+                    : src is TournamentCompetition ? CompetitionType.TOURNAMENT.ToString()
+                    : "UNKNOWN"));
 
             CreateMap<OneVSAllCompetition, OneVSAllCompetitionGetDTO>();
 

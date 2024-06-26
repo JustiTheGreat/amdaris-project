@@ -61,17 +61,22 @@ namespace AmdarisProject.Domain.Models
 
             if (Competition.GameFormat.CompetitorType is CompetitorType.TEAM)
             {
-                uint requiredNumberOfActivePlayers = (uint)Competition.GameFormat.TeamSize!;
+                int requiredNumberOfActivePlayers = (int)Competition.GameFormat.TeamSize!;
                 bool teamOneHasTheRequiredNumberOfCompetitors =
                     ((Team)CompetitorOne).HasTheRequiredNumberOfActivePlayers(requiredNumberOfActivePlayers);
                 bool teamTwoHasTheRequiredNumberOfCompetitors =
-                    ((Team)CompetitorOne).HasTheRequiredNumberOfActivePlayers(requiredNumberOfActivePlayers);
+                    ((Team)CompetitorTwo).HasTheRequiredNumberOfActivePlayers(requiredNumberOfActivePlayers);
 
                 Status =
                     teamOneHasTheRequiredNumberOfCompetitors && teamTwoHasTheRequiredNumberOfCompetitors ? MatchStatus.STARTED
                     : !teamOneHasTheRequiredNumberOfCompetitors && teamTwoHasTheRequiredNumberOfCompetitors ? MatchStatus.SPECIAL_WIN_COMPETITOR_TWO
                     : teamOneHasTheRequiredNumberOfCompetitors && !teamTwoHasTheRequiredNumberOfCompetitors ? MatchStatus.SPECIAL_WIN_COMPETITOR_ONE
                     : MatchStatus.CANCELED;
+
+                Winner =
+                    Status == MatchStatus.SPECIAL_WIN_COMPETITOR_ONE ? CompetitorOne
+                    : Status == MatchStatus.SPECIAL_WIN_COMPETITOR_TWO ? CompetitorTwo
+                    : Winner;
             }
             else Status = MatchStatus.STARTED;
 

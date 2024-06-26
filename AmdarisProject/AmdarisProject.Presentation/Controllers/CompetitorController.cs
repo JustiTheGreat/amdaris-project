@@ -42,24 +42,24 @@ namespace AmdarisProject.Presentation.Controllers
         }
 
         [Authorize(Roles = nameof(UserRole.Administrator))]
-        [HttpGet(nameof(GetPlayersNotInTeam) + "/{teamId}")]
+        [HttpPost(nameof(GetPlayersNotInTeam) + "/{teamId}")]
         [ValidateGuid]
-        [ProducesResponseType(typeof(IEnumerable<CompetitorDisplayDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginatedResult<CompetitorDisplayDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> GetPlayersNotInTeam([FromRoute] Guid teamId)
+        public async Task<ActionResult> GetPlayersNotInTeam([FromRoute] Guid teamId, [FromBody] PagedRequest pagedRequest)
         {
-            IEnumerable<CompetitorDisplayDTO> response = await _mediator.Send(new GetPlayersNotInTeam(teamId));
+            PaginatedResult<CompetitorDisplayDTO> response = await _mediator.Send(new GetPlayersNotInTeam(teamId, pagedRequest));
             return Ok(response);
         }
 
         [Authorize(Roles = nameof(UserRole.Administrator))]
-        [HttpGet(nameof(GetPlayersNotInCompetition) + "/{competitionId}")]
+        [HttpPost(nameof(GetPlayersNotInCompetition) + "/{competitionId}")]
         [ValidateGuid]
-        [ProducesResponseType(typeof(IEnumerable<CompetitorDisplayDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginatedResult<CompetitorDisplayDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> GetPlayersNotInCompetition([FromRoute] Guid competitionId)
+        public async Task<ActionResult> GetPlayersNotInCompetition([FromRoute] Guid competitionId, [FromBody] PagedRequest pagedRequest)
         {
-            IEnumerable<CompetitorDisplayDTO> response = await _mediator.Send(new GetPlayersNotInCompetition(competitionId));
+            PaginatedResult<CompetitorDisplayDTO> response = await _mediator.Send(new GetPlayersNotInCompetition(competitionId, pagedRequest));
             return Ok(response);
         }
 
@@ -84,13 +84,13 @@ namespace AmdarisProject.Presentation.Controllers
         }
 
         [Authorize(Roles = nameof(UserRole.Administrator))]
-        [HttpGet(nameof(GetTeamsThatCanBeAddedToCompetition) + "/{competitionId}")]
+        [HttpPost(nameof(GetTeamsThatCanBeAddedToCompetition) + "/{competitionId}")]
         [ValidateGuid]
-        [ProducesResponseType(typeof(IEnumerable<CompetitorDisplayDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginatedResult<CompetitorDisplayDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> GetTeamsThatCanBeAddedToCompetition([FromRoute] Guid competitionId)
+        public async Task<ActionResult> GetTeamsThatCanBeAddedToCompetition([FromRoute] Guid competitionId, [FromBody] PagedRequest pagedRequest)
         {
-            IEnumerable<CompetitorDisplayDTO> response = await _mediator.Send(new GetTeamsThatCanBeAddedToCompetition(competitionId));
+            PaginatedResult<CompetitorDisplayDTO> response = await _mediator.Send(new GetTeamsThatCanBeAddedToCompetition(competitionId, pagedRequest));
             return Ok(response);
         }
 

@@ -65,11 +65,10 @@ namespace AmdarisProject.Application.Services.CompetitionMatchCreatorFactoryServ
                 }
                 else
                 {
-                    DateTimeOffset lastMatchPredictedStartTime = competition.Matches.Max(match => match.InitialStartTime)
+                    DateTimeOffset lastMatchEndTime = competition.Matches.Max(match => match.ActualizedEndTime)
                         ?? throw new APException("Null start time for a timed match!");
 
-                    matchInitialStartTime = lastMatchPredictedStartTime
-                        .AddMinutes(matchDurationInMinutes + competition.BreakInMinutes ?? 0);
+                    matchInitialStartTime = lastMatchEndTime.AddMinutes(competition.BreakInMinutes ?? 0);
                 }
 
                 matchInitialEndTime = ((DateTimeOffset)matchInitialStartTime).AddMinutes(matchDurationInMinutes);

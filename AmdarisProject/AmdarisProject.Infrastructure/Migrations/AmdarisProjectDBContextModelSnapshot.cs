@@ -495,6 +495,9 @@ namespace AmdarisProject.Infrastructure.Migrations
                 {
                     b.HasBaseType("AmdarisProject.Domain.Models.CompetitorModels.Competitor");
 
+                    b.Property<string>("ProfilePictureUri")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasDiscriminator().HasValue("Player");
                 });
 

@@ -9,5 +9,6 @@
         public required int? NumberOfTeams { get; set; }
         public required int? NumberOfPlayers { get; set; }
         public required int? NumberOfActivePlayers { get; set; }
+        public required string? ProfilePicture { get; set; }
     }
 }

@@ -86,7 +86,7 @@ namespace AmdarisProject.Application.Handlers.CompetitorHandlers
                     $"Best regards,\n" +
                     $"ContestCraft";
                 MemoryStream diplomaStream = CreateDiploma(userData.FirstName, userData.LastName, userData.Username,
-                    competition.Name, competition.ActualizedStartTime.Date.ToString());
+                    competition.Name, competition.ActualizedStartTime.ToString().Split(" ")[0]);
                 diplomaStream.Seek(0, SeekOrigin.Begin);
                 Attachment attachment = new(diplomaStream, "Diploma.pdf", "application/pdf");
                 mail.Attachments.Add(attachment);

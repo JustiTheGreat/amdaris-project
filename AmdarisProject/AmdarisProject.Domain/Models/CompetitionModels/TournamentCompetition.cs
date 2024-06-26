@@ -34,6 +34,12 @@ namespace AmdarisProject.Domain.Models.CompetitionModels
             => StageLevel < Math.Log2(Competitors.Count)
             && (Matches.Count == 0 || AllMatchesOfCompetitonAreDone() && AtLeastTwoMatchesFromTheCurrentStageHaveAWinner());
 
+        public override CompetitionStatus GetCompetitionFinishStatus()
+            => Matches.Count(match => match.StageLevel == StageLevel
+                && (match.Status == MatchStatus.FINISHED
+                    || match.Status == MatchStatus.SPECIAL_WIN_COMPETITOR_ONE
+                    || match.Status == MatchStatus.SPECIAL_WIN_COMPETITOR_TWO)) == 1 ? CompetitionStatus.FINISHED : CompetitionStatus.CANCELED;
+
         public bool AtLeastTwoMatchesFromTheCurrentStageHaveAWinner()
             => Matches.Count(match => match.StageLevel == StageLevel
                 && (match.Status == MatchStatus.FINISHED

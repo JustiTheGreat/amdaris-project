@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace AmdarisProject.Application.Dtos.RequestDTOs
 {
@@ -15,5 +16,6 @@ namespace AmdarisProject.Application.Dtos.RequestDTOs
         public required string LastName { get; set; }
         [Required(ErrorMessage = "Username is required")]
         public required string Username { get; set; }
+        public required IFormFile? ProfilePicture { get; set; }
     }
 }

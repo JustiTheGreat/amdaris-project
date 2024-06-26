@@ -1,6 +1,7 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs;
 using AmdarisProject.Domain.Exceptions;
+using AmdarisProject.Domain.Models;
 using AmdarisProject.Domain.Models.CompetitionModels;
 using AutoMapper;
 using MediatR;
@@ -29,6 +30,7 @@ namespace AmdarisProject.handlers.competition
             {
                 await _unitOfWork.BeginTransactionAsync();
                 updated = await _unitOfWork.CompetitionRepository.Update(competition);
+                await UpdateMatchesStartTimes(competition);
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();
             }
@@ -44,6 +46,24 @@ namespace AmdarisProject.handlers.competition
                 : updated is TournamentCompetition ? _mapper.Map<TournamentCompetitionGetDTO>(updated)
                 : throw new APException("Unexpected competition type!");
             return response;
+        }
+
+        private async Task UpdateMatchesStartTimes(Competition competition)
+        {
+            if (competition.ActualizedStartTime <= competition.Matches[0].ActualizedStartTime) return;
+
+            int i = 0;
+
+            foreach (Match match in competition.Matches)
+            {
+                match.ActualizedStartTime = competition.ActualizedStartTime!
+                    .AddMinutes((ulong)i++ * (competition.GameFormat.DurationInMinutes! + competition.BreakInMinutes ?? 0));
+                match.ActualizedEndTime = ((DateTimeOffset)match.ActualizedStartTime).AddMinutes(competition.GameFormat.DurationInMinutes ?? 0);
+                await _unitOfWork.MatchRepository.Update(match);
+            }
+
+            _logger.LogInformation("Updated the starting time of the matches of competition {Competition} (Count = {Count})!",
+                    [competition.Name, competition.Matches.Count()]);
         }
     }
 }

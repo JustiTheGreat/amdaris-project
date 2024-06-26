@@ -14,9 +14,6 @@ namespace AmdarisProject.Infrastructure.Persistance.DataSeed
                 await GameTypeSeed.Seed(dbContext);
                 await RoleSeed.Seed(roleManager);
                 await AdministratorSeed.Seed(userManager, administratorData);
-
-                //TODO remove
-                await ScenarioSeed.Seed(dbContext);
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using AmdarisProject.Application.Abstractions;
 using AmdarisProject.Application.Dtos.ResponseDTOs;
+using AmdarisProject.Domain.Enums;
 using AmdarisProject.Domain.Exceptions;
 using AmdarisProject.Domain.Models;
 using AutoMapper;
@@ -37,6 +38,13 @@ namespace AmdarisProject.Application.Handlers.MatchHandlers
                 await _competitionMatchCreatorFactoryService
                     .GetCompetitionMatchCreator(updated.Competition.GetType())
                     .CreateCompetitionMatches(updated.Competition.Id);
+
+                if (updated.Competition.End())
+                {
+                    await _unitOfWork.CompetitionRepository.Update(match.Competition);
+                    _logger.LogInformation("Competition {Competition} ended with status {Status}!",
+                   [match.Competition.Name, match.Competition.Status]);
+                }
 
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();

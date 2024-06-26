@@ -18,5 +18,6 @@ namespace AmdarisProject.Application.Dtos.ResponseDTOs.CompetitionResponseDTOs
         public required ulong? DurationInMinutes { get; set; }
         public required List<CompetitorDisplayDTO> Competitors { get; set; } = [];
         public required List<MatchDisplayDTO> Matches { get; set; } = [];
+        public required string CompetitionType { get; set; }
     }
 }

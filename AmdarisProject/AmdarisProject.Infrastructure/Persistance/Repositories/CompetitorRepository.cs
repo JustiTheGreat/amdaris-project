@@ -1,9 +1,11 @@
 ﻿using AmdarisProject.Application.Abstractions.RepositoryAbstractions;
 using AmdarisProject.Application.Common.Models;
+using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 using AmdarisProject.Infrastructure.Persistance.Contexts;
 using AmdarisProject.Infrastructure.Persistance.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AmdarisProject.Infrastructure.Persistance.Repositories
 {
@@ -19,7 +21,8 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
             .Include(o => ((Player)o).Points)
             .Include(o => ((Player)o).Teams)
             .Include(o => ((Team)o).Players)
-            .Include(o => ((Team)o).TeamPlayers)
+            .Include(o => ((Team)o).TeamPlayers).ThenInclude(o => o.Player).ThenInclude(o => o.Competitions)
+            .Include(o => ((Team)o).TeamPlayers).ThenInclude(o => o.Player).ThenInclude(o => o.Matches)
             .FirstOrDefaultAsync(item => item.Id.Equals(id));
 
         public async Task<Player?> GetPlayerById(Guid id)
@@ -68,23 +71,24 @@ namespace AmdarisProject.Infrastructure.Persistance.Repositories
             .Include(o => o.TeamPlayers)
             .CreatePaginatedResultAsync(pagedRequest);
 
-        public async Task<IEnumerable<Player>> GetPlayersNotInTeam(Guid teamId)
+        public async Task<Tuple<IEnumerable<Player>, int>> GetPlayersNotInTeam(Guid teamId, PagedRequest pagedRequest)
             => await _dbContext.Set<Player>()
-            .Where(player => player.Teams.All(team => !team.Id.Equals(teamId)))
-            .ToListAsync();
+            //TODO .Where(player => player.Teams.All(team => !team.Id.Equals(teamId)))
+            .Where(player => !player.Teams.Any())
+            .CreatePaginatedResultAsync(pagedRequest);
 
-        public async Task<IEnumerable<Player>> GetPlayersNotInCompetition(Guid competitionId)
+        public async Task<Tuple<IEnumerable<Player>, int>> GetPlayersNotInCompetition(Guid competitionId, PagedRequest pagedRequest)
             => await _dbContext.Set<Player>()
             .AsSplitQuery()
             .Where(player => player.Competitions.All(competition => !competition.Id.Equals(competitionId)))
-            .ToListAsync();
+            .CreatePaginatedResultAsync(pagedRequest);
 
-        public async Task<IEnumerable<Team>> GetTeamsThatCanBeAddedToCompetition(Guid competitionId, uint requiredTeamSize)
+        public async Task<Tuple<IEnumerable<Team>, int>> GetTeamsThatCanBeAddedToCompetition(Guid competitionId, uint requiredTeamSize, PagedRequest pagedRequest)
             => await _dbContext.Set<Team>()
             .AsSplitQuery()
             .Where(team =>
                 team.TeamPlayers.Count(teamPlayer => teamPlayer.IsActive) == requiredTeamSize
                 && team.Competitions.All(competition => !competition.Id.Equals(competitionId)))
-            .ToListAsync();
+            .CreatePaginatedResultAsync(pagedRequest);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AmdarisProject.Application.Common.Models;
+using AmdarisProject.Domain.Models.CompetitionModels;
 using AmdarisProject.Domain.Models.CompetitorModels;
 
 namespace AmdarisProject.Application.Abstractions.RepositoryAbstractions
@@ -19,10 +20,10 @@ namespace AmdarisProject.Application.Abstractions.RepositoryAbstractions
 
         Task<IEnumerable<Competitor>> GetByIds(IEnumerable<Guid> ids);
 
-        Task<IEnumerable<Player>> GetPlayersNotInTeam(Guid teamId);
+        Task<Tuple<IEnumerable<Player>, int>> GetPlayersNotInTeam(Guid teamId, PagedRequest pagedRequest);
 
-        Task<IEnumerable<Player>> GetPlayersNotInCompetition(Guid competitionId);
+        Task<Tuple<IEnumerable<Player>, int>> GetPlayersNotInCompetition(Guid competitionId, PagedRequest pagedRequest);
 
-        Task<IEnumerable<Team>> GetTeamsThatCanBeAddedToCompetition(Guid competitionId, uint requiredTeamSize);
+        Task<Tuple<IEnumerable<Team>, int>> GetTeamsThatCanBeAddedToCompetition(Guid competitionId, uint requiredTeamSize, PagedRequest pagedRequest);
     }
 }

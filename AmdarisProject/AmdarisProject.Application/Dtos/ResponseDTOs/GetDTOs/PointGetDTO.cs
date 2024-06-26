@@ -7,5 +7,6 @@ namespace AmdarisProject.Application.Dtos.ResponseDTOs
         public required uint Value { get; set; }
         public required Guid Match { get; set; }
         public required CompetitorDisplayDTO Player { get; set; }
+        public required string? ProfilePicture { get; set; }
     }
 }

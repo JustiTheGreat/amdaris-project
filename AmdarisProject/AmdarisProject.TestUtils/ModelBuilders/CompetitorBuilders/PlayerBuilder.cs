@@ -15,6 +15,7 @@ namespace AmdarisProject.TestUtils.ModelBuilders.CompetitorBuilders
             TeamPlayers = [],
             Points = [],
             Teams = [],
+            ProfilePictureUri = null
         })
         { }
 

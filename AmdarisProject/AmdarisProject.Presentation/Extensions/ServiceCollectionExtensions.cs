@@ -32,7 +32,7 @@ namespace AmdarisProject.Presentation.Extensions
                 .Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)))
                 .Configure<AdministratorData>(builder.Configuration.GetSection(nameof(AdministratorData)))
                 .Configure<SmtpSettings>(builder.Configuration.GetSection(nameof(SmtpSettings)))
-                .Configure<BlobSettings>(builder.Configuration.GetSection(nameof(BlobSettings)));
+                .Configure<BlobStorageSettings>(builder.Configuration.GetSection(nameof(BlobStorageSettings)));
         }
 
         private static IServiceCollection ConfigureCors(this IServiceCollection serviceCollection, string allowedOrigins)
