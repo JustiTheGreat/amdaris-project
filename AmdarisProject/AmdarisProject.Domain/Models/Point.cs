@@ -19,6 +19,8 @@ namespace AmdarisProject.Domain.Models
                 throw new APException($"A competitor of match {Match.CompetitorOne.Name}-{Match.CompetitorTwo.Name} already has the winning number of points!");
 
             Value += value;
+            if (Value > Match.Competition.GameFormat.WinAt)
+                value = (uint)Match.Competition.GameFormat.WinAt;
 
             Match.AddPointsForPlayerSide(Player.Id, value);
         }
