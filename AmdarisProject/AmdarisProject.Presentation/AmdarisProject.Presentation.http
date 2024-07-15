@@ -1,0 +1,6 @@
+@AmdarisProject.Presentation_HostAddress = http://localhost:5112
+
+GET {{AmdarisProject.Presentation_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
